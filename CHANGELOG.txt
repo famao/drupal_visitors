@@ -1,0 +1,33 @@
+Visitors 6.x-0.4-dev, 2009-03-22
+------------------------
+- Added:
+	* visitors.visitors_user_agent field.
+- Changed:
+	* Details report.
+- Fixed:
+	* visitors_get_ip function.
+	* visitors block "Your IP" value.
+
+Visitors 6.x-0.3-dev, 2009-03-17
+------------------------
+- Added:
+	* Visitors ip checking.
+
+Visitors 6.x-0.2-dev, 2009-03-14
+------------------------
+- Added:
+	* Visitors block.
+	* Visitors admin menu block page.
+- Added reports:
+	* Days of month.
+	* Days of week.
+	* Hosts.
+	* Hours.
+	* Monthly history.
+	* Recent hits.
+	* Hit details.
+	* Top pages.
+
+Visitors 6.x-0.1-dev, 2009-03-07
+------------------------
+- Initial version.

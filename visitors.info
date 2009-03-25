@@ -1,0 +1,7 @@
+; $Id$
+name = Visitors
+description = "This module used for displaying a visitors info."
+core = 6.x
+version = "6.x-0.4-dev"
+package = "Visitors"
+project = "visitors"

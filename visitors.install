@@ -1,0 +1,80 @@
+<?php
+// $Id$
+/**
+ * Install the module with a new database table
+ * @file
+ */
+
+function visitors_install() {
+  drupal_set_message('Installing visitors module');
+  drupal_install_schema('visitors');
+}
+
+function visitors_uninstall() {
+  drupal_uninstall_schema('visitors');
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function visitors_schema() {
+  $schema['visitors'] = array(
+    'fields' => array(
+      'visitors_id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'visitors_uid' => array(
+        'type' => 'int',
+        'length' => 11,
+        'not null' => TRUE,
+        'default' => '0',
+      ),
+      'visitors_ip' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'visitors_date_time' => array(
+        'type' => 'int',
+        'length' => 11,
+        'not null' => TRUE,
+        'default' => '0',
+      ),
+      'visitors_url' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '0',
+      ),
+      'visitors_referer' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+	'visitors_path' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'visitors_title' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'visitors_user_agent' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      
+    ),
+    'primary key' => array('visitors_id'),
+  );
+  return $schema;
+}
