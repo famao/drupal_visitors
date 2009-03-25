@@ -1,4 +1,9 @@
-Visitors 6.x-0.4-dev, 2009-03-22
+VVisitors 6.x-0.5, 2009-03-25
+------------------------
+- Fixed:
+    * user links (recent hits, details reports).
+
+-isitors 6.x-0.4, 2009-03-22
 ------------------------
 - Added:
 	* visitors.visitors_user_agent field.
@@ -8,12 +13,12 @@ Visitors 6.x-0.4-dev, 2009-03-22
 	* visitors_get_ip function.
 	* visitors block "Your IP" value.
 
-Visitors 6.x-0.3-dev, 2009-03-17
+Visitors 6.x-0.3, 2009-03-17
 ------------------------
 - Added:
 	* Visitors ip checking.
 
-Visitors 6.x-0.2-dev, 2009-03-14
+Visitors 6.x-0.2, 2009-03-14
 ------------------------
 - Added:
 	* Visitors block.
@@ -28,6 +33,6 @@ Visitors 6.x-0.2-dev, 2009-03-14
 	* Hit details.
 	* Top pages.
 
-Visitors 6.x-0.1-dev, 2009-03-07
+Visitors 6.x-0.1, 2009-03-07
 ------------------------
 - Initial version.
