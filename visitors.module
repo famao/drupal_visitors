@@ -229,6 +229,15 @@ function visitors_block($op = 'list', $delta = 0, $edit = array())
 		$data    = db_fetch_object($results);
 		$total   = $data->total;
 		$output .= '<li>'.t('Registered Users: '). ($total).'</li>';
+
+		$sql  = 'SELECT *
+                 FROM {users}
+                 ORDER BY uid DESC
+                 LIMIT 1';
+        
+        $results = db_query($sql);
+		$data    = db_fetch_object($results);
+		$output .= '<li>'.t('Last Registered User: '). theme('username', $data).'</li>';
 		
 		$sql = 'SELECT count(*) as total FROM {node} WHERE status=1';
 
