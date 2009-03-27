@@ -2,8 +2,3 @@
 name = Visitors
 description = "This module used for displaying a visitors info."
 package = "Visitors"
-
-version = "6.x-0.5"
-core = "6.x"
-project = "visitors"
-datestamp = "1238015550"

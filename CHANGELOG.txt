@@ -1,9 +1,14 @@
+Visitors 6.x-0.6, 2009-03-27
+------------------------
+- Added:
+    * Last Registered User to visitors block.
+
 Visitors 6.x-0.5, 2009-03-25
 ------------------------
 - Fixed:
     * user links (recent hits, details reports).
 
--Visitors 6.x-0.4, 2009-03-22
+Visitors 6.x-0.4, 2009-03-22
 ------------------------
 - Added:
 	* visitors.visitors_user_agent field.
