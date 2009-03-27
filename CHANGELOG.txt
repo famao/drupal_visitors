@@ -1,9 +1,9 @@
-VVisitors 6.x-0.5, 2009-03-25
+Visitors 6.x-0.5, 2009-03-25
 ------------------------
 - Fixed:
     * user links (recent hits, details reports).
 
--isitors 6.x-0.4, 2009-03-22
+-Visitors 6.x-0.4, 2009-03-22
 ------------------------
 - Added:
 	* visitors.visitors_user_agent field.
