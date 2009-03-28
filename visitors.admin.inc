@@ -47,6 +47,59 @@ function visitors_recent_hits()
 
 	return $output;
 }
+function visitors_host_hits($ip)
+{
+	$date_format = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
+	$items_per_page = variable_get('default_nodes_main', 10);
+	
+	$header = array(
+					array('data' => t('#')),
+					array('data' => t('ID'), 'field' => 'visitors_id', 'sort' => 'desc'), 
+					array('data' => t('Date'), 'field' => 'visitors_date_time'), 
+					array('data' => t('URL'), 'field' => 'visitors_url'), 
+					array('data' => t('User'), 'field' => 'u.name'), 
+					array('data' => t('Operations'))
+					);
+					
+	$sql = sprintf("SELECT v.*, u.name, u.uid 
+                    FROM {visitors} v 
+                    LEFT JOIN {users} u 
+                    ON u.uid = v.visitors_uid 
+                    AND v.visitors_ip=%d". tablesort_sql($header),
+                    ip2long($ip));
+
+	$sql_count = db_rewrite_sql(sprintf('SELECT COUNT(*) FROM {visitors} WHERE visitors_ip=%d', ip2long($ip)));
+
+	$results = pager_query($sql, $items_per_page, 0, $sql_count);
+
+	$rows = array();
+
+	$page = isset($_GET['page']) ? $_GET['page'] : '';
+	$i = 0 + ($page  * $items_per_page);
+
+	
+
+	while ( $data = db_fetch_object($results) ) 
+	{
+		$user = user_load(array('uid' => $data->visitors_uid));
+		$user_name = $user->name;
+		$user_page = theme('username', $data);
+		$rows[] = array(
+			++$i,
+			$data->visitors_id,
+			date($date_format, $data->visitors_date_time),
+			$data->visitors_title.'<br><a href="'.$data->visitors_url.'" target="_blank">'.$data->visitors_path.'</a>',
+			$user_page,
+			'<a href="hits/'.$data->visitors_id.'">'.t('details').'</a>'
+		);
+	}
+
+	$output  = "";
+	$output .= theme('table', $header, $rows);
+	$output .= theme('pager', NULL, $items_per_page, 0);
+
+	return $output;
+}
 
 function visitors_hosts()
 {
@@ -55,7 +108,8 @@ function visitors_hosts()
 	$header = array(
 					array('data' => t('#')),
 					array('data' => t('Host'), 'field' => 'visitors_ip'), 
-					array('data' => t('Pages'), 'field' => 'count', 'sort' => 'desc'), 
+					array('data' => t('Pages'), 'field' => 'count', 'sort' => 'desc'),
+	                array('data' => t('Operations'))
 					);
 	
 	$sql       = "SELECT count( * ) as count, visitors_ip
@@ -77,7 +131,9 @@ function visitors_hosts()
 			++$i,
 			
 			long2ip($data->visitors_ip),
-			$data->count
+			$data->count,
+            '<a href="'.long2ip($data->visitors_ip).'">'.t('hits').'</a>'
+
 			);
 	}
 	

@@ -102,6 +102,16 @@ function visitors_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   
+  $items['admin/visitors/hosts/%'] = array(
+    'title' => 'Hits',
+    'description' => 'View host access log.',
+    'page callback' => 'visitors_host_hits',
+    'page arguments' => array(3),
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
   $items['admin/visitors/hits/%'] = array(
     'title' => 'Details',
     'description' => 'View access log.',
