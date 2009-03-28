@@ -1,3 +1,12 @@
+Visitors 6.x-0.7, 2009-03-28
+------------------------
+- Added:
+	* feature request #416482 Visitors settings block.
+	* hits per host report.
+
+- Fixed:
+	* url decode for visitors_path, visitors_title, visitors_url.
+
 Visitors 6.x-0.6, 2009-03-27
 ------------------------
 - Added:

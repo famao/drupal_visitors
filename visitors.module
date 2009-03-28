@@ -28,6 +28,16 @@ function visitors_perm() {
 function visitors_menu() {
   $items = array();
 
+  $items['admin/settings/visitors'] = array(
+    'title' => 'Visitors settings',
+    'description' => 'Configure visitors settings.',
+    'access arguments' => array('administer visitors'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('visitors_admin_settings'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'visitors.settings.inc',
+  );
+
   $items['admin/visitors'] = array(
     'title' => 'Visitors',
     'description' => "View visitors reports from system logs.",
@@ -212,61 +222,75 @@ function visitors_block($op = 'list', $delta = 0, $edit = array())
 	{
 		$output  = '<ul>';
 		
-		$sql = 'SELECT count(*) as total FROM {visitors} v';
-		$results = db_query($sql);
-		$data = db_fetch_object($results);
-		$total = $data->total;
-		$output .= '<li>'.t('Total Visitors: ').$total.'</li>';
+		if (variable_get('visitors_show_total_visitors', 1)) {
+			$sql = 'SELECT count(*) as total FROM {visitors} v';
+			$results = db_query($sql);
+			$data = db_fetch_object($results);
+			$total = $data->total;
+			$output .= '<li>'.t('Total Visitors: ').$total.'</li>';
+		}
 		
-		$sql = 'SELECT count(*) as total 
-				FROM 
-				(
-					SELECT visitors_ip 
+		if (variable_get('visitors_show_unique_visitor', 1)) {
+			$sql = 'SELECT count(*) as total 
+					FROM 
+					(
+						SELECT visitors_ip 
+						FROM {visitors} 
+						GROUP BY visitors_ip
+					) v';
+
+			$results = db_query($sql);
+			$data = db_fetch_object($results);
+			$uniq = $data->total;  
+			$output .= '<li>'.t('Unique Visitor: ').$uniq.'</li>';
+		}
+		
+		if (variable_get('visitors_registered_user', 1)) {
+			$sql = 'SELECT count(*) as total 
+			 		FROM {users} 
+			 		WHERE status=1 and uid<>0';
+
+			$results = db_query($sql);
+			$data    = db_fetch_object($results);
+			$total   = $data->total;
+			$output .= '<li>'.t('Registered Users: '). ($total).'</li>';
+		}
+		
+		if (variable_get('visitors_last_registered_user', 1)) {
+			$sql  = 'SELECT *
+		             FROM {users}
+		             ORDER BY uid DESC
+		             LIMIT 1';
+		    
+		    $results = db_query($sql);
+			$data    = db_fetch_object($results);
+			$output .= '<li>'.t('Last Registered User: '). theme('username', $data).'</li>';
+		}
+		
+		if (variable_get('visitors_published_nodes', 1)) {
+			$sql = 'SELECT count(*) as total FROM {node} WHERE status=1';
+
+			$results = db_query($sql);
+			$data    = db_fetch_object($results);
+			$total   = $data->total;
+			$output .= '<li>'.t('Published Nodes: '). ($total).'</li>';
+		}
+		
+		if (variable_get('visitors_user_ip', 1)) {
+			$output .= '<li>'.t('Your IP: ').visitors_get_ip().'</li>';
+		}
+		
+		if (variable_get('visitors_since_date', 1)) {
+			$sql = 'SELECT visitors_date_time 
 					FROM {visitors} 
-					GROUP BY visitors_ip
-				) v';
-
-		$results = db_query($sql);
-		$data = db_fetch_object($results);
-		$uniq = $data->total;  
-		$output .= '<li>'.t('Unique Visitor: ').$uniq.'</li>';
-		
-		$sql = 'SELECT count(*) as total 
-		 		FROM {users} 
-		 		WHERE status=1 and uid<>0';
-
-		$results = db_query($sql);
-		$data    = db_fetch_object($results);
-		$total   = $data->total;
-		$output .= '<li>'.t('Registered Users: '). ($total).'</li>';
-
-		$sql  = 'SELECT *
-                 FROM {users}
-                 ORDER BY uid DESC
-                 LIMIT 1';
-        
-        $results = db_query($sql);
-		$data    = db_fetch_object($results);
-		$output .= '<li>'.t('Last Registered User: '). theme('username', $data).'</li>';
-		
-		$sql = 'SELECT count(*) as total FROM {node} WHERE status=1';
-
-		$results = db_query($sql);
-		$data    = db_fetch_object($results);
-		$total   = $data->total;
-		$output .= '<li>'.t('Published Nodes: '). ($total).'</li>';
-		
-		$output .= '<li>'.t('Your IP: ').visitors_get_ip().'</li>';
-		
-		$sql = 'SELECT visitors_date_time 
-				FROM {visitors} 
-				ORDER BY visitors_date_time ASC LIMIT 1';
+					ORDER BY visitors_date_time ASC LIMIT 1';
 				
-		$results = db_query($sql);
-		$data = db_fetch_object($results);
-		$since = $data->visitors_date_time;
-		$date_format = variable_get('date_format_short', 'Y-m-d');
-		$output .= '<li>'.t('Since: '). date($date_format, $since).'</li>';		
+			$results = db_query($sql);
+			$data = db_fetch_object($results);
+			$since = $data->visitors_date_time;
+			$date_format = variable_get('date_format_short', 'Y-m-d');
+			$output .= '<li>'.t('Since: '). date($date_format, $since).'</li>';		
+		}
 		
 		$output  .= '</ul>';    
             

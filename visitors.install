@@ -12,6 +12,14 @@ function visitors_install() {
 
 function visitors_uninstall() {
   drupal_uninstall_schema('visitors');
+  
+  variable_del('visitors_show_total_visitors');
+  variable_del('visitors_show_unique_visitor');
+  variable_del('visitors_registered_user');
+  variable_del('visitors_last_registered_user');
+  variable_del('visitors_published_nodes');
+  variable_del('visitors_user_ip');
+  variable_del('visitors_since_date');
 }
 
 /**
