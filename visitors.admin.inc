@@ -14,7 +14,11 @@ function visitors_recent_hits()
 					array('data' => t('Operations'))
 					);
 					
-	$sql       = "SELECT v.*, u.name, u.uid FROM {visitors} v LEFT JOIN {users} u ON u.uid = v.visitors_uid". tablesort_sql($header);
+	$sql       = "SELECT v.*, u.name, u.uid 
+					FROM {visitors} v 
+					LEFT JOIN {users} u 
+					ON u.uid = v.visitors_uid". tablesort_sql($header);
+					
 	$sql_count = db_rewrite_sql('SELECT COUNT(*) FROM {visitors}');
 
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
@@ -29,13 +33,12 @@ function visitors_recent_hits()
 	while ( $data = db_fetch_object($results) ) 
 	{
 		$user = user_load(array('uid' => $data->visitors_uid));
-		$user_name = $user->name;
 		$user_page = theme('username', $data);
 		$rows[] = array(
 			++$i,
 			$data->visitors_id,
 			date($date_format, $data->visitors_date_time),
-			$data->visitors_title.'<br><a href="'.$data->visitors_url.'" target="_blank">'.$data->visitors_path.'</a>',
+			check_plain($data->visitors_title).'<br>'.l($data->visitors_path, $data->visitors_url),
 			$user_page,
 			'<a href="hits/'.$data->visitors_id.'">'.t('details').'</a>'
 		);
@@ -60,15 +63,17 @@ function visitors_host_hits($ip)
 					array('data' => t('User'), 'field' => 'u.name'), 
 					array('data' => t('Operations'))
 					);
-					
+				
 	$sql = sprintf("SELECT v.*, u.name, u.uid 
                     FROM {visitors} v 
                     LEFT JOIN {users} u 
                     ON u.uid = v.visitors_uid 
-                    AND v.visitors_ip=%d". tablesort_sql($header),
+                    WHERE v.visitors_ip=%d". tablesort_sql($header),
                     ip2long($ip));
 
-	$sql_count = db_rewrite_sql(sprintf('SELECT COUNT(*) FROM {visitors} WHERE visitors_ip=%d', ip2long($ip)));
+	$count_sql = sprintf('SELECT COUNT(*) FROM {visitors} WHERE visitors_ip=%d', ip2long($ip));
+	
+	$sql_count = db_rewrite_sql($count_sql);
 
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
 
@@ -77,27 +82,25 @@ function visitors_host_hits($ip)
 	$page = isset($_GET['page']) ? $_GET['page'] : '';
 	$i = 0 + ($page  * $items_per_page);
 
-	
-
 	while ( $data = db_fetch_object($results) ) 
 	{
 		$user = user_load(array('uid' => $data->visitors_uid));
-		$user_name = $user->name;
 		$user_page = theme('username', $data);
 		$rows[] = array(
 			++$i,
 			$data->visitors_id,
 			date($date_format, $data->visitors_date_time),
-			$data->visitors_title.'<br><a href="'.$data->visitors_url.'" target="_blank">'.$data->visitors_path.'</a>',
+			check_plain($data->visitors_title).'<br>'.l($data->visitors_path, $data->visitors_url),
 			$user_page,
-			'<a href="hits/'.$data->visitors_id.'">'.t('details').'</a>'
+			'<a href="../hits/'.$data->visitors_id.'">'.t('details').'</a>'
 		);
 	}
 
 	$output  = "";
 	$output .= theme('table', $header, $rows);
 	$output .= theme('pager', NULL, $items_per_page, 0);
-
+	drupal_set_title(t('Hits from ') . check_plain($ip));
+	
 	return $output;
 }
 
@@ -132,7 +135,7 @@ function visitors_hosts()
 			
 			long2ip($data->visitors_ip),
 			$data->count,
-            '<a href="'.long2ip($data->visitors_ip).'">'.t('hits').'</a>'
+            '<a href="hosts/'.long2ip($data->visitors_ip).'">'.t('hits').'</a>'
 
 			);
 	}
@@ -329,12 +332,12 @@ function visitors_hit_details($aid)
     if ($access = db_fetch_object($result)) {
     $rows[] = array(
       array('data' => t('URL'), 'header' => TRUE),
-      l(url($access->visitors_path, array('absolute' => TRUE)), $access->visitors_path)
+      l(urldecode(url($access->visitors_path, array('absolute' => TRUE))), $access->visitors_path)
     );
 
     $rows[] = array(
       array('data' => t('Title'), 'header' => TRUE),
-      $access->visitors_title
+      check_plain($access->visitors_title)
     );
     $rows[] = array(
       array('data' => t('Referrer'), 'header' => TRUE),
