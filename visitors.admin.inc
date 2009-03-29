@@ -394,7 +394,7 @@ function visitors_top_pages()
 	{
 		$rows[] = array(
 			++$i,
-			$data->visitors_title.'<br><a href="'.$data->visitors_url.'" target="_blank">'.$data->visitors_path.'</a>',
+            check_plain($data->visitors_title).'<br>'.l($data->visitors_path, $data->visitors_url),
 			$data->count,
 		);
 	}

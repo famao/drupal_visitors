@@ -1,3 +1,8 @@
+Visitors 6.x-0.8, 2009-03-29
+------------------------
+- Fixed:
+    * recent hits, top pages reports (titles).
+
 Visitors 6.x-0.7, 2009-03-28
 ------------------------
 - Added:

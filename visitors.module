@@ -202,7 +202,8 @@ function visitors_exit()
 	 
 	$results = db_query($sql, $user->uid, $visitors_ip, 
 						$visitors_url, $visitors_referer, $visitors_path, 
-						html_entity_decode(drupal_get_title()), $visitors_user_agent
+						htmlspecialchars_decode(drupal_get_title(), ENT_QUOTES), 
+                        $visitors_user_agent
 						);
 }
 
