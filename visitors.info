@@ -2,7 +2,5 @@
 name = Visitors
 description = "This module used for displaying a visitors info."
 package = "Visitors"
-
-
 core = "6.x"
 

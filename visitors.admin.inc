@@ -1,5 +1,7 @@
 <?php
 
+// $Id$
+
 function visitors_recent_hits()
 {
 	$date_format = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
@@ -27,8 +29,6 @@ function visitors_recent_hits()
 
 	$page = isset($_GET['page']) ? $_GET['page'] : '';
 	$i = 0 + ($page  * $items_per_page);
-
-	
 
 	while ( $data = db_fetch_object($results) ) 
 	{
@@ -71,8 +71,15 @@ function visitors_host_hits($ip)
                     WHERE v.visitors_ip=%d". tablesort_sql($header),
                     ip2long($ip));
 
-	$count_sql = sprintf('SELECT COUNT(*) FROM {visitors} WHERE visitors_ip=%d', ip2long($ip));
-	
+	$count_sql = sprintf('SELECT COUNT(*) count FROM {visitors} WHERE visitors_ip=%d', ip2long($ip));
+    $query = db_query($count_sql);
+    $data = db_fetch_object($query);
+
+    if ($data->count == 0)
+    {
+        return drupal_not_found();
+    }
+
 	$sql_count = db_rewrite_sql($count_sql);
 
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
@@ -328,8 +335,16 @@ function visitors_monthly_history()
  */
 function visitors_hit_details($aid)
 {
-	$result = db_query('SELECT a.*, u.name, u.uid FROM {visitors} a LEFT JOIN {users} u ON a.visitors_uid = u.uid WHERE visitors_id = %d', $aid);
-    if ($access = db_fetch_object($result)) {
+	$result = db_query('SELECT a.*, u.name, u.uid 
+                        FROM {visitors} a 
+                        LEFT JOIN {users} u 
+                        ON a.visitors_uid = u.uid 
+                        WHERE visitors_id = %d', 
+                        $aid
+                    );
+
+  if ($access = db_fetch_object($result)) { 
+
     $rows[] = array(
       array('data' => t('URL'), 'header' => TRUE),
       l(urldecode(url($access->visitors_path, array('absolute' => TRUE))), $access->visitors_path)
@@ -339,23 +354,28 @@ function visitors_hit_details($aid)
       array('data' => t('Title'), 'header' => TRUE),
       check_plain($access->visitors_title)
     );
+
     $rows[] = array(
       array('data' => t('Referrer'), 'header' => TRUE),
       ($access->visitors_referer ? l($access->visitors_referer, $access->visitors_referer) : '')
     );
+
     $rows[] = array(
       array('data' => t('Date'), 'header' => TRUE),
       format_date($access->visitors_date_time, 'large')
     );
+
     $rows[] = array(
       array('data' => t('User'), 'header' => TRUE),
       theme('username', $access)
     );
+
     $rows[] = array(
       array('data' => t('Hostname'), 'header' => TRUE),
       check_plain(long2ip($access->visitors_ip))
     );
-     $rows[] = array(
+
+    $rows[] = array(
       array('data' => t('User Agent'), 'header' => TRUE),
       check_plain($access->visitors_user_agent)
     );
@@ -387,8 +407,6 @@ function visitors_top_pages()
 
 	$page = isset($_GET['page']) ? $_GET['page'] : '';
 	$i = 0 + ($page  * $items_per_page);
-
-	
 
 	while ( $data = db_fetch_object($results) ) 
 	{
