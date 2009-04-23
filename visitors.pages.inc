@@ -37,8 +37,6 @@ function visitors_node() {
       $query = db_query($sql_count);
       $data = db_fetch_object($query);
 
-	    $sql_count = db_rewrite_sql($count_sql);
-
 	    $results = pager_query($sql, $items_per_page, 0, $sql_count);
 
 	    $rows = array();

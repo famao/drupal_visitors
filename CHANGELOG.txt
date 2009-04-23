@@ -1,3 +1,8 @@
+Visitors 6.x-0.11, 2009-04-23
+------------------------
+- Fixed:
+    * bug report #439876: Issue with multilingual sites.
+
 Visitors 6.x-0.9, 2009-04-20
 ------------------------
 - Added:
@@ -11,11 +16,11 @@ Visitors 6.x-0.8, 2009-03-29
 Visitors 6.x-0.7, 2009-03-28
 ------------------------
 - Added:
-	* feature request #416482 Visitors settings block.
+	* feature request #416482: Visitors settings block.
 	* hits per host report.
 
 - Fixed:
-	* url decode for visitors_path, visitors_title, visitors_url.
+    * url decode for visitors_path, visitors_title, visitors_url.
 
 Visitors 6.x-0.6, 2009-03-27
 ------------------------

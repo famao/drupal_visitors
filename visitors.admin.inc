@@ -21,7 +21,7 @@ function visitors_recent_hits()
 					LEFT JOIN {users} u 
 					ON u.uid = v.visitors_uid". tablesort_sql($header);
 					
-	$sql_count = db_rewrite_sql('SELECT COUNT(*) FROM {visitors}');
+	$sql_count = 'SELECT COUNT(*) FROM {visitors}';
 
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
 
@@ -80,9 +80,7 @@ function visitors_host_hits($ip)
         return drupal_not_found();
     }
 
-	$sql_count = db_rewrite_sql($count_sql);
-
-	$results = pager_query($sql, $items_per_page, 0, $sql_count);
+	$results = pager_query($sql, $items_per_page, 0, $count_sql);
 
 	$rows = array();
 
@@ -126,7 +124,7 @@ function visitors_hosts()
 					FROM {visitors}
 					GROUP BY visitors_ip". tablesort_sql($header);
 	
-	$sql_count = db_rewrite_sql("SELECT count( DISTINCT visitors_ip ) FROM {visitors}");
+	$sql_count = "SELECT count( DISTINCT visitors_ip ) FROM {visitors}";
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
 
 	$rows = array();
@@ -169,7 +167,7 @@ function visitors_hours()
 					from {visitors} 
 					group by hour". tablesort_sql($header);
 	
-	$sql_count = db_rewrite_sql("SELECT count( DISTINCT date_format(from_unixtime(visitors_date_time), '%H') ) FROM {visitors}");
+	$sql_count = "SELECT count( DISTINCT date_format(from_unixtime(visitors_date_time), '%H') ) FROM {visitors}";
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
 
 	$rows = array();
@@ -197,26 +195,19 @@ function visitors_hours()
 
 function visitors_days_of_week()
 {
-	$items_per_page = variable_get('default_nodes_main', 10);
-	
 	$header = array(t('#'), t('Day'),t('Pages'));
 	
-	$sql       = "select count(*) count, 
-						date_format(from_unixtime(visitors_date_time), '%a') day,
-						date_format(from_unixtime(visitors_date_time), '%w') num
-					from {visitors} 
-					group by day order by date_format(from_unixtime(visitors_date_time), '%w')";
+	$sql = "select count(*) count, 
+					date_format(from_unixtime(visitors_date_time), '%a') day,
+					date_format(from_unixtime(visitors_date_time), '%w') num
+				  from {visitors} 
+				  group by day 
+				  order by date_format(from_unixtime(visitors_date_time), '%w')";
 	
-	$sql_count = db_rewrite_sql("SELECT count( DISTINCT date_format(from_unixtime(visitors_date_time), '%a') ) FROM {visitors}");
-	$results = pager_query($sql, $items_per_page, 0, $sql_count);
-
+	$result = db_query($sql);
 	$tmp_rows = array();
 
-	$page = isset($_GET['page']) ? $_GET['page'] : '';
-	$i = 0 + ($page  * $items_per_page);
-
-	
-	while ( $data = db_fetch_object($results) ) 
+	while ( $data = db_fetch_object($result) ) 
 	{
 		$tmp_rows[$data->num] = array(
 			$data->day,
@@ -224,7 +215,7 @@ function visitors_days_of_week()
 			$data->num
 			);
 	}
-	
+
 	$rows = array(
 				array(1, 'Sun', 0),
 				array(2, 'Mon', 0),
@@ -263,7 +254,7 @@ function visitors_days_of_month()
 					from {visitors} 
 					group by hour". tablesort_sql($header);
 	
-	$sql_count = db_rewrite_sql("SELECT count( DISTINCT date_format(from_unixtime(visitors_date_time), '%e') ) FROM {visitors}");
+	$sql_count = "SELECT count( DISTINCT date_format(from_unixtime(visitors_date_time), '%e') ) FROM {visitors}";
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
 
 	$rows = array();
@@ -304,7 +295,7 @@ function visitors_monthly_history()
 					from {visitors} 
 					group by hour". tablesort_sql($header);
 	
-	$sql_count = db_rewrite_sql("SELECT count( DISTINCT date_format(from_unixtime(visitors_date_time), '%Y %M') ) FROM {visitors}");
+	$sql_count = "SELECT count( DISTINCT date_format(from_unixtime(visitors_date_time), '%Y %M') ) FROM {visitors}";
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
 
 	$rows = array();
@@ -399,7 +390,7 @@ function visitors_top_pages()
 					);
 					
 	$sql       = "SELECT *, count(*) count FROM {visitors} group by visitors_path". tablesort_sql($header);
-	$sql_count = db_rewrite_sql('SELECT COUNT(DISTINCT visitors_path) FROM {visitors}');
+	$sql_count = 'SELECT COUNT(DISTINCT visitors_path) FROM {visitors}';
 
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
 
