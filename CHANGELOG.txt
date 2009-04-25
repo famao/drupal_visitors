@@ -1,3 +1,8 @@
+Visitors 6.x-0.12, 2009-04-25
+------------------------
+- Changed:
+    * feature request #439254: Exclude administer users from statistics.
+    
 Visitors 6.x-0.11, 2009-04-23
 ------------------------
 - Fixed:
@@ -16,8 +21,8 @@ Visitors 6.x-0.8, 2009-03-29
 Visitors 6.x-0.7, 2009-03-28
 ------------------------
 - Added:
-	* feature request #416482: Visitors settings block.
-	* hits per host report.
+    * feature request #416482: Visitors settings block.
+    * hits per host report.
 
 - Fixed:
     * url decode for visitors_path, visitors_title, visitors_url.
@@ -35,32 +40,32 @@ Visitors 6.x-0.5, 2009-03-25
 Visitors 6.x-0.4, 2009-03-22
 ------------------------
 - Added:
-	* visitors.visitors_user_agent field.
+    * visitors.visitors_user_agent field.
 - Changed:
-	* Details report.
+    * Details report.
 - Fixed:
-	* visitors_get_ip function.
-	* visitors block "Your IP" value.
+    * visitors_get_ip function.
+    * visitors block "Your IP" value.
 
 Visitors 6.x-0.3, 2009-03-17
 ------------------------
 - Added:
-	* Visitors ip checking.
+    * Visitors ip checking.
 
 Visitors 6.x-0.2, 2009-03-14
 ------------------------
 - Added:
-	* Visitors block.
-	* Visitors admin menu block page.
+    * Visitors block.
+    * Visitors admin menu block page.
 - Added reports:
-	* Days of month.
-	* Days of week.
-	* Hosts.
-	* Hours.
-	* Monthly history.
-	* Recent hits.
-	* Hit details.
-	* Top pages.
+    * Days of month.
+    * Days of week.
+    * Hosts.
+    * Hours.
+    * Monthly history.
+    * Recent hits.
+    * Hit details.
+    * Top pages.
 
 Visitors 6.x-0.1, 2009-03-07
 ------------------------

@@ -1,7 +1,6 @@
 <?php
 
-// $id:$//
-
+// $Id$
 /**
  * @file
  * Settings page callback file for the visitors module.
@@ -72,6 +71,22 @@ function visitors_admin_settings() {
     '#title' => t('Show Since Date'),
     '#default_value' => variable_get('visitors_since_date', 1),
     '#description' => t('Show Since Date')
+  );
+  
+  // Statistics settings.
+  $form['visitors_statistics'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Visitors statistics'),
+    '#collapsible' => TRUE, 
+    '#collapsed' => FALSE,
+    '#description' => t('Visitors statistics settings')
+  );
+    
+  $form['visitors_statistics']['visitors_exclude_administer_users'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Exclude administer users from statistics'),
+    '#default_value' => variable_get('visitors_exclude_administer_users', 0),
+    '#description' => t('Exclude hits of administer users from statistics')
   );
   
    return system_settings_form($form);

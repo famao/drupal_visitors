@@ -1,6 +1,7 @@
 <?php
 
 // $Id$
+
 /**
  * Install the module with a new database table
  * @file
@@ -14,13 +15,15 @@ function visitors_install() {
 function visitors_uninstall() {
   drupal_uninstall_schema('visitors');
   
-  variable_del('visitors_show_total_visitors');
-  variable_del('visitors_show_unique_visitor');
-  variable_del('visitors_registered_user');
+  variable_del('visitors_exclude_administer_users'); 
   variable_del('visitors_last_registered_user');
   variable_del('visitors_published_nodes');
-  variable_del('visitors_user_ip');
+  variable_del('visitors_registered_user');
+  variable_del('visitors_show_total_visitors');
+  variable_del('visitors_show_unique_visitor'); 
   variable_del('visitors_since_date');
+  variable_del('visitors_user_ip');
+ 
 }
 
 /**
@@ -63,7 +66,7 @@ function visitors_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
-	'visitors_path' => array(
+      'visitors_path' => array(
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,

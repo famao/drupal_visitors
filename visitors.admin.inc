@@ -40,7 +40,7 @@ function visitors_recent_hits()
 			date($date_format, $data->visitors_date_time),
 			check_plain($data->visitors_title).'<br>'.l($data->visitors_path, $data->visitors_url),
 			$user_page,
-			'<a href="hits/'.$data->visitors_id.'">'.t('details').'</a>'
+			l(t('details'), 'admin/visitors/hits/'.$data->visitors_id)
 		);
 	}
 
@@ -72,13 +72,13 @@ function visitors_host_hits($ip)
                     ip2long($ip));
 
 	$count_sql = sprintf('SELECT COUNT(*) count FROM {visitors} WHERE visitors_ip=%d', ip2long($ip));
-    $query = db_query($count_sql);
-    $data = db_fetch_object($query);
+  $query = db_query($count_sql);
+  $data = db_fetch_object($query);
 
-    if ($data->count == 0)
-    {
-        return drupal_not_found();
-    }
+  if ($data->count == 0)
+  {
+    return drupal_not_found();
+  }
 
 	$results = pager_query($sql, $items_per_page, 0, $count_sql);
 
@@ -97,7 +97,7 @@ function visitors_host_hits($ip)
 			date($date_format, $data->visitors_date_time),
 			check_plain($data->visitors_title).'<br>'.l($data->visitors_path, $data->visitors_url),
 			$user_page,
-			'<a href="../hits/'.$data->visitors_id.'">'.t('details').'</a>'
+			l(t('details'), 'admin/visitors/hits/'.$data->visitors_id)
 		);
 	}
 
@@ -137,12 +137,10 @@ function visitors_hosts()
 	{
 		$rows[] = array(
 			++$i,
-			
 			long2ip($data->visitors_ip),
 			$data->count,
-            '<a href="hosts/'.long2ip($data->visitors_ip).'">'.t('hits').'</a>'
-
-			);
+      l(t('hits'), 'admin/visitors/hosts/'.long2ip($data->visitors_ip))
+		);
 	}
 	
 	$output  = "";
