@@ -11,33 +11,23 @@ function visitors_node() {
 	    $items_per_page = variable_get('default_nodes_main', 10);
 	
 	    $header = array(
-					    array('data' => t('#')),
-					    array('data' => t('ID'), 'field' => 'visitors_id', 'sort' => 'desc'), 
-					    array('data' => t('Date'), 'field' => 'visitors_date_time'), 
-					    array('data' => t('Referrer'), 'field' => 'visitors_referer'), 
-					    array('data' => t('User'), 'field' => 'u.name'), 
-					    array('data' => t('Operations'))
+				          array('data' => t('#')),
+				          array('data' => t('ID'), 'field' => 'visitors_id', 'sort' => 'desc'), 
+				          array('data' => t('Date'), 'field' => 'visitors_date_time'), 
+				          array('data' => t('Referrer'), 'field' => 'visitors_referer'), 
+				          array('data' => t('User'), 'field' => 'u.name'), 
+				          array('data' => t('Operations'))
 					    );
 
 	    $sql = sprintf("SELECT v.*, u.name, u.uid 
-                        FROM {visitors} v 
-                        LEFT JOIN {users} u 
-                        ON u.uid = v.visitors_uid 
-                        WHERE v.visitors_path LIKE 'node/%d%%'". 
-                        tablesort_sql($header),
-                        $node->nid);
+                      FROM {visitors} v 
+                      LEFT JOIN {users} u 
+                      ON u.uid = v.visitors_uid 
+                      WHERE v.visitors_path LIKE 'node/%d%%'". 
+                      tablesort_sql($header),
+                      $node->nid);
 
-	    $sql_count = sprintf("SELECT v.*, u.name, u.uid 
-                                FROM {visitors} v 
-                                LEFT JOIN {users} u 
-                                ON u.uid = v.visitors_uid 
-                                WHERE v.visitors_path LIKE 'node/%d%%'", 
-                                $node->nid);
-                                
-      $query = db_query($sql_count);
-      $data = db_fetch_object($query);
-
-	    $results = pager_query($sql, $items_per_page, 0, $sql_count);
+	    $results = pager_query($sql, $items_per_page, 0, NULL);
 
 	    $rows = array();
 
@@ -54,14 +44,14 @@ function visitors_node() {
 			    date($date_format, $data->visitors_date_time),
 			    l($data->visitors_referer, $data->visitors_referer),
 			    $user_page,
-                l(t('details'), 'admin/visitors/hits/'.$data->visitors_id)
+          l(t('details'), 'admin/visitors/hits/'.$data->visitors_id)
 		    );
 	    }
 
 	    $output  = "";
 	    $output .= theme('table', $header, $rows);
 	    $output .= theme('pager', NULL, $items_per_page, 0);
-	    drupal_set_title($node->title);
+	    drupal_set_title(check_plain($node->title));
         
 	    return $output;
 	}

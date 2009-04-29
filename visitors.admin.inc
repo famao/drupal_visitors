@@ -52,6 +52,11 @@ function visitors_recent_hits()
 }
 function visitors_host_hits($ip)
 {
+  if (!visitors_is_ip_valid($ip))
+  {
+    return drupal_not_found();
+  }
+  
 	$date_format = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
 	$items_per_page = variable_get('default_nodes_main', 10);
 	
@@ -65,11 +70,11 @@ function visitors_host_hits($ip)
 					);
 				
 	$sql = sprintf("SELECT v.*, u.name, u.uid 
-                    FROM {visitors} v 
-                    LEFT JOIN {users} u 
-                    ON u.uid = v.visitors_uid 
-                    WHERE v.visitors_ip=%d". tablesort_sql($header),
-                    ip2long($ip));
+                  FROM {visitors} v 
+                  LEFT JOIN {users} u 
+                  ON u.uid = v.visitors_uid 
+                  WHERE v.visitors_ip=%d". tablesort_sql($header),
+                  ip2long($ip));
 
 	$count_sql = sprintf('SELECT COUNT(*) count FROM {visitors} WHERE visitors_ip=%d', ip2long($ip));
   $query = db_query($count_sql);
@@ -160,12 +165,14 @@ function visitors_hours()
 					array('data' => t('Pages'), 'field' => 'count'), 
 					);
 	
-	$sql       = "select count(*) count, 
-						date_format(from_unixtime(visitors_date_time), '%H') hour 
-					from {visitors} 
-					group by hour". tablesort_sql($header);
+  $sql = "select count(*) count, 
+          date_format(from_unixtime(visitors_date_time), '%H') hour 
+          from {visitors} 
+          group by hour". tablesort_sql($header);
 	
-	$sql_count = "SELECT count( DISTINCT date_format(from_unixtime(visitors_date_time), '%H') ) FROM {visitors}";
+	$sql_count = "SELECT count( 
+	              DISTINCT date_format(from_unixtime(visitors_date_time), '%H')) 
+	              FROM {visitors}";
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
 
 	$rows = array();
@@ -215,13 +222,13 @@ function visitors_days_of_week()
 	}
 
 	$rows = array(
-				array(1, 'Sun', 0),
-				array(2, 'Mon', 0),
-				array(3, 'Tue', 0),
-				array(4, 'Wed', 0),
-				array(5, 'Thu', 0),
-				array(6, 'Fri', 0),
-				array(7, 'Sat', 0),
+				array(1, t('Sun'), 0),
+				array(2, t('Mon'), 0),
+				array(3, t('Tue'), 0),
+				array(4, t('Wed'), 0),
+				array(5, t('Thu'), 0),
+				array(6, t('Fri'), 0),
+				array(7, t('Sat'), 0),
 				
 					);
 	
@@ -387,7 +394,9 @@ function visitors_top_pages()
 					array('data' => t('count'), 'field' => 'count', 'sort' => 'desc'), 
 					);
 					
-	$sql       = "SELECT *, count(*) count FROM {visitors} group by visitors_path". tablesort_sql($header);
+	$sql       = "SELECT *, count(*) count 
+	              FROM {visitors} 
+	              group by visitors_path". tablesort_sql($header);
 	$sql_count = 'SELECT COUNT(DISTINCT visitors_path) FROM {visitors}';
 
 	$results = pager_query($sql, $items_per_page, 0, $sql_count);
@@ -397,11 +406,11 @@ function visitors_top_pages()
 	$page = isset($_GET['page']) ? $_GET['page'] : '';
 	$i = 0 + ($page  * $items_per_page);
 
-	while ( $data = db_fetch_object($results) ) 
-	{
+	while ($data = db_fetch_object($results)) {
 		$rows[] = array(
 			++$i,
-            check_plain($data->visitors_title).'<br>'.l($data->visitors_path, $data->visitors_url),
+      check_plain($data->visitors_title).'<br>'.
+      l($data->visitors_path, $data->visitors_url),
 			$data->count,
 		);
 	}

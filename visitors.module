@@ -182,8 +182,6 @@ function visitors_exit() {
   if (!(variable_get('visitors_exclude_administer_users', 0) &&
       user_access('administer')))
   {
-    drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-    
 	  global $user;
 	
 	  $visitors_ip          = ip2long(visitors_get_ip());

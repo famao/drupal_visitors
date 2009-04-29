@@ -1,3 +1,9 @@
+Visitors 6.x-0.13, 2009-04-29
+------------------------
+- Fixed:
+    * bug report #446440: Remove call to drupal_bootstrap() from visitors_exit().
+    * bug report #448044: Incorrect pages count to node visitors report.
+    
 Visitors 6.x-0.12, 2009-04-25
 ------------------------
 - Changed:
