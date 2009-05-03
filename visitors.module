@@ -77,6 +77,15 @@ function visitors_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   
+  $items['admin/visitors/monthly_history/graph'] = array(
+    'title' => 'Monthly history',
+    'description' => 'View pages count per month.',
+    'page callback' => 'graph_visitors_monthly_history',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+  
   $items['admin/visitors/days_of_month'] = array(
     'title' => 'Days of month',
     'description' => 'View pages count per day of month.',
@@ -84,6 +93,15 @@ function visitors_menu() {
     'access arguments' => array('access visitors'),
     'file' => 'visitors.admin.inc',
     'type' => MENU_NORMAL_ITEM,
+  );
+  
+  $items['admin/visitors/days_of_month/graph'] = array(
+    'title' => 'Days of month',
+    'description' => 'View pages count per day of month.',
+    'page callback' => 'graph_visitors_days_of_month',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
   );
   
   $items['admin/visitors/days_of_week'] = array(
@@ -94,6 +112,15 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
   );
   
+   $items['admin/visitors/days_of_week/graph'] = array(
+    'title' => 'Days of week',
+    'description' => 'View pages count per day of week.',
+    'page callback' => 'graph_visitors_days_of_week',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+  
   $items['admin/visitors/hours'] = array(
     'title' => 'Hours',
     'description' => 'View pages count per hour.',
@@ -101,6 +128,15 @@ function visitors_menu() {
     'access arguments' => array('access visitors'),
     'file' => 'visitors.admin.inc',
     'type' => MENU_NORMAL_ITEM,
+  );
+  
+  $items['admin/visitors/hours/graph'] = array(
+    'title' => 'Hours',
+    'description' => 'View pages count per hour.',
+    'page callback' => 'graph_visitors_hours',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
   );
   
   $items['admin/visitors/hosts'] = array(

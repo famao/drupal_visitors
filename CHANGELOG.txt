@@ -1,3 +1,13 @@
+Visitors 6.x-0.14, 2009-05-03
+------------------------
+- Fixed:
+    * bug report #450568: Monthly history. incorrect month sorting.
+- Added graphs:
+    * Days of month.
+    * Days of week.
+    * Hours.
+    * Monthly history.
+
 Visitors 6.x-0.13, 2009-04-29
 ------------------------
 - Fixed:
@@ -29,7 +39,6 @@ Visitors 6.x-0.7, 2009-03-28
 - Added:
     * feature request #416482: Visitors settings block.
     * hits per host report.
-
 - Fixed:
     * url decode for visitors_path, visitors_title, visitors_url.
 
