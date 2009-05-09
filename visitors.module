@@ -8,10 +8,12 @@
 function visitors_help($section) {
   switch ($section) {
     case 'admin/help#visitors':
-      $output = "The visitors module used for displaying site visitors.";
-	return $output;
+      return "The visitors module used for displaying site visitors.";
+
     case 'admin/modules#description':
       return 'The visitors module used for displaying visitors';
+
+    # TODO: Add default.
   }
 }
 
@@ -48,7 +50,7 @@ function visitors_menu() {
     'file' => 'system.admin.inc',
     'file path' => drupal_get_path('module', 'system'),
   );
-  
+
    $items['admin/visitors/hits'] = array(
     'title' => 'Recent hits',
     'description' => 'View pages that have recently been visited.',
@@ -57,8 +59,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );
-  
-  
+
   $items['admin/visitors/pages'] = array(
     'title' => 'Top pages',
     'description' => 'View pages that have been hit frequently.',
@@ -67,7 +68,7 @@ function visitors_menu() {
     'weight' => 1,
     'file' => 'visitors.admin.inc',
   );
-  
+
   $items['admin/visitors/monthly_history'] = array(
     'title' => 'Monthly history',
     'description' => 'View pages count per month.',
@@ -76,7 +77,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );
-  
+
   $items['admin/visitors/monthly_history/graph'] = array(
     'title' => 'Monthly history',
     'description' => 'View pages count per month.',
@@ -85,7 +86,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
     'type' => MENU_CALLBACK,
   );
-  
+
   $items['admin/visitors/days_of_month'] = array(
     'title' => 'Days of month',
     'description' => 'View pages count per day of month.',
@@ -94,7 +95,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );
-  
+
   $items['admin/visitors/days_of_month/graph'] = array(
     'title' => 'Days of month',
     'description' => 'View pages count per day of month.',
@@ -103,7 +104,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
     'type' => MENU_CALLBACK,
   );
-  
+
   $items['admin/visitors/days_of_week'] = array(
     'title' => 'Days of week',
     'description' => 'View pages count per day of week.',
@@ -111,7 +112,7 @@ function visitors_menu() {
     'access arguments' => array('access visitors'),
     'file' => 'visitors.admin.inc',
   );
-  
+
    $items['admin/visitors/days_of_week/graph'] = array(
     'title' => 'Days of week',
     'description' => 'View pages count per day of week.',
@@ -120,7 +121,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
     'type' => MENU_CALLBACK,
   );
-  
+
   $items['admin/visitors/hours'] = array(
     'title' => 'Hours',
     'description' => 'View pages count per hour.',
@@ -129,7 +130,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );
-  
+
   $items['admin/visitors/hours/graph'] = array(
     'title' => 'Hours',
     'description' => 'View pages count per hour.',
@@ -138,7 +139,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
     'type' => MENU_CALLBACK,
   );
-  
+
   $items['admin/visitors/hosts'] = array(
     'title' => 'Hosts',
     'description' => 'View pages count per host.',
@@ -147,7 +148,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );
-  
+
   $items['admin/visitors/hosts/%'] = array(
     'title' => 'Hits',
     'description' => 'View host access log.',
@@ -167,7 +168,7 @@ function visitors_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'visitors.admin.inc',
   );
-  
+
   $items['node/%node/visitors'] = array(
     'title' => 'Visitors',
     'page callback' => 'visitors_node',
@@ -177,31 +178,44 @@ function visitors_menu() {
     'weight' => 2,
     'file' => 'visitors.pages.inc',
   );
-  
+
   return $items;
 }
 
-
+/**
+ * Verify the syntax of the given ip address.
+ *
+ * @param ip
+ *   A string containing an ip address.
+ * @return
+ *   TRUE if the ip is in a valid format, FALSE on failure.
+ */
 function visitors_is_ip_valid($ip) {
-	$result = preg_match('/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/',
-	                      $ip,
-		                    $matches
-		                  );
+  $result = preg_match('/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/',
+                        $ip,
+                        $matches
+                      );
 
-	return ($result &&
+  return ($result &&
           isset($matches[0]) &&
           ($matches[0] === $ip) &&
           ($matches[1] >= 1) && ($matches[1] <= 255) &&
           ($matches[2] >= 0) && ($matches[2] <= 255) &&
           ($matches[3] >= 0) && ($matches[3] <= 255) &&
           ($matches[4] >= 0) && ($matches[4] <= 255)
-		    );
+          );
 }
 
+/**
+ * Get visitors ip address.
+ *
+ * @return
+ *   A string containing an ip address ('0.0.0.0' on failure.
+ */
 function visitors_get_ip() {
   if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $ip_array = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-    $ip = trim(array_pop($ip_array));
+    $ip       = trim(array_pop($ip_array));
   }
   else {
     $ip = $_SERVER['REMOTE_ADDR'];
@@ -216,42 +230,41 @@ function visitors_get_ip() {
  */
 function visitors_exit() {
   if (!(variable_get('visitors_exclude_administer_users', 0) &&
-      user_access('administer')))
-  {
-	  global $user;
-	
-	  $visitors_ip          = ip2long(visitors_get_ip());
-	  $visitors_url         = urldecode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-	  $visitors_path        = $_GET['q'];
-	  $visitors_referer     = isset($_SERVER['HTTP_REFERER']) ? urldecode($_SERVER['HTTP_REFERER']) : '';
-	  $visitors_user_agent  = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-	
-    $sql = "INSERT INTO {visitors}  
-                  (visitors_uid, 
-                  visitors_ip, 
-                  visitors_date_time, 
-                  visitors_url, 
-                  visitors_referer, 
-                  visitors_path, 
+      user_access('administer'))) {
+    global $user;
+
+    $visitors_ip          = ip2long(visitors_get_ip());
+    $visitors_url         = urldecode('http://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    $visitors_path        = $_GET['q'];
+    $visitors_referer     = isset($_SERVER['HTTP_REFERER']) ? urldecode($_SERVER['HTTP_REFERER']) : '';
+    $visitors_user_agent  = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+
+    $sql = "INSERT INTO {visitors}
+                  (visitors_uid,
+                  visitors_ip,
+                  visitors_date_time,
+                  visitors_url,
+                  visitors_referer,
+                  visitors_path,
                   visitors_title,
                   visitors_user_agent
-                  ) 
+                  )
             VALUES
-                  ('%s', 
-                  '%s', 
-                  UNIX_TIMESTAMP(NOW()), 
-                  '%s', 
-                  '%s', 
-                  '%s', 
+                  ('%s',
+                  '%s',
+                  UNIX_TIMESTAMP(NOW()),
+                  '%s',
+                  '%s',
+                  '%s',
                   '%s',
                   '%s'
                   )";
-	   
-	  $results = db_query($sql, $user->uid, $visitors_ip, 
-						            $visitors_url, $visitors_referer, $visitors_path, 
-						            htmlspecialchars_decode(drupal_get_title(), ENT_QUOTES), 
+
+    $results = db_query($sql, $user->uid, $visitors_ip,
+                        $visitors_url, $visitors_referer, $visitors_path,
+                        htmlspecialchars_decode(drupal_get_title(), ENT_QUOTES),
                         $visitors_user_agent
-						          );
+                      );
   }
 }
 
@@ -260,94 +273,95 @@ function visitors_exit() {
  *
  */
 function visitors_block($op = 'list', $delta = 0, $edit = array()) {
-	if ($op == 'list') {
-		$blocks[0]['info'] = t('Current visitor');
-		return $blocks;
-	}
-	
-	if ($op == 'view') {
-		$output  = '<ul>';
-		
-		if (variable_get('visitors_show_total_visitors', 1)) {
-			$sql = 'SELECT count(*) as total FROM {visitors} v';
-			$results = db_query($sql);
-			$data = db_fetch_object($results);
-			$total = $data->total;
-			$output .= '<li>'.t('Total Visitors: ').$total.'</li>';
-		}
-		
-		if (variable_get('visitors_show_unique_visitor', 1)) {
-			$sql = 'SELECT count(*) as total 
-					FROM 
-					(
-						SELECT visitors_ip 
-						FROM {visitors} 
-						GROUP BY visitors_ip
-					) v';
+  if ($op == 'list') {
+    $blocks[0]['info'] = t('Current visitor');
+    return $blocks;
+  }
 
-			$results = db_query($sql);
-			$data = db_fetch_object($results);
-			$uniq = $data->total;  
-			$output .= '<li>'.t('Unique Visitor: ').$uniq.'</li>';
-		}
-				
-		if (variable_get('visitors_registered_user', 1)) {
-			$sql = 'SELECT count(*) as total 
-			 		FROM {users} 
-			 		WHERE status=1 and uid<>0';
+  if ($op == 'view') {
+    $output  = '<ul>';
 
-			$results = db_query($sql);
-			$data    = db_fetch_object($results);
-			$total   = $data->total;
-			$output .= '<li>'.t('Registered Users: '). ($total).'</li>';
-		}
-		
-		if (variable_get('visitors_last_registered_user', 1)) {
-			$sql  = 'SELECT *
-		             FROM {users}
-		             ORDER BY uid DESC
-		             LIMIT 1';
-		    
+    if (variable_get('visitors_show_total_visitors', 1)) {
+      $sql = 'SELECT count(*) as total FROM {visitors} v';
       $results = db_query($sql);
-			$data    = db_fetch_object($results);
-			$output .= '<li>'.t('Last Registered User: '). theme('username', $data).'</li>';
-		}
-		
-		if (variable_get('visitors_published_nodes', 1)) {
-			$sql = 'SELECT count(*) as total FROM {node} WHERE status=1';
+      $data = db_fetch_object($results);
+      $total = $data->total;
+      $output .= '<li>' . t('Total Visitors: ') . $total . '</li>';
+    }
 
-			$results = db_query($sql);
-			$data    = db_fetch_object($results);
-			$total   = $data->total;
-			$output .= '<li>'.t('Published Nodes: '). ($total).'</li>';
-		}
-		
-		if (variable_get('visitors_user_ip', 1)) {
-			$output .= '<li>'.t('Your IP: ').visitors_get_ip().'</li>';
-		}
-		
-		if (variable_get('visitors_since_date', 1)) {
-			$sql = 'SELECT visitors_date_time 
-					FROM {visitors} 
-					ORDER BY visitors_date_time ASC LIMIT 1';
-				
-			$results = db_query($sql);
-			$data = db_fetch_object($results);
-			$since = $data->visitors_date_time;
-			$date_format = variable_get('date_format_short', 'Y-m-d');
-			$output .= '<li>'.t('Since: '). date($date_format, $since).'</li>';		
-		}
-		
-		$output  .= '</ul>';    
-            
+    if (variable_get('visitors_show_unique_visitor', 1)) {
+      $sql = 'SELECT count(*) as total
+              FROM (
+                SELECT visitors_ip
+                FROM {visitors}
+                GROUP BY visitors_ip
+              ) v';
+
+      $results = db_query($sql);
+      $data = db_fetch_object($results);
+      $uniq = $data->total;
+      $output .= '<li>'.t('Unique Visitor: ').$uniq.'</li>';
+    }
+
+    if (variable_get('visitors_registered_user', 1)) {
+      $sql = 'SELECT count(*) as total
+              FROM {users}
+              WHERE status=1 AND uid<>0';
+
+      $results = db_query($sql);
+      $data    = db_fetch_object($results);
+      $total   = $data->total;
+      $output .= '<li>' . t('Registered Users: ') . $total . '</li>';
+    }
+
+    if (variable_get('visitors_last_registered_user', 1)) {
+      $sql  = 'SELECT *
+               FROM {users}
+               ORDER BY uid DESC
+               LIMIT 1';
+
+      $results = db_query($sql);
+      $data    = db_fetch_object($results);
+      $output .= '<li>' . t('Last Registered User: ') .
+                 theme('username', $data) . '</li>';
+    }
+
+    if (variable_get('visitors_published_nodes', 1)) {
+      $sql = 'SELECT count(*) as total FROM {node} WHERE status=1';
+
+      $results = db_query($sql);
+      $data    = db_fetch_object($results);
+      $total   = $data->total;
+      $output .= '<li>' . t('Published Nodes: ') . $total . '</li>';
+    }
+
+    if (variable_get('visitors_user_ip', 1)) {
+      $output .= '<li>' . t('Your IP: ') . visitors_get_ip() . '</li>';
+    }
+
+    if (variable_get('visitors_since_date', 1)) {
+      $sql = 'SELECT visitors_date_time
+              FROM {visitors}
+              ORDER BY visitors_date_time ASC
+              LIMIT 1';
+
+      $results = db_query($sql);
+      $data = db_fetch_object($results);
+      $since = $data->visitors_date_time;
+      $date_format = variable_get('date_format_short', 'Y-m-d');
+      $output .= '<li>' . t('Since: ') . date($date_format, $since) . '</li>';
+    }
+
+    $output  .= '</ul>';
+
     $block['content'] = $output;
-        
+
     return $block;
-	}
-	
-	if ($counter_show_administer_only && !user_access('administer visitors')) {
-		return;
-	} else {
-	  return $block;	
-	}
+  }
+
+  if ($counter_show_administer_only && !user_access('administer visitors')) {
+    return;
+  } else {
+    return $block;
+  }
 }

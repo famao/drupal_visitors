@@ -3,27 +3,27 @@
 // $Id$
 
 /**
- * Install the module with a new database table
- * @file
+ * Install the module with a new database table.
  */
-
 function visitors_install() {
   drupal_set_message('Installing visitors module');
   drupal_install_schema('visitors');
 }
 
+/**
+ * Uninstall the module with database table and module settings.
+ */
 function visitors_uninstall() {
   drupal_uninstall_schema('visitors');
-  
-  variable_del('visitors_exclude_administer_users'); 
+
+  variable_del('visitors_exclude_administer_users');
   variable_del('visitors_last_registered_user');
   variable_del('visitors_published_nodes');
   variable_del('visitors_registered_user');
   variable_del('visitors_show_total_visitors');
-  variable_del('visitors_show_unique_visitor'); 
+  variable_del('visitors_show_unique_visitor');
   variable_del('visitors_since_date');
   variable_del('visitors_user_ip');
- 
 }
 
 /**
@@ -84,9 +84,9 @@ function visitors_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
-      
     ),
     'primary key' => array('visitors_id'),
   );
+
   return $schema;
 }

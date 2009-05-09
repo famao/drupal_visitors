@@ -1,7 +1,12 @@
+Visitors 6.x-0.15, 2009-05-09
+------------------------
+- Fixed:
+    * bug report #453428: Incorrect graph generated on days of week sort.
+
 Visitors 6.x-0.14, 2009-05-03
 ------------------------
 - Fixed:
-    * bug report #450568: Monthly history. incorrect month sorting.
+    * bug report #450568: Monthly history. Incorrect month sorting.
 - Added graphs:
     * Days of month.
     * Days of week.
