@@ -94,6 +94,18 @@ function visitors_admin_settings() {
     '#options' => array(5 => 5, 10 => 10, 25 => 25, 50 => 50, 100 => 100),
     '#description' => t('The default maximum number of lines to display per page.'),
   );
+  
+  $period = drupal_map_assoc(array(3600, 10800, 21600, 32400, 43200, 86400, 172800, 259200, 604800, 1209600, 2419200, 4838400, 9676800, 31536000), 'format_interval');
+  $period[0] = t('Never');
+
+  $form['visitors_statistics']['visitors_flush_log_timer'] = array(
+    '#type' => 'select',
+    '#title' => t('Discard visitors logs older than'),
+    '#default_value'   => variable_get('visitors_flush_log_timer', 0),
+    '#options' => $period,
+    '#description' => t('Older visitors log entries (including referrer statistics) will be automatically discarded. (Requires a correctly configured <a href="@cron">cron maintenance task</a>.)', 
+    array('@cron' => url('admin/reports/status')))
+  );
 
   return system_settings_form($form);
 }

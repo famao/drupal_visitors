@@ -365,3 +365,15 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
     return $block;
   }
 }
+
+/**
+ * Implementation of hook_cron().
+ */
+function visitors_cron() {
+  $visitors_flush_log_timer = variable_get('visitors_flush_log_timer', 0);
+
+  if ($visitors_flush_log_timer > 0) {
+    // Clean up expired access logs.
+    db_query('DELETE FROM {visitors} WHERE visitors_date_time < %d', time() - $visitors_flush_log_timer);
+  }
+}
