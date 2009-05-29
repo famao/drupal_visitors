@@ -1,12 +1,19 @@
+Visitors 6.x-0.16, 2009-05-29
+------------------------
+- Fixed:
+    * bug reports #474704: Only getting 1 row per page.
+    * feature requests #466722: Visitors block, registered users only show active users count.
+    * support requests #462306: Resource Utilization.
+
 Visitors 6.x-0.15, 2009-05-09
 ------------------------
 - Fixed:
-    * bug report #453428: Incorrect graph generated on days of week sort.
+    * bug reports #453428: Incorrect graph generated on days of week sort.
 
 Visitors 6.x-0.14, 2009-05-03
 ------------------------
 - Fixed:
-    * bug report #450568: Monthly history. Incorrect month sorting.
+    * bug reports #450568: Monthly history. Incorrect month sorting.
 - Added graphs:
     * Days of month.
     * Days of week.
@@ -16,18 +23,18 @@ Visitors 6.x-0.14, 2009-05-03
 Visitors 6.x-0.13, 2009-04-29
 ------------------------
 - Fixed:
-    * bug report #446440: Remove call to drupal_bootstrap() from visitors_exit().
-    * bug report #448044: Incorrect pages count to node visitors report.
-    
+    * bug reports #448044: Incorrect pages count to node visitors report.
+    * bug reports #446440: Remove call to drupal_bootstrap() from visitors_exit().
+
 Visitors 6.x-0.12, 2009-04-25
 ------------------------
 - Changed:
     * feature request #439254: Exclude administer users from statistics.
-    
+
 Visitors 6.x-0.11, 2009-04-23
 ------------------------
 - Fixed:
-    * bug report #439876: Issue with multilingual sites.
+    * bug reports #439876: Issue with multilingual sites.
 
 Visitors 6.x-0.9, 2009-04-20
 ------------------------
