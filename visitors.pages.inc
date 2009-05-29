@@ -8,7 +8,7 @@
 function visitors_node() {
   if ($node = node_load(arg(1))) {
     $date_format    = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
-    $items_per_page = variable_get('default_nodes_main', 10);
+    $items_per_page = variable_get('visitors_lines_per_page', 10);
 
     $header = array(
       array('data' => t('#')),

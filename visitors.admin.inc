@@ -55,7 +55,7 @@ function visitors_graph($values, $x_array = NULL) {
  */
 function visitors_recent_hits() {
   $date_format    = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
-  $items_per_page = variable_get('default_nodes_main', 10);
+  $items_per_page = variable_get('visitors_lines_per_page', 10);
 
   $header = array(
     array('data' => t('#')),
@@ -110,7 +110,7 @@ function visitors_host_hits($ip) {
   }
 
   $date_format    = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
-  $items_per_page = variable_get('default_nodes_main', 10);
+  $items_per_page = variable_get('visitors_lines_per_page', 10);
 
   $header = array(
     array('data' => t('#')),
@@ -175,7 +175,7 @@ function visitors_host_hits($ip) {
  * Menu callback; presents the "hosts" page.
  */
 function visitors_hosts() {
-  $items_per_page = variable_get('default_nodes_main', 10);
+  $items_per_page = variable_get('visitors_lines_per_page', 10);
 
   $header = array(
     array('data' => t('#')),
@@ -421,7 +421,7 @@ function graph_visitors_days_of_month() {
 }
 
 function visitors_monthly_history() {
-  $items_per_page = variable_get('default_nodes_main', 10);
+  $items_per_page = variable_get('visitors_lines_per_page', 10);
 
   $header = array(
     array('data' => t('#')),
@@ -539,7 +539,7 @@ function visitors_hit_details($aid) {
 
 function visitors_top_pages() {
   $date_format = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
-  $items_per_page = variable_get('default_nodes_main', 10);
+  $items_per_page = variable_get('visitors_lines_per_page', 10);
 
   $header = array(
     array('data' => t('#')),
