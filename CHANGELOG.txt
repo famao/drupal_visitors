@@ -1,3 +1,8 @@
+Visitors 6.x-0.17, 2009-05-30
+------------------------
+- Fixed:
+    * bug reports #477254: Missing visitors_lines_per_page, visitors_flush_log_timer to uninstall hook.
+
 Visitors 6.x-0.16, 2009-05-29
 ------------------------
 - Fixed:
