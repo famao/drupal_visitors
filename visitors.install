@@ -40,7 +40,6 @@ function visitors_schema() {
       ),
       'visitors_uid' => array(
         'type' => 'int',
-        'length' => 11,
         'not null' => TRUE,
         'default' => '0',
       ),
@@ -52,7 +51,6 @@ function visitors_schema() {
       ),
       'visitors_date_time' => array(
         'type' => 'int',
-        'length' => 11,
         'not null' => TRUE,
         'default' => '0',
       ),

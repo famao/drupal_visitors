@@ -252,7 +252,7 @@ function visitors_exit() {
             VALUES
                   ('%s',
                   '%s',
-                  UNIX_TIMESTAMP(NOW()),
+                  %d,
                   '%s',
                   '%s',
                   '%s',
@@ -260,7 +260,7 @@ function visitors_exit() {
                   '%s'
                   )";
 
-    $results = db_query($sql, $user->uid, $visitors_ip,
+    $results = db_query($sql, $user->uid, $visitors_ip, time(),
                         $visitors_url, $visitors_referer, $visitors_path,
                         htmlspecialchars_decode(drupal_get_title(), ENT_QUOTES),
                         $visitors_user_agent
@@ -376,4 +376,39 @@ function visitors_cron() {
     // Clean up expired access logs.
     db_query('DELETE FROM {visitors} WHERE visitors_date_time < %d', time() - $visitors_flush_log_timer);
   }
+}
+
+function visitors_date_format_sql($field_name, $format) {
+  global $db_type;
+
+  switch ($db_type) {
+    case 'pgsql':
+      return visitors_pgsql_date_format_sql($field_name, $format);
+      break;
+    default:
+      return visitors_mysql_date_format_sql($field_name, $format);
+  }
+}
+
+function visitors_mysql_date_format_sql($field_name, $format) {
+  return sprintf("date_format(from_unixtime(%s), '%s')", $field_name, $format);
+}
+
+function visitors_pgsql_date_format_sql($field_name, $format) {
+  if ($format == '%H') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'HH24')", $field_name);
+  }
+  if ($format == '%a') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'dy')", $field_name);
+  }
+  if ($format == '%w') {
+    return sprintf("cast(to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'D') as integer) - 1", $field_name);
+  }
+  if ($format == '%e') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'DD')", $field_name);
+  }
+  if ($format == '%Y %M') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'YYYY Month')", $field_name);
+  }
+
 }
