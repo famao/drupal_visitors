@@ -1,3 +1,10 @@
+Visitors 6.x-0.19, 2009-08-04
+------------------------
+- Fixed:
+    * bug reports #450568: Monthly history. incorrect month sorting.
+- Added:
+    * User activity report.
+
 Visitors 6.x-0.18, 2009-07-25
 ------------------------
 - Fixed:

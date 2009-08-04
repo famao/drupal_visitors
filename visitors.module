@@ -149,6 +149,15 @@ function visitors_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['admin/visitors/user_activity'] = array(
+    'title' => 'User activity',
+    'description' => 'View user activity report (hits, nodes, comments).',
+    'page callback' => 'visitors_user_activity',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
   $items['admin/visitors/hosts/%'] = array(
     'title' => 'Hits',
     'description' => 'View host access log.',
@@ -410,5 +419,7 @@ function visitors_pgsql_date_format_sql($field_name, $format) {
   if ($format == '%Y %M') {
     return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'YYYY Month')", $field_name);
   }
-
+  if ($format == '%Y%m') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'YYYYMM')", $field_name);
+  }
 }
