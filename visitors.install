@@ -17,6 +17,8 @@ function visitors_uninstall() {
   drupal_uninstall_schema('visitors');
 
   variable_del('visitors_exclude_administer_users');
+  variable_del('visitors_graph_height');
+  variable_del('visitors_graph_width');
   variable_del('visitors_flush_log_timer');
   variable_del('visitors_last_registered_user');
   variable_del('visitors_lines_per_page');

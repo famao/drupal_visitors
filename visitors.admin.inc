@@ -14,6 +14,12 @@ require_once 'pChart/pChart.class';
  *   array x-axis params
  */
 function visitors_graph($values, $x_array = NULL) {
+  $width = (int) variable_get('visitors_graph_width', 700);
+  $width = ($width <= 0) ? 700 : $width;
+
+  $height = (int) variable_get('visitors_graph_height', 430);
+  $height = ($height <=0) ? 430 : $height;
+
   // Dataset definition
   $DataSet = new pData;
   $DataSet->AddPoint($values, 'Serie1');
@@ -27,11 +33,11 @@ function visitors_graph($values, $x_array = NULL) {
   $DataSet->SetSerieName('','Serie1');
 
   // Initialise the graph
-  $Test = new pChart(700, 430);
+  $Test = new pChart($width, $height);
   $Test->setFontProperties(dirname(__FILE__) . '/Fonts/tahoma.ttf', 8);
-  $Test->setGraphArea(50, 30, 680, 400);
-  $Test->drawFilledRoundedRectangle(7, 7, 693, 423, 5, 240, 240, 240);
-  $Test->drawRoundedRectangle(5, 5, 695, 425, 5, 230, 230, 230);
+  $Test->setGraphArea(50, 30, $width - 20, $height - 30);
+  $Test->drawFilledRoundedRectangle(7, 7, $width - 7, $height - 7, 5, 240, 240, 240);
+  $Test->drawRoundedRectangle(5, 5, $width - 5, $height - 5, 5, 230, 230, 230);
   $Test->drawGraphArea(255, 255, 255, TRUE);
   $Test->setFixedScale(0, 0, 0, 0, 0, 0, 0);
   $Test->drawScale($DataSet->GetData(), $DataSet->GetDataDescription(),

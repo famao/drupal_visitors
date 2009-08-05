@@ -107,5 +107,28 @@ function visitors_admin_settings() {
     array('@cron' => url('admin/reports/status')))
   );
 
+  // Graph settings.
+  $form['visitors_graph_settings'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Graph settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#description' => t('Visitors graph settings')
+  );
+
+  $form['visitors_graph_settings']['visitors_graph_width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Width'),
+    '#default_value' => variable_get('visitors_graph_width', 700),
+    '#description' => t('Graph width.')
+  );
+
+  $form['visitors_graph_settings']['visitors_graph_height'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Height'),
+    '#default_value' => variable_get('visitors_graph_height', 430),
+    '#description' => t('Graph height.')
+  );
+
   return system_settings_form($form);
 }

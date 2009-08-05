@@ -1,3 +1,8 @@
+Visitors 6.x-0.20, 2009-08-05
+------------------------
+- Added:
+    * graph settings (width, height).
+
 Visitors 6.x-0.19, 2009-08-04
 ------------------------
 - Fixed:
