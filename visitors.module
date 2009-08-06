@@ -3,6 +3,11 @@
 // $Id$
 
 /**
+ * @file
+ * Logs visitors for your site.
+ */
+
+/**
  * Implementation of hook_help().
  */
 function visitors_help($section) {
@@ -13,12 +18,13 @@ function visitors_help($section) {
     case 'admin/modules#description':
       return 'The visitors module used for displaying visitors';
 
-    # TODO: Add default.
+    default:
+      return '';
   }
 }
 
 /**
- * Implementation of hook_perm
+ * Implementation of hook_perm().
  */
 function visitors_perm() {
   return array('access visitors', 'administer visitors');
@@ -51,7 +57,7 @@ function visitors_menu() {
     'file path' => drupal_get_path('module', 'system'),
   );
 
-   $items['admin/visitors/hits'] = array(
+  $items['admin/visitors/hits'] = array(
     'title' => 'Recent hits',
     'description' => 'View pages that have recently been visited.',
     'page callback' => 'visitors_recent_hits',
@@ -113,7 +119,7 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
   );
 
-   $items['admin/visitors/days_of_week/graph'] = array(
+  $items['admin/visitors/days_of_week/graph'] = array(
     'title' => 'Days of week',
     'description' => 'View pages count per day of week.',
     'page callback' => 'graph_visitors_days_of_week',
@@ -243,7 +249,7 @@ function visitors_exit() {
     global $user;
 
     $visitors_ip          = ip2long(visitors_get_ip());
-    $visitors_url         = urldecode('http://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    $visitors_url         = urldecode(sprintf('http://%s%s', $_SERVER['HTTP_HOST'], request_uri()));
     $visitors_path        = $_GET['q'];
     $visitors_referer     = isset($_SERVER['HTTP_REFERER']) ? urldecode($_SERVER['HTTP_REFERER']) : '';
     $visitors_user_agent  = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
@@ -279,7 +285,6 @@ function visitors_exit() {
 
 /**
  * Implementation of hook_block().
- *
  */
 function visitors_block($op = 'list', $delta = 0, $edit = array()) {
   if ($op == 'list') {
@@ -295,7 +300,7 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
       $results = db_query($sql);
       $data = db_fetch_object($results);
       $total = $data->total;
-      $output .= '<li>' . t('Total Visitors: ') . $total . '</li>';
+      $output .= sprintf('<li>%s: %d</li>', t('Total Visitors'), $total);
     }
 
     if (variable_get('visitors_show_unique_visitor', 1)) {
@@ -309,7 +314,7 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
       $results = db_query($sql);
       $data = db_fetch_object($results);
       $uniq = $data->total;
-      $output .= '<li>'.t('Unique Visitor: ').$uniq.'</li>';
+      $output .= sprintf('<li>%s: %d</li>', t('Unique Visitor'), $uniq);
     }
 
     if (variable_get('visitors_registered_user', 1)) {
@@ -320,7 +325,7 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
       $results = db_query($sql);
       $data    = db_fetch_object($results);
       $total   = $data->total;
-      $output .= '<li>' . t('Registered Users: ') . $total . '</li>';
+      $output .= sprintf('<li>%s: %d</li>', t('Registered Users'), $total);
     }
 
     if (variable_get('visitors_last_registered_user', 1)) {
@@ -331,8 +336,7 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
 
       $results = db_query($sql);
       $data    = db_fetch_object($results);
-      $output .= '<li>' . t('Last Registered User: ') .
-                 theme('username', $data) . '</li>';
+      $output .= sprintf('<li>%s: %s</li>', t('Last Registered User'), theme('username', $data));
     }
 
     if (variable_get('visitors_published_nodes', 1)) {
@@ -341,11 +345,11 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
       $results = db_query($sql);
       $data    = db_fetch_object($results);
       $total   = $data->total;
-      $output .= '<li>' . t('Published Nodes: ') . $total . '</li>';
+      $output .= sprintf('<li>%s: %d</li>', t('Published Nodes'), $total);
     }
 
     if (variable_get('visitors_user_ip', 1)) {
-      $output .= '<li>' . t('Your IP: ') . visitors_get_ip() . '</li>';
+      $output .= sprintf('<li>%s: %s</li>', t('Your IP'), visitors_get_ip());
     }
 
     if (variable_get('visitors_since_date', 1)) {
@@ -358,7 +362,7 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
       $data = db_fetch_object($results);
       $since = $data->visitors_date_time;
       $date_format = variable_get('date_format_short', 'Y-m-d');
-      $output .= '<li>' . t('Since: ') . date($date_format, $since) . '</li>';
+      $output .= sprintf('<li>%s: %s</li>', t('Since'), date($date_format, $since));
     }
 
     $output  .= '</ul>';
@@ -370,7 +374,8 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
 
   if ($counter_show_administer_only && !user_access('administer visitors')) {
     return;
-  } else {
+  }
+  else {
     return $block;
   }
 }

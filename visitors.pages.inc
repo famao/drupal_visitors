@@ -3,6 +3,11 @@
 // $Id$
 
 /**
+ * @file
+ * Node page callbacks for the visitors module.
+ */
+
+/**
  * Implementation of hook_node().
  */
 function visitors_node() {
@@ -43,7 +48,7 @@ function visitors_node() {
         date($date_format, $data->visitors_date_time),
         l($data->visitors_referer, $data->visitors_referer),
         $user_page,
-        l(t('details'), 'admin/visitors/hits/' . $data->visitors_id)
+        l(t('details'), 'admin/visitors/hits/'. $data->visitors_id)
       );
     }
 

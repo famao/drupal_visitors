@@ -3,6 +3,11 @@
 // $Id$
 
 /**
+ * @file
+ * Install/uninstall visitors module.
+ */
+
+/**
  * Install the module with a new database table.
  */
 function visitors_install() {
@@ -43,7 +48,7 @@ function visitors_schema() {
       'visitors_uid' => array(
         'type' => 'int',
         'not null' => TRUE,
-        'default' => '0',
+        'default' => 0,
       ),
       'visitors_ip' => array(
         'type' => 'varchar',
@@ -54,13 +59,13 @@ function visitors_schema() {
       'visitors_date_time' => array(
         'type' => 'int',
         'not null' => TRUE,
-        'default' => '0',
+        'default' => 0,
       ),
       'visitors_url' => array(
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
-        'default' => '0',
+        'default' => '',
       ),
       'visitors_referer' => array(
         'type' => 'varchar',
