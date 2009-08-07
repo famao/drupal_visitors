@@ -232,7 +232,7 @@ function visitors_hours() {
     array('data' => t('Pages'), 'field' => 'count'),
   );
 
-  $sql = sprintf('select count(*) count,
+  $sql = sprintf('select count(*) as count,
                   %s as  hour from {visitors} group by hour %s',
                   visitors_date_format_sql('visitors_date_time', '%H'),
                   tablesort_sql($header)
@@ -264,7 +264,7 @@ function visitors_hours() {
 }
 
 function graph_visitors_hours() {
-  $sql = sprintf('SELECT count(*) count,
+  $sql = sprintf('SELECT count(*) as count,
                   %s as hour
                   FROM {visitors}
                   group by hour',
@@ -384,7 +384,7 @@ function visitors_days_of_month() {
 
   global $db_type;
   if ($db_type == 'pgsql') {
-    $sql = sprintf('select count(*) count,
+    $sql = sprintf('select count(*) as count,
                     %s as day
                     from {visitors}
                     group by day %s',
@@ -422,7 +422,7 @@ function visitors_days_of_month() {
 }
 
 function graph_visitors_days_of_month() {
-  $sql = sprintf('select count(*) count,
+  $sql = sprintf('select count(*) as count,
                   %s as day
                   from {visitors}
                   group by day',
@@ -455,7 +455,7 @@ function visitors_monthly_history() {
     array('data' => t('Pages'), 'field' => 'count'),
   );
 
-  $sql = sprintf('select count(*) count,
+  $sql = sprintf('select count(*) as count,
                   %s as m,
                   %s as s
                   from {visitors}
@@ -497,7 +497,7 @@ function visitors_monthly_history() {
 }
 
 function graph_visitors_monthly_history() {
-  $sql = sprintf('select count(*) count,
+  $sql = sprintf('select count(*) as count,
                   %s as m,
                   %s as s
                   from {visitors}
