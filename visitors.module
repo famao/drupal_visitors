@@ -1,0 +1,428 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ * Logs visitors for your site.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function visitors_help($section) {
+  switch ($section) {
+    case 'admin/help#visitors':
+      return "The visitors module used for displaying site visitors.";
+
+    case 'admin/modules#description':
+      return 'The visitors module used for displaying visitors';
+
+    default:
+      return '';
+  }
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function visitors_perm() {
+  return array('access visitors', 'administer visitors');
+}
+
+/**
+ * Menu callback. Prints a listing of active nodes on the site.
+ */
+function visitors_menu() {
+  $items = array();
+
+  $items['admin/settings/visitors'] = array(
+    'title' => 'Visitors settings',
+    'description' => 'Configure visitors settings.',
+    'access arguments' => array('administer visitors'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('visitors_admin_settings'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'visitors.settings.inc',
+  );
+
+  $items['admin/visitors'] = array(
+    'title' => 'Visitors',
+    'description' => "View visitors reports from system logs.",
+    'position' => 'left',
+    'weight' => +100,
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+
+  $items['admin/visitors/hits'] = array(
+    'title' => 'Recent hits',
+    'description' => 'View pages that have recently been visited.',
+    'page callback' => 'visitors_recent_hits',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/visitors/pages'] = array(
+    'title' => 'Top pages',
+    'description' => 'View pages that have been hit frequently.',
+    'page callback' => 'visitors_top_pages',
+    'access arguments' => array('access visitors'),
+    'weight' => 1,
+    'file' => 'visitors.admin.inc',
+  );
+
+  $items['admin/visitors/monthly_history'] = array(
+    'title' => 'Monthly history',
+    'description' => 'View pages count per month.',
+    'page callback' => 'visitors_monthly_history',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/visitors/monthly_history/graph'] = array(
+    'title' => 'Monthly history',
+    'description' => 'View pages count per month.',
+    'page callback' => 'graph_visitors_monthly_history',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/visitors/days_of_month'] = array(
+    'title' => 'Days of month',
+    'description' => 'View pages count per day of month.',
+    'page callback' => 'visitors_days_of_month',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/visitors/days_of_month/graph'] = array(
+    'title' => 'Days of month',
+    'description' => 'View pages count per day of month.',
+    'page callback' => 'graph_visitors_days_of_month',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/visitors/days_of_week'] = array(
+    'title' => 'Days of week',
+    'description' => 'View pages count per day of week.',
+    'page callback' => 'visitors_days_of_week',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+  );
+
+  $items['admin/visitors/days_of_week/graph'] = array(
+    'title' => 'Days of week',
+    'description' => 'View pages count per day of week.',
+    'page callback' => 'graph_visitors_days_of_week',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/visitors/hours'] = array(
+    'title' => 'Hours',
+    'description' => 'View pages count per hour.',
+    'page callback' => 'visitors_hours',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/visitors/hours/graph'] = array(
+    'title' => 'Hours',
+    'description' => 'View pages count per hour.',
+    'page callback' => 'graph_visitors_hours',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/visitors/hosts'] = array(
+    'title' => 'Hosts',
+    'description' => 'View pages count per host.',
+    'page callback' => 'visitors_hosts',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/visitors/user_activity'] = array(
+    'title' => 'User activity',
+    'description' => 'View user activity report (hits, nodes, comments).',
+    'page callback' => 'visitors_user_activity',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/visitors/hosts/%'] = array(
+    'title' => 'Hits',
+    'description' => 'View host access log.',
+    'page callback' => 'visitors_host_hits',
+    'page arguments' => array(3),
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/visitors/hits/%'] = array(
+    'title' => 'Details',
+    'description' => 'View access log.',
+    'page callback' => 'visitors_hit_details',
+    'page arguments' => array(3),
+    'access arguments' => array('access visitors'),
+    'type' => MENU_CALLBACK,
+    'file' => 'visitors.admin.inc',
+  );
+
+  $items['node/%node/visitors'] = array(
+    'title' => 'Visitors',
+    'page callback' => 'visitors_node',
+    'access callback' => 'user_access',
+    'access arguments' => array('access visitors'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+    'file' => 'visitors.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Verify the syntax of the given ip address.
+ *
+ * @param ip
+ *   A string containing an ip address.
+ * @return
+ *   TRUE if the ip is in a valid format, FALSE on failure.
+ */
+function visitors_is_ip_valid($ip) {
+  $result = preg_match('/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/',
+                        $ip,
+                        $matches
+                      );
+
+  return ($result &&
+          isset($matches[0]) &&
+          ($matches[0] === $ip) &&
+          ($matches[1] >= 1) && ($matches[1] <= 255) &&
+          ($matches[2] >= 0) && ($matches[2] <= 255) &&
+          ($matches[3] >= 0) && ($matches[3] <= 255) &&
+          ($matches[4] >= 0) && ($matches[4] <= 255)
+          );
+}
+
+/**
+ * Get visitors ip address.
+ *
+ * @return
+ *   A string containing an ip address ('0.0.0.0' on failure).
+ */
+function visitors_get_ip() {
+  if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip_array = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    $ip       = trim(reset($ip_array));
+  }
+  else {
+    $ip = $_SERVER['REMOTE_ADDR'];
+  }
+  return (visitors_is_ip_valid($ip) ? $ip : '0.0.0.0');
+}
+
+/**
+ * Implementation of hook_exit().
+ */
+function visitors_exit() {
+  if (!(variable_get('visitors_exclude_administer_users', 0) &&
+      user_access('administer'))) {
+    global $user;
+
+    $visitors_ip          = sprintf("%u", ip2long(visitors_get_ip()));
+    $visitors_url         = urldecode(sprintf('http://%s%s', $_SERVER['HTTP_HOST'], request_uri()));
+    $visitors_path        = $_GET['q'];
+    $visitors_referer     = isset($_SERVER['HTTP_REFERER']) ? urldecode($_SERVER['HTTP_REFERER']) : '';
+    $visitors_user_agent  = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+
+    $sql = "INSERT INTO {visitors}
+                  (visitors_uid,
+                  visitors_ip,
+                  visitors_date_time,
+                  visitors_url,
+                  visitors_referer,
+                  visitors_path,
+                  visitors_title,
+                  visitors_user_agent
+                  )
+            VALUES
+                  ('%s',
+                  '%s',
+                  %d,
+                  '%s',
+                  '%s',
+                  '%s',
+                  '%s',
+                  '%s'
+                  )";
+
+    $results = db_query($sql, $user->uid, $visitors_ip, time(),
+                        $visitors_url, $visitors_referer, $visitors_path,
+                        htmlspecialchars_decode(drupal_get_title(), ENT_QUOTES),
+                        $visitors_user_agent
+                      );
+  }
+}
+
+/**
+ * Implementation of hook_block().
+ */
+function visitors_block($op = 'list', $delta = 0, $edit = array()) {
+  if ($op == 'list') {
+    $blocks[0]['info'] = t('Current visitor');
+    return $blocks;
+  }
+
+  if ($op == 'view') {
+    $output  = '<ul class="menu">';
+
+    if (variable_get('visitors_show_total_visitors', 1)) {
+      $sql = 'SELECT count(*) as total FROM {visitors} v';
+      $results = db_query($sql);
+      $data = db_fetch_object($results);
+      $total = $data->total;
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %d</li>', t('Total Visitors'), $total);
+    }
+
+    if (variable_get('visitors_show_unique_visitor', 1)) {
+      $sql = 'SELECT count(*) as total
+              FROM (
+                SELECT visitors_ip
+                FROM {visitors}
+                GROUP BY visitors_ip
+              ) v';
+
+      $results = db_query($sql);
+      $data = db_fetch_object($results);
+      $uniq = $data->total;
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %d</li>', t('Unique Visitor'), $uniq);
+    }
+
+    if (variable_get('visitors_registered_user', 1)) {
+      $sql = 'SELECT count(*) as total
+              FROM {users}
+              WHERE uid<>0';
+
+      $results = db_query($sql);
+      $data    = db_fetch_object($results);
+      $total   = $data->total;
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %d</li>', t('Registered Users'), $total);
+    }
+
+    if (variable_get('visitors_last_registered_user', 1)) {
+      $sql  = 'SELECT *
+               FROM {users}
+               ORDER BY uid DESC
+               LIMIT 1';
+
+      $results = db_query($sql);
+      $data    = db_fetch_object($results);
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %s</li>', t('Last Registered User'), theme('username', $data));
+    }
+
+    if (variable_get('visitors_published_nodes', 1)) {
+      $sql = 'SELECT count(*) as total FROM {node} WHERE status=1';
+
+      $results = db_query($sql);
+      $data    = db_fetch_object($results);
+      $total   = $data->total;
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %d</li>', t('Published Nodes'), $total);
+    }
+
+    if (variable_get('visitors_user_ip', 1)) {
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %s</li>', t('Your IP'), visitors_get_ip());
+    }
+
+    if (variable_get('visitors_since_date', 1)) {
+      $sql = 'SELECT visitors_date_time
+              FROM {visitors}
+              ORDER BY visitors_date_time ASC
+              LIMIT 1';
+
+      $results = db_query($sql);
+      $data = db_fetch_object($results);
+      $since = $data->visitors_date_time;
+      $date_format = variable_get('date_format_short', 'Y-m-d');
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %s</li>', t('Since'), date($date_format, $since));
+    }
+
+    $output  .= '</ul>';
+
+    $block['content'] = $output;
+
+    return $block;
+  }
+
+  if ($counter_show_administer_only && !user_access('administer visitors')) {
+    return;
+  }
+  else {
+    return $block;
+  }
+}
+
+/**
+ * Implementation of hook_cron().
+ */
+function visitors_cron() {
+  $visitors_flush_log_timer = variable_get('visitors_flush_log_timer', 0);
+
+  if ($visitors_flush_log_timer > 0) {
+    // Clean up expired access logs.
+    db_query('DELETE FROM {visitors} WHERE visitors_date_time < %d', time() - $visitors_flush_log_timer);
+  }
+}
+
+function visitors_date_format_sql($field_name, $format) {
+  global $db_type;
+
+  switch ($db_type) {
+    case 'pgsql':
+      return visitors_pgsql_date_format_sql($field_name, $format);
+      break;
+    default:
+      return visitors_mysql_date_format_sql($field_name, $format);
+  }
+}
+
+function visitors_mysql_date_format_sql($field_name, $format) {
+  return sprintf("date_format(from_unixtime(%s), '%s')", $field_name, $format);
+}
+
+function visitors_pgsql_date_format_sql($field_name, $format) {
+  if ($format == '%H') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'HH24')", $field_name);
+  }
+  if ($format == '%a') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'dy')", $field_name);
+  }
+  if ($format == '%w') {
+    return sprintf("cast(to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'D') as integer) - 1", $field_name);
+  }
+  if ($format == '%e') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'DD')", $field_name);
+  }
+  if ($format == '%Y %M') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'YYYY Month')", $field_name);
+  }
+  if ($format == '%Y%m') {
+    return sprintf("to_char(TIMESTAMP 'epoch' + %s * INTERVAL '1 second', 'YYYYMM')", $field_name);
+  }
+}
