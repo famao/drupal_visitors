@@ -235,7 +235,7 @@ function visitors_get_ip() {
   else {
     $ip = $_SERVER['REMOTE_ADDR'];
   }
-$ip = '192.118.11.118';
+  
   return (visitors_is_ip_valid($ip) ? $ip : '0.0.0.0');
 }
 
