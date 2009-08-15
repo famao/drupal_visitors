@@ -225,30 +225,29 @@ function visitors_is_ip_valid($ip) {
  * Get visitors ip address.
  *
  * @return
- *   A string containing an ip address ('0.0.0.0' on failure.
+ *   A string containing an ip address ('0.0.0.0' on failure).
  */
 function visitors_get_ip() {
   if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-    $ip_array = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-    $ip       = trim(array_pop($ip_array));
+    $ip_array = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    $ip       = trim(reset($ip_array));
   }
   else {
     $ip = $_SERVER['REMOTE_ADDR'];
   }
-
+$ip = '192.118.11.118';
   return (visitors_is_ip_valid($ip) ? $ip : '0.0.0.0');
 }
 
 /**
  * Implementation of hook_exit().
- *
  */
 function visitors_exit() {
   if (!(variable_get('visitors_exclude_administer_users', 0) &&
       user_access('administer'))) {
     global $user;
 
-    $visitors_ip          = ip2long(visitors_get_ip());
+    $visitors_ip          = sprintf("%u", ip2long(visitors_get_ip()));
     $visitors_url         = urldecode(sprintf('http://%s%s', $_SERVER['HTTP_HOST'], request_uri()));
     $visitors_path        = $_GET['q'];
     $visitors_referer     = isset($_SERVER['HTTP_REFERER']) ? urldecode($_SERVER['HTTP_REFERER']) : '';
@@ -293,14 +292,14 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
   }
 
   if ($op == 'view') {
-    $output  = '<ul>';
+    $output  = '<ul class="menu">';
 
     if (variable_get('visitors_show_total_visitors', 1)) {
       $sql = 'SELECT count(*) as total FROM {visitors} v';
       $results = db_query($sql);
       $data = db_fetch_object($results);
       $total = $data->total;
-      $output .= sprintf('<li>%s: %d</li>', t('Total Visitors'), $total);
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %d</li>', t('Total Visitors'), $total);
     }
 
     if (variable_get('visitors_show_unique_visitor', 1)) {
@@ -314,7 +313,7 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
       $results = db_query($sql);
       $data = db_fetch_object($results);
       $uniq = $data->total;
-      $output .= sprintf('<li>%s: %d</li>', t('Unique Visitor'), $uniq);
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %d</li>', t('Unique Visitor'), $uniq);
     }
 
     if (variable_get('visitors_registered_user', 1)) {
@@ -325,7 +324,7 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
       $results = db_query($sql);
       $data    = db_fetch_object($results);
       $total   = $data->total;
-      $output .= sprintf('<li>%s: %d</li>', t('Registered Users'), $total);
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %d</li>', t('Registered Users'), $total);
     }
 
     if (variable_get('visitors_last_registered_user', 1)) {
@@ -336,7 +335,7 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
 
       $results = db_query($sql);
       $data    = db_fetch_object($results);
-      $output .= sprintf('<li>%s: %s</li>', t('Last Registered User'), theme('username', $data));
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %s</li>', t('Last Registered User'), theme('username', $data));
     }
 
     if (variable_get('visitors_published_nodes', 1)) {
@@ -345,11 +344,11 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
       $results = db_query($sql);
       $data    = db_fetch_object($results);
       $total   = $data->total;
-      $output .= sprintf('<li>%s: %d</li>', t('Published Nodes'), $total);
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %d</li>', t('Published Nodes'), $total);
     }
 
     if (variable_get('visitors_user_ip', 1)) {
-      $output .= sprintf('<li>%s: %s</li>', t('Your IP'), visitors_get_ip());
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %s</li>', t('Your IP'), visitors_get_ip());
     }
 
     if (variable_get('visitors_since_date', 1)) {
@@ -362,7 +361,7 @@ function visitors_block($op = 'list', $delta = 0, $edit = array()) {
       $data = db_fetch_object($results);
       $since = $data->visitors_date_time;
       $date_format = variable_get('date_format_short', 'Y-m-d');
-      $output .= sprintf('<li>%s: %s</li>', t('Since'), date($date_format, $since));
+      $output .= sprintf('<li class="leaf dhtml-menu">%s: %s</li>', t('Since'), date($date_format, $since));
     }
 
     $output  .= '</ul>';

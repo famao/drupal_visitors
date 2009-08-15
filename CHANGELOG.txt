@@ -1,3 +1,10 @@
+Visitors 6.x-0.21, 2009-08-15
+------------------------
+- Fixed:
+    * bug reports #539452: error type.
+    * bug reports #540698: Validate code.
+    * bug reports #541082: SQL requete error in some pages.
+
 Visitors 6.x-0.20, 2009-08-05
 ------------------------
 - Added:
