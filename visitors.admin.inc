@@ -116,7 +116,7 @@ function visitors_recent_hits() {
  * Menu callback; presents the "hits from" page.
  */
 function visitors_host_hits($ip) {
-  if (!visitors_is_ip_valid($ip)) {
+  if (!visitors_is_ip_valid($ip) && ($ip != '0.0.0.0')) {
     return drupal_not_found();
   }
 
@@ -139,7 +139,7 @@ function visitors_host_hits($ip) {
                   WHERE v.visitors_ip='%u'" . tablesort_sql($header),
                   ip2long($ip));
 
-  $count_sql = sprintf("SELECT COUNT(*) count
+  $count_sql = sprintf("SELECT COUNT(*) AS count
                         FROM {visitors}
                         WHERE visitors_ip='%u'",
                         ip2long($ip)

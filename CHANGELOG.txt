@@ -1,3 +1,9 @@
+Visitors 6.x-0.22, 2009-08-21
+------------------------
+- Fixed:
+    * bug reports #508120: Fatal error: Call to undefined function user_access().
+    * bug reports #555640: Incorrect Hits from IP report.
+
 Visitors 6.x-0.21, 2009-08-15
 ------------------------
 - Fixed:
