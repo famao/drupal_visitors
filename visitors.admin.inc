@@ -294,9 +294,8 @@ function visitors_days_of_week() {
                   %s as n
                   from {visitors}
                   group by d
-                  order by %s',
+                  order by n',
                   visitors_date_format_sql('visitors_date_time', '%a'),
-                  visitors_date_format_sql('min(visitors_date_time)', '%w'),
                   visitors_date_format_sql('min(visitors_date_time)', '%w')
                 );
 
@@ -338,9 +337,8 @@ function graph_visitors_days_of_week() {
                   %s as n
                   from {visitors}
                   group by d
-                  order by %s',
+                  order by n',
                   visitors_date_format_sql('visitors_date_time', '%a'),
-                  visitors_date_format_sql('min(visitors_date_time)', '%w'),
                   visitors_date_format_sql('min(visitors_date_time)', '%w')
                 );
 

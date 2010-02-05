@@ -1,3 +1,8 @@
+Visitors 6.x-0.23, 2010-02-05
+------------------------
+- Fixed:
+    * bug reports #655672: Day of week stats error.
+
 Visitors 6.x-0.22, 2009-08-21
 ------------------------
 - Fixed:
