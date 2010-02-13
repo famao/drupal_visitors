@@ -10,6 +10,8 @@
 require_once 'pChart/pData.class';
 require_once 'pChart/pChart.class';
 
+require_once dirname(__FILE__) .'/visitors.date_filter.inc';
+
 /**
  * Draw graph.
  *
@@ -47,7 +49,7 @@ function visitors_graph($values, $x_array = NULL) {
   $pchart->setFixedScale(0, 0, 0, 0, 0, 0, 0);
   $pchart->drawScale($data_set->GetData(), $data_set->GetDataDescription(),
     SCALE_ADDALLSTART0, 150, 150, 150, TRUE, 0, 0, TRUE
-                  );
+  );
   $pchart->drawGrid(4, TRUE, 230, 230, 230, 50);
 
   // Draw the 0 line
@@ -77,12 +79,20 @@ function visitors_recent_hits() {
     array('data' => t('Operations'))
   );
 
-  $sql = "SELECT v.*, u.name, u.uid
-          FROM {visitors} v
-          LEFT JOIN {users} u
-          ON u.uid = v.visitors_uid". tablesort_sql($header);
+  $sql = sprintf("SELECT v.*, u.name, u.uid
+                  FROM {visitors} v
+                  LEFT JOIN {users} u
+                  ON u.uid = v.visitors_uid
+                  WHERE %s". tablesort_sql($header),
+                  visitors_date_filter_sql_condition()
+                );
 
-  $sql_count = 'SELECT COUNT(*) FROM {visitors}';
+  $sql_count = sprintf('SELECT COUNT(*)
+                        FROM {visitors}
+                        WHERE %s',
+                        visitors_date_filter_sql_condition()
+                      );
+
   $results = pager_query($sql, $items_per_page, 0, $sql_count);
 
   $rows = array();
@@ -105,7 +115,7 @@ function visitors_recent_hits() {
     );
   }
 
-  $output  = "";
+  $output  = visitors_date_filter();
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -136,13 +146,16 @@ function visitors_host_hits($ip) {
                   FROM {visitors} v
                   LEFT JOIN {users} u
                   ON u.uid = v.visitors_uid
-                  WHERE v.visitors_ip='%u'" . tablesort_sql($header),
-                  ip2long($ip));
-
+                  WHERE v.visitors_ip='%u' AND %s" . tablesort_sql($header),
+                  ip2long($ip),
+                  visitors_date_filter_sql_condition()
+                );
   $count_sql = sprintf("SELECT COUNT(*) AS count
                         FROM {visitors}
-                        WHERE visitors_ip='%u'",
-                        ip2long($ip)
+                        WHERE visitors_ip='%u'
+                        AND %s",
+                        ip2long($ip),
+                        visitors_date_filter_sql_condition()
                       );
 
   $query = db_query($count_sql);
@@ -173,7 +186,7 @@ function visitors_host_hits($ip) {
     );
   }
 
-  $output  = "";
+  $output  = visitors_date_filter();
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -195,11 +208,15 @@ function visitors_hosts() {
     array('data' => t('Operations'))
   );
 
-  $sql = "SELECT count( * ) as count, visitors_ip
-          FROM {visitors}
-          GROUP BY visitors_ip" . tablesort_sql($header);
+  $sql = sprintf("SELECT count( * ) as count, visitors_ip
+                  FROM {visitors}
+                  WHERE %s
+                  GROUP BY visitors_ip" . tablesort_sql($header),
+                  visitors_date_filter_sql_condition()
+                );
 
-  $sql_count = "SELECT count(DISTINCT visitors_ip) FROM {visitors}";
+
+  $sql_count = "SELECT count(DISTINCT visitors_ip) FROM {visitors} WHERE ". visitors_date_filter_sql_condition();
   $results = pager_query($sql, $items_per_page, 0, $sql_count);
 
   $rows = array();
@@ -216,7 +233,7 @@ function visitors_hosts() {
     );
   }
 
-  $output  = "";
+  $output  = visitors_date_filter();
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -233,13 +250,21 @@ function visitors_hours() {
   );
 
   $sql = sprintf('select count(*) as count,
-                  %s as  hour from {visitors} group by hour %s',
+                  %s as  hour
+                  from {visitors}
+                  where %s
+                  group by hour %s',
                   visitors_date_format_sql('visitors_date_time', '%H'),
+                  visitors_date_filter_sql_condition(),
                   tablesort_sql($header)
                 );
 
-  $sql_count = sprintf('SELECT count(distinct(%s)) FROM {visitors}',
-                        visitors_date_format_sql('visitors_date_time', '%H'));
+  $sql_count = sprintf('SELECT count(distinct(%s))
+                        FROM {visitors}
+                        WHERE %s',
+                        visitors_date_format_sql('visitors_date_time', '%H'),
+                        visitors_date_filter_sql_condition()
+                        );
 
   $results = pager_query($sql, $items_per_page, 0, $sql_count);
 
@@ -256,7 +281,9 @@ function visitors_hours() {
     );
   }
 
-  $output  = '<img src="'. url() .'admin/visitors/hours/graph" alt="Hours">';
+
+  $output  = visitors_date_filter();
+  $output .= '<img src="'. url() .'admin/visitors/hours/graph" alt="Hours">';
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -267,8 +294,10 @@ function graph_visitors_hours() {
   $sql = sprintf('SELECT count(*) as count,
                   %s as hour
                   FROM {visitors}
+                  WHERE %s
                   group by hour',
-                  visitors_date_format_sql('visitors_date_time', '%H')
+                  visitors_date_format_sql('visitors_date_time', '%H'),
+                  visitors_date_filter_sql_condition()
                 );
   $result = db_query($sql);
   $tmp_rows = array();
@@ -293,10 +322,12 @@ function visitors_days_of_week() {
                   %s as d,
                   %s as n
                   from {visitors}
+                  where %s
                   group by d
                   order by n',
                   visitors_date_format_sql('visitors_date_time', '%a'),
-                  visitors_date_format_sql('min(visitors_date_time)', '%w')
+                  visitors_date_format_sql('min(visitors_date_time)', '%w'),
+                  visitors_date_filter_sql_condition()
                 );
 
   $result = db_query($sql);
@@ -324,7 +355,8 @@ function visitors_days_of_week() {
     $rows[$key][2] = $tmp_item[1];
   }
 
-  $output  = '<img src="'. url() .'admin/visitors/days_of_week/graph" alt="Days of week">';
+  $output  = visitors_date_filter();
+  $output .= '<img src="'. url() .'admin/visitors/days_of_week/graph" alt="Days of week">';
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -336,10 +368,12 @@ function graph_visitors_days_of_week() {
                   %s as d,
                   %s as n
                   from {visitors}
+                  where %s
                   group by d
                   order by n',
                   visitors_date_format_sql('visitors_date_time', '%a'),
-                  visitors_date_format_sql('min(visitors_date_time)', '%w')
+                  visitors_date_format_sql('min(visitors_date_time)', '%w'),
+                  visitors_date_filter_sql_condition()
                 );
 
   $result = db_query($sql);
@@ -385,8 +419,10 @@ function visitors_days_of_month() {
     $sql = sprintf('select count(*) as count,
                     %s as day
                     from {visitors}
+                    where %s
                     group by day %s',
                     visitors_date_format_sql('visitors_date_time', '%e'),
+                    visitors_date_filter_sql_condition(),
                     tablesort_sql($header)
                   );
   }
@@ -394,8 +430,10 @@ function visitors_days_of_month() {
     $sql = sprintf('select count(*) count,
                     %s+0 as day
                     from {visitors}
+                    where %s
                     group by day %s',
                     visitors_date_format_sql('visitors_date_time', '%e'),
+                    visitors_date_filter_sql_condition(),
                     tablesort_sql($header)
                   );
   }
@@ -412,7 +450,8 @@ function visitors_days_of_month() {
     );
   }
 
-  $output  = '<img src="'. url() .'admin/visitors/days_of_month/graph" alt="Days of month">';
+  $output  = visitors_date_filter();
+  $output .= '<img src="'. url() .'admin/visitors/days_of_month/graph" alt="Days of month">';
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -423,8 +462,10 @@ function graph_visitors_days_of_month() {
   $sql = sprintf('select count(*) as count,
                   %s as day
                   from {visitors}
+                  where %s
                   group by day',
-                  visitors_date_format_sql('visitors_date_time', '%e')
+                  visitors_date_format_sql('visitors_date_time', '%e'),
+                  visitors_date_filter_sql_condition()
                 );
 
   $results = pager_query($sql, 31, 0, NULL);
@@ -457,15 +498,19 @@ function visitors_monthly_history() {
                   %s as m,
                   %s as s
                   from {visitors}
+                  where %s
                   group by m %s',
                   visitors_date_format_sql('visitors_date_time', '%Y%m'),
                   visitors_date_format_sql('MIN(visitors_date_time)', '%Y %M'),
+                  visitors_date_filter_sql_condition(),
                   tablesort_sql($header)
                 );
 
   $sql_count = sprintf('SELECT count(DISTINCT %s)
-                        FROM {visitors}',
-                        visitors_date_format_sql('visitors_date_time', '%Y %M')
+                        FROM {visitors}
+                        WHERE %s',
+                        visitors_date_format_sql('visitors_date_time', '%Y %M'),
+                        visitors_date_filter_sql_condition()
                       );
 
   $results = pager_query($sql, $items_per_page, 0, $sql_count);
@@ -484,8 +529,10 @@ function visitors_monthly_history() {
     );
   }
 
+  $output  = visitors_date_filter();
+
   if (count($rows) > 1) {
-    $output  = '<img src="'. url() .'admin/visitors/monthly_history/graph" alt="Monthly history">';
+    $output .= '<img src="'. url() .'admin/visitors/monthly_history/graph" alt="Monthly history">';
   }
 
   $output .= theme('table', $header, $rows);
@@ -499,10 +546,12 @@ function graph_visitors_monthly_history() {
                   %s as m,
                   %s as s
                   from {visitors}
+                  where %s
                   group by m
                   order by m ASC',
                   visitors_date_format_sql('visitors_date_time', '%Y%m'),
-                  visitors_date_format_sql('MIN(visitors_date_time)', '%Y %M')
+                  visitors_date_format_sql('MIN(visitors_date_time)', '%Y %M'),
+                  visitors_date_filter_sql_condition()
                 );
 
   $rows = array();
@@ -586,13 +635,21 @@ function visitors_top_pages() {
     array('data' => t('count'), 'field' => 'count', 'sort' => 'desc'),
   );
 
-  $sql = "SELECT COUNT(visitors_id) AS count,
-                 visitors_path,
-                 MIN(visitors_title) AS visitors_title,
-                 MIN(visitors_url) AS visitors_url
-          FROM {visitors} GROUP BY visitors_path" . tablesort_sql($header);
+  $sql = sprintf("SELECT COUNT(visitors_id) AS count,
+                  visitors_path,
+                  MIN(visitors_title) AS visitors_title,
+                  MIN(visitors_url) AS visitors_url
+                  FROM {visitors}
+                  WHERE %s
+                  GROUP BY visitors_path" . tablesort_sql($header),
+                  visitors_date_filter_sql_condition()
+                );
 
-  $sql_count = 'SELECT COUNT(DISTINCT visitors_path) FROM {visitors}';
+  $sql_count = sprintf('SELECT COUNT(DISTINCT visitors_path)
+                        FROM {visitors}
+                        WHERE %s',
+                        visitors_date_filter_sql_condition()
+                      );
 
   $results = pager_query($sql, $items_per_page, 0, $sql_count);
 
@@ -610,7 +667,7 @@ function visitors_top_pages() {
     );
   }
 
-  $output  = "";
+  $output  = visitors_date_filter();
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -629,38 +686,41 @@ function visitors_user_activity() {
     array('data' => t('Comments'), 'field' => 'comments')
   );
 
-  $sql = "SELECT
-            i.name,
-            i.uid,
-            i.hits,
-            i.nodes,
-            count(c.cid) as comments
-          FROM (
-            SELECT
-              h.name,
-              h.uid,
-              h.hits,
-              count(n.nid) as nodes
-            FROM (
-              SELECT
-                u.name,
-                MIN(u.uid) as uid,
-                count(v.visitors_id) as hits
-              FROM {users} u
-              LEFT JOIN {visitors} v
-              ON v.visitors_uid= u.uid
-              GROUP BY u.name
-            ) AS h
-            LEFT JOIN {node} n
-            ON h.uid=n.uid
-            GROUP BY h.name, h.uid, h.hits
-          ) AS i
-          LEFT JOIN {comments} c
-          ON c.uid=i.uid
-          GROUP BY i.name, i.uid, i.hits, i.nodes
-          " . tablesort_sql($header);
+  $from = visitors_get_from_timestamp();
+  $to   = visitors_get_to_timestamp();
 
-  $sql_count = 'SELECT COUNT(*) FROM {users}';
+  $sql = sprintf('SELECT u.name,
+                         u.uid,
+                         count(DISTINCT v.visitors_id) as hits,
+                         count(DISTINCT n.nid) as nodes,
+                         count(DISTINCT c.cid) as comments
+                  FROM {users} as u
+                  LEFT JOIN {visitors} as v
+                  ON u.uid=v.visitors_uid
+                  LEFT JOIN {node} as n
+                  ON u.uid=n.uid
+                  AND n.created BETWEEN %s AND %s
+                  LEFT JOIN {comments} as c
+                  ON u.uid=c.uid
+                  AND c.timestamp BETWEEN %s AND %s
+                  WHERE %s
+                  GROUP BY u.name, u.uid, v.visitors_uid, n.uid, c.uid
+                  %s',
+                  $from,
+                  $to,
+                  $from,
+                  $to,
+                  visitors_date_filter_sql_condition(),
+                  tablesort_sql($header)
+                );
+
+  $sql_count = sprintf('SELECT COUNT(DISTINCT u.uid)
+                        FROM {users} u
+                        INNER JOIN {visitors} v
+                        ON u.uid=v.visitors_uid
+                        WHERE %s',
+                        visitors_date_filter_sql_condition()
+                      );
   $results = pager_query($sql, $items_per_page, 0, $sql_count);
 
   $rows = array();
@@ -680,12 +740,9 @@ function visitors_user_activity() {
       $data->comments
     );
   }
-
-  $output  = "";
+  $output  = visitors_date_filter();
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
   return $output;
 }
-
-

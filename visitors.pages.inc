@@ -7,6 +7,8 @@
  * Node page callbacks for the visitors module.
  */
 
+require_once dirname(__FILE__) .'/visitors.date_filter.inc';
+
 /**
  * Implementation of hook_node().
  */
@@ -28,9 +30,11 @@ function visitors_node() {
                     FROM {visitors} v
                     LEFT JOIN {users} u
                     ON u.uid = v.visitors_uid
-                    WHERE v.visitors_path LIKE 'node/%d%%'".
+                    WHERE v.visitors_path LIKE 'node/%d%%'
+                    AND %s".
                     tablesort_sql($header),
-                    $node->nid
+                    $node->nid,
+                    visitors_date_filter_sql_condition()
                   );
 
     $results = pager_query($sql, $items_per_page, 0, NULL);
@@ -52,7 +56,7 @@ function visitors_node() {
       );
     }
 
-    $output  = "";
+    $output  = visitors_date_filter();
     $output .= theme('table', $header, $rows);
     $output .= theme('pager', NULL, $items_per_page, 0);
     drupal_set_title(check_plain($node->title));
