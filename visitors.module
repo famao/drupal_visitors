@@ -242,7 +242,7 @@ function visitors_get_ip() {
  * Implementation of hook_exit().
  */
 function visitors_exit() {
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  drupal_bootstrap(DRUPAL_BOOTSTRAP_PATH);
   if (!(variable_get('visitors_exclude_administer_users', 0) &&
       user_access('administer'))) {
     global $user;

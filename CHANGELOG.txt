@@ -1,3 +1,8 @@
+Visitors 6.x-0.25, 2010-02-22
+------------------------
+- Fixed:
+    * bug reports #613222: Module produces "headers already sent by" error.
+
 Visitors 6.x-0.24, 2010-02-13
 ------------------------
 - Added:

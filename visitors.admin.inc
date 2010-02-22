@@ -7,8 +7,8 @@
  * Admin page callbacks for the visitors module.
  */
 
-require_once 'pChart/pData.class';
-require_once 'pChart/pChart.class';
+require_once dirname(__FILE__) .'/pChart/pData.class';
+require_once dirname(__FILE__) .'/pChart/pChart.class';
 
 require_once dirname(__FILE__) .'/visitors.date_filter.inc';
 
