@@ -13,10 +13,10 @@
 function visitors_help($section) {
   switch ($section) {
     case 'admin/help#visitors':
-      return "The visitors module used for displaying site visitors.";
+      return t('The visitors module used for displaying site visitors.');
 
     case 'admin/modules#description':
-      return 'The visitors module used for displaying visitors';
+      return t('The visitors module used for displaying visitors');
 
     default:
       return '';
