@@ -272,6 +272,7 @@ function visitors_hours() {
 
   $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
   $i = 0 + $page * $items_per_page;
+  $count = 0;
 
   while ($data = db_fetch_object($results)) {
     $rows[] = array(
@@ -279,11 +280,14 @@ function visitors_hours() {
       $data->hour,
       $data->count
     );
+    $count += $data->count;
   }
 
-
   $output  = visitors_date_filter();
-  $output .= '<img src="'. url() .'admin/visitors/hours/graph" alt="Hours">';
+
+  if ($count > 0) {
+    $output .= '<img src="'. url() .'admin/visitors/hours/graph" alt="Hours">';
+  }
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -332,6 +336,7 @@ function visitors_days_of_week() {
 
   $result = db_query($sql);
   $tmp_rows = array();
+  $count = 0;
 
   while ($data = db_fetch_object($result)) {
     $tmp_rows[$data->n] = array(
@@ -339,6 +344,8 @@ function visitors_days_of_week() {
       $data->count,
       $data->n
     );
+
+    $count += $data->count;
   }
 
   $rows = array(
@@ -356,7 +363,10 @@ function visitors_days_of_week() {
   }
 
   $output  = visitors_date_filter();
-  $output .= '<img src="'. url() .'admin/visitors/days_of_week/graph" alt="Days of week">';
+
+  if ($count > 0) {
+    $output .= '<img src="'. url() .'admin/visitors/days_of_week/graph" alt="Days of week">';
+  }
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -441,6 +451,7 @@ function visitors_days_of_month() {
 
   $rows = array();
   $i = 0;
+  $count = 0;
 
   while ($data = db_fetch_object($result)) {
     $rows[] = array(
@@ -448,10 +459,15 @@ function visitors_days_of_month() {
       (int) $data->day,
       $data->count
     );
+
+    $count += $data->count;
   }
 
   $output  = visitors_date_filter();
-  $output .= '<img src="'. url() .'admin/visitors/days_of_month/graph" alt="Days of month">';
+
+  if ($count > 0) {
+    $output .= '<img src="'. url() .'admin/visitors/days_of_month/graph" alt="Days of month">';
+  }
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 

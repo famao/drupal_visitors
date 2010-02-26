@@ -1,3 +1,8 @@
+Visitors 6.x-0.26, 2010-02-26
+------------------------
+- Fixed:
+    * bug reports #713806: Date range selection offers start years not having any reports.
+
 Visitors 6.x-0.25, 2010-02-22
 ------------------------
 - Fixed:
