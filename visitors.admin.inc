@@ -223,13 +223,16 @@ function visitors_hosts() {
 
   $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
   $i = 0 + ($page * $items_per_page);
+  $whois_enable = module_exists('whois');
+  $attr = array('attributes' => array('target' => '_blank', 'title' => t('Whois lookup')));
 
   while ( $data = db_fetch_object($results) ) {
+    $ip = long2ip($data->visitors_ip);
     $rows[] = array(
       ++$i,
-      long2ip($data->visitors_ip),
+      $whois_enable ? l($ip, 'whois/'. $ip, $attr) : check_plain($ip),
       $data->count,
-      l(t('hits'), 'admin/visitors/hosts/'. long2ip($data->visitors_ip))
+      l(t('hits'), 'admin/visitors/hosts/'. $ip)
     );
   }
 
@@ -624,9 +627,13 @@ function visitors_hit_details($aid) {
       theme('username', $access)
     );
 
+    $whois_enable = module_exists('whois');
+    $attr = array('attributes' => array('target' => '_blank', 'title' => t('Whois lookup')));
+    $ip = long2ip($access->visitors_ip);
+
     $rows[] = array(
       array('data' => t('Hostname'), 'header' => TRUE),
-      check_plain(long2ip($access->visitors_ip))
+      $whois_enable ? l($ip, 'whois/'. $ip, $attr) : check_plain($ip)
     );
 
     $rows[] = array(

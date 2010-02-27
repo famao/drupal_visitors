@@ -1,3 +1,8 @@
+Visitors 6.x-0.27, 2010-02-27
+------------------------
+- Added:
+    * feature requests #684636: show whois of visitors.
+
 Visitors 6.x-0.26, 2010-02-26
 ------------------------
 - Fixed:
