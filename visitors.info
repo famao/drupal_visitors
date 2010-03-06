@@ -2,4 +2,11 @@
 name = Visitors
 description = "This module used for displaying a visitors info."
 package = "Visitors"
-core = "6.x"
+core = "7.x"
+files[] = visitors.module
+files[] = visitors.admin.inc
+files[] = visitors.date_filter.inc
+files[] = visitors.pages.inc
+files[] = visitors.install
+files[] = visitors.settings.inc
+configure = admin/settings/visitors
