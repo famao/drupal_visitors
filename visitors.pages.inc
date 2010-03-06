@@ -21,7 +21,7 @@ function visitors_node() {
       array('data' => t('#')),
       array('data' => t('ID'), 'field' => 'visitors_id', 'sort' => 'desc'),
       array('data' => t('Date'), 'field' => 'visitors_date_time'),
-      array('data' => t('Referrer'), 'field' => 'visitors_referer'),
+      array('data' => t('Referer'), 'field' => 'visitors_referer'),
       array('data' => t('User'), 'field' => 'u.name'),
       array('data' => t('Operations'))
     );

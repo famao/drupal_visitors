@@ -1,5 +1,10 @@
+Visitors 6.x-0.29, 2010-03-06
+-----------------------
+- Added:
+    * referer list report.
+
 Visitors 6.x-0.28, 2010-03-06
-------------------------
+-----------------------
 - Fixed:
     * bug reports #730248: Provide theme function for block output.
 

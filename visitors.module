@@ -164,6 +164,15 @@ function visitors_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['admin/visitors/referers'] = array(
+    'title' => 'Referers',
+    'description' => 'View referer list.',
+    'page callback' => 'visitors_referer_list',
+    'access arguments' => array('access visitors'),
+    'file' => 'visitors.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
   $items['admin/visitors/hosts/%'] = array(
     'title' => 'Hits',
     'description' => 'View host access log.',
