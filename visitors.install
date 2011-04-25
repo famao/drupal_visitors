@@ -10,7 +10,7 @@
  * Install the module with a new database table.
  */
 function visitors_install() {
-  drupal_set_message('Installing visitors module');
+  drupal_set_message(st('Installing visitors module'));
   drupal_install_schema('visitors');
 }
 
@@ -54,6 +54,26 @@ function visitors_update_6021() {
   return $ret;
 }
 
+function visitors_update_6031() {
+  $ret = array();
+
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      $ret[] = update_sql("ALTER TABLE {visitors} CHANGE COLUMN visitors_url visitors_url text NOT NULL");
+      $ret[] = update_sql("ALTER TABLE {visitors} CHANGE COLUMN visitors_referer visitors_referer text NOT NULL");
+      $ret[] = update_sql("ALTER TABLE {visitors} CHANGE COLUMN visitors_user_agent visitors_user_agent text NOT NULL");
+      break;
+    case 'pgsql':
+      db_change_column($ret, 'visitors', 'visitors_url', 'visitors_url', 'text', array('not null' => TRUE));
+      db_change_column($ret, 'visitors', 'visitors_referer', 'visitors_referer', 'text', array('not null' => TRUE));
+      db_change_column($ret, 'visitors', 'visitors_user_agent', 'visitors_user_agent', 'text', array('not null' => TRUE));
+      break;
+  }
+
+  return $ret;
+}
+
 /**
  * Implementation of hook_schema().
  */
@@ -81,16 +101,12 @@ function visitors_schema() {
         'default' => 0,
       ),
       'visitors_url' => array(
-        'type' => 'varchar',
-        'length' => 255,
+        'type' => 'text',
         'not null' => TRUE,
-        'default' => '',
       ),
       'visitors_referer' => array(
-        'type' => 'varchar',
-        'length' => 255,
+        'type' => 'text',
         'not null' => TRUE,
-        'default' => '',
       ),
       'visitors_path' => array(
         'type' => 'varchar',
@@ -105,10 +121,8 @@ function visitors_schema() {
         'default' => '',
       ),
       'visitors_user_agent' => array(
-        'type' => 'varchar',
-        'length' => 255,
+        'type' => 'text',
         'not null' => TRUE,
-        'default' => '',
       ),
     ),
     'primary key' => array('visitors_id'),

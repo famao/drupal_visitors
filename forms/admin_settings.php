@@ -92,7 +92,7 @@ function visitors_admin_settings() {
     '#type' => 'select',
     '#title' => 'Lines per page',
     '#default_value' => variable_get('visitors_lines_per_page', 10),
-    '#options' => array(5 => 5, 10 => 10, 25 => 25, 50 => 50, 100 => 100),
+    '#options' => array(5 => 5, 10 => 10, 25 => 25, 50 => 50, 100 => 100, 200 => 200, 250 => 250, 500 => 500, 1000 => 1000),
     '#description' => t('The default maximum number of lines to display per page.'),
   );
 

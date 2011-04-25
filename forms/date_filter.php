@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * @file
  * Date filter form for the visitors module.
@@ -12,7 +11,8 @@
  * for processing, after and rendered for display if necessary.
  */
 function visitors_date_filter() {
-  return drupal_get_form('visitors_date_filter_form');
+  $form = drupal_get_form('visitors_date_filter_form');
+  return drupal_render($form);
 }
 
 /**
@@ -45,13 +45,14 @@ function visitors_set_session_date_range() {
  * @return int array years array from min year to max year
  */
 function visitors_get_years_range() {
+  /* TODO: use db_select() function. */
   $sql = sprintf('SELECT MIN(visitors_date_time) AS min_time
                   FROM {visitors}
                   LIMIT 1'
                 );
   $result = db_query($sql);
   $min_time = time();
-  while ( $data = db_fetch_object($result) ) {
+  foreach($result as $data) {
     $min_time = $data->min_time;
   }
 
@@ -107,11 +108,9 @@ function visitors_expand_date($element) {
 }
 
 /**
- * Date filter form data.
+ * Date filter form block.
  */
-function visitors_date_filter_form($form_state) {
-  visitors_set_session_date_range();
-
+function visitors_date_filter_form_block() {
   $form = array();
 
   $form['visitors_date_filter'] = array(
@@ -136,6 +135,17 @@ function visitors_date_filter_form($form_state) {
     '#default_value' => $_SESSION['visitors_to']
   );
 
+  return $form;
+}
+
+/**
+ * Date filter form data.
+ */
+function visitors_date_filter_form($form_state) {
+  visitors_set_session_date_range();
+
+  $form = visitors_date_filter_form_block();
+
   $form['visitors_date_filter']['submit'] = array(
     '#type'          => 'submit',
     '#value'         => t('Submit'),
@@ -148,28 +158,32 @@ function visitors_date_filter_form($form_state) {
  * Visitors date filter form values validation.
  */
 function visitors_date_filter_form_validate($form, &$form_state) {
-  $from = mktime(0, 0, 0,
-    $form_state['values']['from']['month'],
-    $form_state['values']['from']['day'],
-    $form_state['values']['from']['year']
-  );
+  $from          = $form_state['values']['from'];
+  $to            = $form_state['values']['to'];
 
-  $to  = mktime(23, 59, 59,
-    $form_state['values']['to']['month'],
-    $form_state['values']['to']['day'],
-    $form_state['values']['to']['year']
-  );
+  $error_message = t('The specified date is invalid.');
+
+  if (!checkdate((int) $from['month'], (int) $from['day'], (int) $from['year'])) {
+    return form_set_error('from', $error_message);
+  }
+
+  if (!checkdate((int) $to['month'], (int) $to['day'], (int) $to['year'])) {
+    return form_set_error('to', $error_message);
+  }
+
+  $from = mktime(0, 0, 0, $from['month'], $from['day'], $from['year']);
+  $to = mktime(23, 59, 59, $to['month'], $to['day'], $to['year']);
 
   if ((int) $from <= 0) {
-    return form_set_error('from', t('The specified date is invalid.'));
+    return form_set_error('from', $error_message);
   }
 
   if ((int) $to <= 0) {
-    return form_set_error('to', t('The specified date is invalid.'));
+    return form_set_error('to', $error_message);
   }
 
   if ($from > $to) {
-    form_set_error('from', t('The specified date range is invalid.'));
+    form_set_error('from', $error_message);
   }
 }
 
@@ -189,11 +203,10 @@ function visitors_date_filter_form_submit($form, &$form_state) {
  *         (before PHP 5.1 it returned -1).
  */
 function visitors_get_from_timestamp() {
-  return mktime(0, 0, 0,
-                $_SESSION['visitors_from']['month'],
-                $_SESSION['visitors_from']['day'],
-                $_SESSION['visitors_from']['year']
-  );
+  $diff = visitors_timezone_diff();
+  $from = $_SESSION['visitors_from'];
+
+  return gmmktime(0, 0, 0, $from['month'], $from['day'], $from['year']) - $diff;
 }
 
 /**
@@ -204,11 +217,10 @@ function visitors_get_from_timestamp() {
  *         (before PHP 5.1 it returned -1).
  */
 function visitors_get_to_timestamp() {
-  return mktime(23, 59, 59,
-                $_SESSION['visitors_to']['month'],
-                $_SESSION['visitors_to']['day'],
-                $_SESSION['visitors_to']['year']
-  );
+  $diff = visitors_timezone_diff();
+  $to   = $_SESSION['visitors_to'];
+
+  return gmmktime(23, 59, 59, $to['month'], $to['day'], $to['year']) - $diff;
 }
 
 /**
@@ -216,11 +228,13 @@ function visitors_get_to_timestamp() {
  *
  * @return string sql query.
  */
-function visitors_date_filter_sql_condition() {
+function visitors_date_filter_sql_condition(&$query) {
   visitors_set_session_date_range();
 
   $from = visitors_get_from_timestamp();
   $to   = visitors_get_to_timestamp();
 
-  return sprintf('visitors_date_time BETWEEN %d AND %d', $from, $to);
+  //return sprintf('visitors_date_time BETWEEN %d AND %d', $from, $to);
+  $query->condition('visitors_date_time', $from, '>');
+  $query->condition('visitors_date_time', $to, '<');
 }

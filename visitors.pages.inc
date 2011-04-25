@@ -6,7 +6,7 @@
  * Node page callbacks for the visitors module.
  */
 
-require_once dirname(__FILE__) .'/visitors.date_filter.inc';
+require_once dirname(__FILE__) .'/forms/date_filter.php';
 
 /**
  * Implementation of hook_node().
@@ -48,10 +48,10 @@ function visitors_node() {
       $rows[] = array(
         ++$i,
         $data->visitors_id,
-        date($date_format, $data->visitors_date_time),
+        format_date($data->visitors_date_time, 'custom', $date_format),
         l($data->visitors_referer, $data->visitors_referer),
         $user_page,
-        l(t('details'), 'admin/visitors/hits/'. $data->visitors_id)
+        l(t('details'), 'visitors/hits/'. $data->visitors_id)
       );
     }
 

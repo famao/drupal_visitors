@@ -6,10 +6,11 @@
  * Admin page callbacks for the visitors module.
  */
 
-require_once dirname(__FILE__) .'/pChart/pData.class';
-require_once dirname(__FILE__) .'/pChart/pChart.class';
+require_once dirname(__FILE__) .'/pchart/pData.class';
+require_once dirname(__FILE__) .'/pchart/pChart.class';
 
-require_once dirname(__FILE__) .'/visitors.date_filter.inc';
+require_once dirname(__FILE__) .'/forms/date_filter.php';
+require_once dirname(__FILE__) .'/forms/referers.php';
 
 /**
  * Draw graph.
@@ -38,15 +39,18 @@ function visitors_graph($values, $x_array = NULL) {
   $data_set->AddSerie('Serie1');
   $data_set->SetSerieName('', 'Serie1');
 
+  $data = $data_set->GetData();
+  $data_description = $data_set->GetDataDescription();
+
   // Initialise the graph
   $pchart = new pChart($width, $height);
-  $pchart->setFontProperties(dirname(__FILE__) .'/Fonts/tahoma.ttf', 8);
+  $pchart->setFontProperties(dirname(__FILE__) .'/fonts/tahoma.ttf', 8);
   $pchart->setGraphArea(50, 30, $width - 20, $height - 30);
   $pchart->drawFilledRoundedRectangle(7, 7, $width - 7, $height - 7, 5, 240, 240, 240);
   $pchart->drawRoundedRectangle(5, 5, $width - 5, $height - 5, 5, 230, 230, 230);
   $pchart->drawGraphArea(255, 255, 255, TRUE);
   $pchart->setFixedScale(0, 0, 0, 0, 0, 0, 0);
-  $pchart->drawScale($data_set->GetData(), $data_set->GetDataDescription(),
+  $pchart->drawScale($data, $data_description,
     SCALE_ADDALLSTART0, 150, 150, 150, TRUE, 0, 0, TRUE
   );
   $pchart->drawGrid(4, TRUE, 230, 230, 230, 50);
@@ -55,7 +59,7 @@ function visitors_graph($values, $x_array = NULL) {
   $pchart->drawTreshold(0, 143, 55, 72, TRUE, TRUE);
 
   // Draw the bar graph
-  $pchart->drawBarGraph($data_set->GetData(), $data_set->GetDataDescription(), TRUE);
+  $pchart->drawBarGraph($data, $data_description, TRUE);
 
   // Finish the graph
   $pchart->Stroke();
@@ -106,11 +110,11 @@ function visitors_recent_hits() {
     $rows[] = array(
       ++$i,
       $data->visitors_id,
-      date($date_format, $data->visitors_date_time),
+      format_date($data->visitors_date_time, 'custom', $date_format),
       check_plain($data->visitors_title) .'<br/>'. l($data->visitors_path,
       $data->visitors_url),
       $user_page,
-      l(t('details'), 'admin/visitors/hits/'. $data->visitors_id)
+      l(t('details'), 'visitors/hits/'. $data->visitors_id)
     );
   }
 
@@ -177,11 +181,11 @@ function visitors_host_hits($ip) {
     $rows[] = array(
       ++$i,
       $data->visitors_id,
-      date($date_format, $data->visitors_date_time),
+      format_date($data->visitors_date_time, 'custom', $date_format),
       check_plain($data->visitors_title) .'<br/>'.
         l($data->visitors_path, $data->visitors_url),
       $user_page,
-      l(t('details'), 'admin/visitors/hits/'. $data->visitors_id)
+      l(t('details'), 'visitors/hits/'. $data->visitors_id)
     );
   }
 
@@ -189,7 +193,7 @@ function visitors_host_hits($ip) {
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
-  drupal_set_title(t('Hits from ') . check_plain($ip));
+  drupal_set_title(t('Hits from') .' '. check_plain($ip));
 
   return $output;
 }
@@ -231,7 +235,7 @@ function visitors_hosts() {
       ++$i,
       $whois_enable ? l($ip, 'whois/'. $ip, $attr) : check_plain($ip),
       $data->count,
-      l(t('hits'), 'admin/visitors/hosts/'. $ip)
+      l(t('hits'), 'visitors/hosts/'. $ip)
     );
   }
 
@@ -256,20 +260,19 @@ function visitors_referer_list() {
 
   $sql = sprintf("SELECT count( * ) as count, visitors_referer
                   FROM {visitors}
-                  WHERE %s
+                  WHERE %s %s
                   GROUP BY visitors_referer" . tablesort_sql($header),
-                  visitors_date_filter_sql_condition()
+                  visitors_date_filter_sql_condition(),
+                  visitors_referers_condition()
                 );
-
   $sql_count = 'SELECT count(DISTINCT visitors_referer) FROM {visitors} WHERE '.
-                visitors_date_filter_sql_condition();
-  $results = pager_query($sql, $items_per_page, 0, $sql_count);
-
+                visitors_date_filter_sql_condition() .' '.
+                visitors_referers_condition();
+  $results = pager_query($sql, $items_per_page, 0, $sql_count, $_SERVER['HTTP_HOST']);
   $rows = array();
 
   $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
   $i = 0 + ($page * $items_per_page);
-
   while ( $data = db_fetch_object($results) ) {
     $rows[] = array(
       ++$i,
@@ -278,7 +281,7 @@ function visitors_referer_list() {
     );
   }
 
-  $output  = visitors_date_filter();
+  $output  = drupal_get_form('visitors_referers_form');
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
 
@@ -303,7 +306,6 @@ function visitors_hours() {
                   visitors_date_filter_sql_condition(),
                   tablesort_sql($header)
                 );
-
   $sql_count = sprintf('SELECT count(distinct(%s))
                         FROM {visitors}
                         WHERE %s',
@@ -331,7 +333,7 @@ function visitors_hours() {
   $output  = visitors_date_filter();
 
   if ($count > 0) {
-    $output .= '<img src="'. url() .'admin/visitors/hours/graph" alt="Hours">';
+    $output .= '<img src="'. url('visitors/hours/graph') .'" alt="Hours">';
   }
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
@@ -364,6 +366,29 @@ function graph_visitors_hours() {
   visitors_graph($rows, $hours);
 }
 
+/**
+ * Create days of week array, using date_first_day parameter,
+ * using keys as day of week.
+ *
+ * @return array
+ */
+function visitors_get_days_of_week() {
+  $days = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+  $sort_days = array();
+  $date_first_day = (int) variable_get('date_first_day', 0);
+  $n = 1;
+  for ($i = $date_first_day; $i < 7; $i++) {
+    $sort_days[$days[$i]] = $n;
+    $n++;
+  }
+  for ($i = 0; $i < $date_first_day; $i++) {
+    $sort_days[$days[$i]] = $n;
+    $n++;
+  }
+
+  return $sort_days;
+}
+
 function visitors_days_of_week() {
   $header = array(t('#'), t('Day'), t('Pages'));
 
@@ -392,25 +417,21 @@ function visitors_days_of_week() {
 
     $count += $data->count;
   }
+  $rows = array();
+  $sort_days = visitors_get_days_of_week();
 
-  $rows = array(
-    array(1, t('Sun'), 0),
-    array(2, t('Mon'), 0),
-    array(3, t('Tue'), 0),
-    array(4, t('Wed'), 0),
-    array(5, t('Thu'), 0),
-    array(6, t('Fri'), 0),
-    array(7, t('Sat'), 0),
-  );
+  foreach ($sort_days as $day => $value) {
+    $rows[$value] = array($value, t($day), 0);
+  }
 
-  foreach ($tmp_rows as $key => $tmp_item) {
-    $rows[$key][2] = $tmp_item[1];
+  foreach ($tmp_rows as $tmp_item) {
+    $rows[$sort_days[drupal_ucfirst(drupal_strtolower($tmp_item[0]))]][2] = $tmp_item[1];
   }
 
   $output  = visitors_date_filter();
 
   if ($count > 0) {
-    $output .= '<img src="'. url() .'admin/visitors/days_of_week/graph" alt="Days of week">';
+    $output .= '<img src="'. url('visitors/days_of_week/graph') .'" alt="Days of week">';
   }
   $output .= theme('table', $header, $rows);
   $output .= theme('pager', NULL, $items_per_page, 0);
@@ -447,15 +468,16 @@ function graph_visitors_days_of_week() {
     $rows[$i] = 0;
   }
 
+  $sort_days = visitors_get_days_of_week();
   foreach ($tmp_rows as $key => $tmp_item) {
-    $rows[$key] = (int)$tmp_item[1];
+    $rows[$sort_days[drupal_ucfirst(drupal_strtolower($tmp_item[0]))] - 1] = (int) $tmp_item[1];
   }
 
  // build dates series
-  $dates = array(
-    t('Sun'), t('Mon'), t('Tue'), t('Wed'),
-    t('Thu'), t('Fri'), t('Sat')
-  );
+  $dates = array();
+  foreach ($sort_days as $day => $value) {
+      $dates[] = t($day);
+  }
 
   visitors_graph($rows, $dates);
 }
@@ -469,36 +491,19 @@ function visitors_days_of_month() {
     array('data' => t('Pages'), 'field' => 'count'),
   );
 
-  global $db_type;
-  if ($db_type == 'pgsql') {
-    $sql = sprintf('select count(*) as count,
-                    %s as day
-                    from {visitors}
-                    where %s
-                    group by day %s',
-                    visitors_date_format_sql('visitors_date_time', '%e'),
-                    visitors_date_filter_sql_condition(),
-                    tablesort_sql($header)
-                  );
-  }
-  else {
-    $sql = sprintf('select count(*) count,
-                    %s+0 as day
-                    from {visitors}
-                    where %s
-                    group by day %s',
-                    visitors_date_format_sql('visitors_date_time', '%e'),
-                    visitors_date_filter_sql_condition(),
-                    tablesort_sql($header)
-                  );
-  }
-  $result = db_query($sql);
+  /* TODO: move query and result to another functions. */
+  $query = db_select('visitors', 'v');
+  $query->addExpression('COUNT(*)', 'count');
+  $query->addExpression(visitors_date_format_sql('visitors_date_time', '%e'), 'day');
+  visitors_date_filter_sql_condition($query);
+  $query->groupBy('day');
+  $result = $query->execute();
 
   $rows = array();
   $i = 0;
   $count = 0;
 
-  while ($data = db_fetch_object($result)) {
+  foreach ($result as $data) {
     $rows[] = array(
       ++$i,
       (int) $data->day,
@@ -507,36 +512,34 @@ function visitors_days_of_month() {
 
     $count += $data->count;
   }
-
   $output  = visitors_date_filter();
 
   if ($count > 0) {
-    $output .= '<img src="'. url() .'admin/visitors/days_of_month/graph" alt="Days of month">';
+    /* TODO: Add to img width and height. */
+    /* TODO: For alt use t(). */
+    $output .= '<img src="'. url('visitors/days_of_month/graph') .'" alt="Days of month">';
   }
-  $output .= theme('table', $header, $rows);
-  $output .= theme('pager', NULL, $items_per_page, 0);
+  $output .= theme('table', array('header' => $header, 'rows' => $rows));
 
   return $output;
 }
 
 function graph_visitors_days_of_month() {
-  $sql = sprintf('select count(*) as count,
-                  %s as day
-                  from {visitors}
-                  where %s
-                  group by day',
-                  visitors_date_format_sql('visitors_date_time', '%e'),
-                  visitors_date_filter_sql_condition()
-                );
+  /* TODO: move query and result to another functions. */
+  $query = db_select('visitors', 'v');
+  $query->addExpression('COUNT(*)', 'count');
+  $query->addExpression(visitors_date_format_sql('visitors_date_time', '%e'), 'day');
+  $query->groupBy('day');
+  visitors_date_filter_sql_condition($query);
+  $results = $query->execute();
 
-  $results = pager_query($sql, 31, 0, NULL);
   $rows = array();
 
   for ($i = 1; $i <= 31; $i++) {
     $rows[$i] = 0;
   }
 
-  while ($data = db_fetch_object($results)) {
+  foreach ($results as $data) {
     $rows[(int)$data->day] = (int)$data->count;
   }
 
@@ -566,7 +569,6 @@ function visitors_monthly_history() {
                   visitors_date_filter_sql_condition(),
                   tablesort_sql($header)
                 );
-
   $sql_count = sprintf('SELECT count(DISTINCT %s)
                         FROM {visitors}
                         WHERE %s',
@@ -593,7 +595,7 @@ function visitors_monthly_history() {
   $output  = visitors_date_filter();
 
   if (count($rows) > 1) {
-    $output .= '<img src="'. url() .'admin/visitors/monthly_history/graph" alt="Monthly history">';
+    $output .= '<img src="'. url('visitors/monthly_history/graph') .'" alt="Monthly history">';
   }
 
   $output .= theme('table', $header, $rows);
@@ -646,7 +648,7 @@ function visitors_hit_details($aid) {
 
     $rows[] = array(
       array('data' => t('URL'), 'header' => TRUE),
-      l(urldecode(url($access->visitors_path, array('absolute' => TRUE))), $access->visitors_path)
+      l(urldecode($access->visitors_url), urldecode($access->visitors_url))
     );
 
     $rows[] = array(

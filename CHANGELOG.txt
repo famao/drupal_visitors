@@ -1,3 +1,35 @@
+Visitors 6.x-0.33, 2011-04-22
+-----------------------
+- Fixed:
+    * bug reports #1013230: PHP Warning: Call-time pass-by-reference.
+
+Visitors 6.x-0.32, 2010-09-30
+-----------------------
+- Fixed:
+    * bug reports #844952: Wrong timezone.
+    * bug reports #914336: Monthly history for the current month includes a part from previous month.
+    * bug reports #814378: Access denied.
+    * bug reports #922340: Days of week report does not check first day of week date time locale settings.
+- Added:
+    * feature requests #913232: Offer higher numbers of "Lines per page" setting.
+    * feature requests #734956: Referrers include internal pages.
+
+Visitors 6.x-0.31, 2010-08-07
+-----------------------
+- Fixed:
+    * bug reports #795060: Graphs won't show up in other language.
+    * bug reports #860212: Colum size too short for user_agent and referrer.
+    * bug reports #770930: User warning: Data too long for column 'visitors_url'.
+- Added:
+    * German translation.
+    * Italian translation.
+
+Visitors 6.x-0.30, 2010-07-16
+-----------------------
+- Fixed:
+    * bug reports #814378: Access denied.
+    * bug reports #508120: Fatal error: Call to undefined function user_access().
+
 Visitors 6.x-0.29, 2010-03-06
 -----------------------
 - Added:
