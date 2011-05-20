@@ -631,45 +631,54 @@ function graph_visitors_monthly_history() {
 /**
  * Menu callback; Displays recent page accesses.
  */
-function visitors_hit_details($aid) {
-  $result = db_query('SELECT a.*, u.name, u.uid
-                      FROM {visitors} a
-                      LEFT JOIN {users} u
-                      ON a.visitors_uid = u.uid
-                      WHERE visitors_id = %d',
-                      $aid
-                    );
+ # TODO: Add page title.
+function visitors_hit_details($visitors_id) {
+  $query = db_select('visitors', 'v');
+  $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
+  $query->fields(
+    'v', 
+    array(
+      'visitors_url', 
+      'visitors_title', 
+      'visitors_referer', 
+      'visitors_date_time', 
+      'visitors_ip', 
+      'visitors_user_agent'
+    )
+  );
+  $query->fields('u', array('name', 'uid'));
+  $query->condition('v.visitors_id', (int)$visitors_id);
+  $hit_details = $query->execute()->fetch();
 
-  if ($access = db_fetch_object($result)) {
-
+  if ($hit_details) {
     $rows[] = array(
       array('data' => t('URL'), 'header' => TRUE),
-      l(urldecode($access->visitors_url), urldecode($access->visitors_url))
+      l(urldecode($hit_details->visitors_url), urldecode($hit_details->visitors_url))
     );
 
     $rows[] = array(
       array('data' => t('Title'), 'header' => TRUE),
-      check_plain($access->visitors_title)
+      check_plain($hit_details->visitors_title)
     );
 
     $rows[] = array(
       array('data' => t('Referer'), 'header' => TRUE),
-      ($access->visitors_referer ? l($access->visitors_referer, $access->visitors_referer) : '')
+      ($hit_details->visitors_referer ? l($hit_details->visitors_referer, $hit_details->visitors_referer) : '')
     );
 
     $rows[] = array(
       array('data' => t('Date'), 'header' => TRUE),
-      format_date($access->visitors_date_time, 'large')
+      format_date($hit_details->visitors_date_time, 'large')
     );
 
     $rows[] = array(
       array('data' => t('User'), 'header' => TRUE),
-      theme('username', $access)
+      theme('username', array('account' => $hit_details))
     );
 
     $whois_enable = module_exists('whois');
     $attr = array('attributes' => array('target' => '_blank', 'title' => t('Whois lookup')));
-    $ip = long2ip($access->visitors_ip);
+    $ip = long2ip($hit_details->visitors_ip);
 
     $rows[] = array(
       array('data' => t('Hostname'), 'header' => TRUE),
@@ -678,14 +687,13 @@ function visitors_hit_details($aid) {
 
     $rows[] = array(
       array('data' => t('User Agent'), 'header' => TRUE),
-      check_plain($access->visitors_user_agent)
+      check_plain($hit_details->visitors_user_agent)
     );
 
-    return theme('table', array(), $rows);
+    return theme('table', array('rows' => $rows));
   }
-  else {
-    drupal_not_found();
-  }
+    
+  drupal_not_found();
 }
 
 function visitors_top_pages() {
