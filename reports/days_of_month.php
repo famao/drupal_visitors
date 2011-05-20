@@ -6,10 +6,10 @@ function visitors_days_of_month_data($header) {
   $query->addExpression(visitors_date_format_sql('visitors_date_time', '%e'), 'day');
   $query->groupBy('day');
   visitors_date_filter_sql_condition($query);
-  
+
   if (!is_null($header))
     $query->extend('TableSort')->orderByHeader($header);
-  
+
   return $query->execute();
 }
 
@@ -38,8 +38,7 @@ function visitors_days_of_month() {
 
   if ($count > 0) {
     /* TODO: Add to img width and height. */
-    /* TODO: For alt use t(). */
-    $output .= '<img src="'. url('visitors/days_of_month/graph') .'" alt="Days of month">';
+    $output .= '<img src="'. url('visitors/days_of_month/graph') .'" alt="'.t('Days of month').'">';
   }
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
 
