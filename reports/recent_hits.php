@@ -31,6 +31,8 @@ $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort')
   );
   $query->fields('u', array('name', 'uid'));
   visitors_date_filter_sql_condition($query);
+  $query->orderByHeader($header);
+  $query->limit($items_per_page);
 
   $count_query = db_select('visitors', 'v');
   $count_query->addExpression('COUNT(*)');
