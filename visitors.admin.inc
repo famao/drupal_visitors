@@ -482,28 +482,32 @@ function graph_visitors_days_of_week() {
   visitors_graph($rows, $dates);
 }
 
-function visitors_days_of_month() {
-  $items_per_page = 31;
+function visitors_days_of_month_data($header) {
+  $query = db_select('visitors', 'v');
+  $query->addExpression('COUNT(*)', 'count');
+  $query->addExpression(visitors_date_format_sql('visitors_date_time', '%e'), 'day');
+  $query->groupBy('day');
+  visitors_date_filter_sql_condition($query);
+  
+  if (!is_null($header))
+    $query->extend('TableSort')->orderByHeader($header);
+  
+  return $query->execute();
+}
 
+function visitors_days_of_month() {
   $header = array(
     array('data' => t('#')),
     array('data' => t('Day'), 'field' => 'day', 'sort' => 'asc'),
     array('data' => t('Pages'), 'field' => 'count'),
   );
 
-  /* TODO: move query and result to another functions. */
-  $query = db_select('visitors', 'v');
-  $query->addExpression('COUNT(*)', 'count');
-  $query->addExpression(visitors_date_format_sql('visitors_date_time', '%e'), 'day');
-  visitors_date_filter_sql_condition($query);
-  $query->groupBy('day');
-  $result = $query->execute();
+  $results = visitors_days_of_month_data($header);
+  $rows    = array();
+  $i       = 0;
+  $count   = 0;
 
-  $rows = array();
-  $i = 0;
-  $count = 0;
-
-  foreach ($result as $data) {
+  foreach ($results as $data) {
     $rows[] = array(
       ++$i,
       (int) $data->day,
@@ -525,14 +529,7 @@ function visitors_days_of_month() {
 }
 
 function graph_visitors_days_of_month() {
-  /* TODO: move query and result to another functions. */
-  $query = db_select('visitors', 'v');
-  $query->addExpression('COUNT(*)', 'count');
-  $query->addExpression(visitors_date_format_sql('visitors_date_time', '%e'), 'day');
-  $query->groupBy('day');
-  visitors_date_filter_sql_condition($query);
-  $results = $query->execute();
-
+  $results = visitors_days_of_month_data(NULL);
   $rows = array();
 
   for ($i = 1; $i <= 31; $i++) {
@@ -545,7 +542,6 @@ function graph_visitors_days_of_month() {
 
   // build dates series
   $dates = range(1, 31);
-
   visitors_graph($rows, $dates);
 }
 
