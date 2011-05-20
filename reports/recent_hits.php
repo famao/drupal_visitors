@@ -16,7 +16,7 @@ function visitors_recent_hits() {
     array('data' => t('Operations'))
   );
 
-$query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
+  $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
   $query->leftJoin('users', 'u', 'u.uid=v.visitors_id');
   $query->fields(
     'v',
