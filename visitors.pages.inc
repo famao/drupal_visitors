@@ -25,26 +25,22 @@ function visitors_node() {
       array('data' => t('Operations'))
     );
 
-    $sql = sprintf("SELECT v.*, u.name, u.uid
-                    FROM {visitors} v
-                    LEFT JOIN {users} u
-                    ON u.uid = v.visitors_uid
-                    WHERE v.visitors_path LIKE 'node/%d%%'
-                    AND %s".
-                    tablesort_sql($header),
-                    $node->nid,
-                    visitors_date_filter_sql_condition()
-                  );
+    $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
+    $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
+    $query->fields('v', array('visitors_uid', 'visitors_id', 'visitors_date_time', 'visitors_referer'));
+    $query->fields('u', array('name', 'uid'));
+    $query->condition('v.visitors_path', 'node/'.(int)$node->nid.'%', 'LIKE');
+    visitors_date_filter_sql_condition($query);
+    $query->orderByHeader($header);
+    $query->limit($items_per_page);
 
-    $results = pager_query($sql, $items_per_page, 0, NULL);
-
+    $results = $query->execute();
     $rows = array();
     $page = isset($_GET['page']) ? $_GET['page'] : '';
     $i = 0 + ($page  * $items_per_page);
-
-    while ( $data = db_fetch_object($results) ) {
-      $user = user_load(array('uid' => $data->visitors_uid));
-      $user_page = theme('username', $data);
+    foreach($results as $data) {
+      $user = user_load($data->visitors_uid);
+      $user_page = theme('username', array('account' => $user));
       $rows[] = array(
         ++$i,
         $data->visitors_id,
@@ -56,9 +52,8 @@ function visitors_node() {
     }
 
     $output  = visitors_date_filter();
-    $output .= theme('table', $header, $rows);
-    $output .= theme('pager', NULL, $items_per_page, 0);
-    drupal_set_title(check_plain($node->title));
+    $output .= theme('table', array('header' => $header, 'rows' => $rows));
+    $output .= theme('pager', array('quantity' => $items_per_page));
 
     return $output;
   }
