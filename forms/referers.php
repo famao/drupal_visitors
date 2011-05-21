@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * @file
  * Referers form for visitors module.
@@ -20,6 +19,11 @@ function visitors_set_session_referer_type() {
   if (!isset($_SESSION['referer_type'])) {
     $_SESSION['referer_type'] = REFERER_TYPE_EXTERNAL_PAGES;
   }
+}
+
+function visitors_referers() {
+  $form = drupal_get_form('visitors_referers_form');
+  return drupal_render($form);
 }
 
 /**
@@ -78,17 +82,17 @@ function visitors_referers_form_submit($form, &$form_state) {
  *
  * @return string sql query.
  */
-function visitors_referers_condition() {
+function visitors_referers_condition(&$query) {
   visitors_set_session_referer_type();
   switch ($_SESSION['referer_type']) {
     case REFERER_TYPE_INTERNAL_PAGES:
-      $query = "AND visitors_referer LIKE '%%%s%%' AND visitors_referer <> ''";
+      $query->condition('visitors_referer', sprintf('%%%s%%', $_SERVER['HTTP_HOST']), 'LIKE');
+      $query->condition('visitors_referer', '', '<>');
       break;
     case REFERER_TYPE_EXTERNAL_PAGES:
-      $query = "AND visitors_referer NOT LIKE '%%%s%%'";
+      $query->condition('visitors_referer', sprintf('%%%s%%', $_SERVER['HTTP_HOST']), 'NOT LIKE');
       break;
     default:
-      $query = '';
       break;
   }
 
