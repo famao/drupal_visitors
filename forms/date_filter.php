@@ -234,7 +234,6 @@ function visitors_date_filter_sql_condition(&$query) {
   $from = visitors_get_from_timestamp();
   $to   = visitors_get_to_timestamp();
 
-  //return sprintf('visitors_date_time BETWEEN %d AND %d', $from, $to);
   $query->condition('visitors_date_time', $from, '>');
   $query->condition('visitors_date_time', $to, '<');
 }

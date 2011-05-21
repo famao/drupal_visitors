@@ -12,8 +12,6 @@ function visitors_top_pages() {
 
   $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
   $query->addExpression('COUNT(visitors_id)', 'count');
-  #$query->addExpression('MIN(visitors_title)', 'visitors_title');
-  #$query->addExpression('MIN(visitors_url)', 'visitors_url');
   $query->fields('v', array('visitors_path', 'visitors_title', 'visitors_url'));
   visitors_date_filter_sql_condition($query);
   $query->groupBy('visitors_path');
