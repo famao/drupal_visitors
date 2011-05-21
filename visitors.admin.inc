@@ -14,6 +14,7 @@ require_once dirname(__FILE__) .'/forms/referers.php';
 require_once dirname(__FILE__) .'/reports/days_of_month.php';
 require_once dirname(__FILE__) .'/reports/days_of_week.php';
 require_once dirname(__FILE__) .'/reports/hit_details.php';
+require_once dirname(__FILE__) .'/reports/hours.php';
 require_once dirname(__FILE__) .'/reports/monthly_history.php';
 require_once dirname(__FILE__) .'/reports/recent_hits.php';
 
@@ -232,84 +233,6 @@ function visitors_referer_list() {
   $output .= theme('pager', NULL, $items_per_page, 0);
 
   return $output;
-}
-
-function visitors_hours() {
-  $items_per_page = 24;
-
-  $header = array(
-    array('data' => t('#')),
-    array('data' => t('Hour'), 'field' => 'hour', 'sort' => 'asc'),
-    array('data' => t('Pages'), 'field' => 'count'),
-  );
-
-  $sql = sprintf('select count(*) as count,
-                  %s as  hour
-                  from {visitors}
-                  where %s
-                  group by hour %s',
-                  visitors_date_format_sql('visitors_date_time', '%H'),
-                  visitors_date_filter_sql_condition(),
-                  tablesort_sql($header)
-                );
-  $sql_count = sprintf('SELECT count(distinct(%s))
-                        FROM {visitors}
-                        WHERE %s',
-                        visitors_date_format_sql('visitors_date_time', '%H'),
-                        visitors_date_filter_sql_condition()
-                        );
-
-  $results = pager_query($sql, $items_per_page, 0, $sql_count);
-
-  $rows = array();
-
-  $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
-  $i = 0 + $page * $items_per_page;
-  $count = 0;
-
-  while ($data = db_fetch_object($results)) {
-    $rows[] = array(
-      ++$i,
-      $data->hour,
-      $data->count
-    );
-    $count += $data->count;
-  }
-
-  $output  = visitors_date_filter();
-
-  if ($count > 0) {
-    $output .= '<img src="'. url('visitors/hours/graph') .'" alt="Hours">';
-  }
-  $output .= theme('table', $header, $rows);
-  $output .= theme('pager', NULL, $items_per_page, 0);
-
-  return $output;
-}
-
-function graph_visitors_hours() {
-  $sql = sprintf('SELECT count(*) as count,
-                  %s as hour
-                  FROM {visitors}
-                  WHERE %s
-                  group by hour',
-                  visitors_date_format_sql('visitors_date_time', '%H'),
-                  visitors_date_filter_sql_condition()
-                );
-  $result = db_query($sql);
-  $tmp_rows = array();
-  $rows = array();
-  for ($i = 0; $i < 24; $i++) {
-    $rows[$i] = 0;
-  }
-
-  while ( $data = db_fetch_object($result) ) {
-    $rows[(int)$data->hour] = $data->count;
-  }
-
-  $hours = range(0, 23);
-
-  visitors_graph($rows, $hours);
 }
 
 function visitors_top_pages() {
