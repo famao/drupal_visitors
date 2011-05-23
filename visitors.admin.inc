@@ -1,19 +1,14 @@
 <?php
 
-# TODO: Remove unused fonts.
 # TODO: Create constants for folders.
 # TODO: Add visitors_get_current_page function.
 # TODO: Move width and height to separate functions.
-# TODO: Rename this file to graph.php.
 /**
  * @file
  * Admin page callbacks for the visitors module.
  */
 
 require_once dirname(__FILE__) .'/visitors.chart';
-
-require_once dirname(__FILE__) .'/pchart/pData.class';
-require_once dirname(__FILE__) .'/pchart/pChart.class';
 
 require_once dirname(__FILE__) .'/forms/date_filter.php';
 require_once dirname(__FILE__) .'/forms/referers.php';

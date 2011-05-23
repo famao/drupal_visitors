@@ -108,27 +108,27 @@ function visitors_admin_settings() {
     array('@cron' => url('admin/reports/status')))
   );
 
-  // Graph settings.
-  $form['visitors_graph_settings'] = array(
+  // Chart settings.
+  $form['visitors_chart_settings'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Graph settings'),
+    '#title' => t('Chart settings'),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
-    '#description' => t('Visitors graph settings')
+    '#description' => t('Visitors chart settings')
   );
 
-  $form['visitors_graph_settings']['visitors_graph_width'] = array(
+  $form['visitors_chart_settings']['visitors_chart_width'] = array(
     '#type' => 'textfield',
     '#title' => t('Width'),
-    '#default_value' => variable_get('visitors_graph_width', 700),
-    '#description' => t('Graph width.')
+    '#default_value' => variable_get('visitors_chart_width', 700),
+    '#description' => t('Chart width.')
   );
 
-  $form['visitors_graph_settings']['visitors_graph_height'] = array(
+  $form['visitors_chart_settings']['visitors_chart_height'] = array(
     '#type' => 'textfield',
     '#title' => t('Height'),
-    '#default_value' => variable_get('visitors_graph_height', 430),
-    '#description' => t('Graph height.')
+    '#default_value' => variable_get('visitors_chart_height', 430),
+    '#description' => t('Chart height.')
   );
 
   return system_settings_form($form);

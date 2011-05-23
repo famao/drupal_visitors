@@ -65,14 +65,14 @@ function visitors_days_of_week() {
   $output  = visitors_date_filter();
 
   if ($count > 0) {
-    $output .= '<img src="'. url('visitors/days_of_week/graph') .'" alt="'.t('Days of week').'">';
+    $output .= '<img src="'. url('visitors/days_of_week/chart') .'" alt="'.t('Days of week').'">';
   }
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
 
   return $output;
 }
 
-function graph_visitors_days_of_week() {
+function chart_visitors_days_of_week() {
   $results = visitors_days_of_week_data();
   $tmp_rows = array();
 
@@ -100,6 +100,6 @@ function graph_visitors_days_of_week() {
       $dates[] = t($day);
   }
 
-  visitors_graph($rows, $dates);
+  visitors_chart($rows, $dates);
 }
 

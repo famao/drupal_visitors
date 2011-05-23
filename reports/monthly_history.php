@@ -40,7 +40,7 @@ function visitors_monthly_history() {
   $output  = visitors_date_filter();
 
   if (count($rows) > 1) {
-    $output .= '<img src="'. url('visitors/monthly_history/graph') .'" alt="'.t('Monthly history').'">';
+    $output .= '<img src="'. url('visitors/monthly_history/chart') .'" alt="'.t('Monthly history').'">';
   }
 
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
@@ -49,7 +49,7 @@ function visitors_monthly_history() {
   return $output;
 }
 
-function graph_visitors_monthly_history() {
+function chart_visitors_monthly_history() {
   $query = db_select('visitors', 'v')->extend('TableSort');
   $query->addExpression('COUNT(*)', 'count');
   $query->addExpression(visitors_date_format_sql('visitors_date_time', '%Y%m'), 'm');
@@ -68,6 +68,6 @@ function graph_visitors_monthly_history() {
   }
 
   if (count($rows) > 1) {
-    visitors_graph($rows, $dates);
+    visitors_chart($rows, $dates);
   }
 }

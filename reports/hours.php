@@ -38,7 +38,7 @@ function visitors_hours() {
   $output  = visitors_date_filter();
 
   if ($count > 0) {
-    $output .= '<img src="'. url('visitors/hours/graph') .'" alt="'.t('Hours').'">';
+    $output .= '<img src="'. url('visitors/hours/chart') .'" alt="'.t('Hours').'">';
   }
 
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
@@ -46,7 +46,7 @@ function visitors_hours() {
   return $output;
 }
 
-function graph_visitors_hours() {
+function chart_visitors_hours() {
   $results = visitors_hours_data(NULL);
   $tmp_rows = array();
   $rows = array();
@@ -60,6 +60,6 @@ function graph_visitors_hours() {
 
   $hours = range(0, 23);
 
-  visitors_graph($rows, $hours);
+  visitors_chart($rows, $hours);
 }
 

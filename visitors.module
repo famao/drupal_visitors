@@ -81,10 +81,10 @@ function visitors_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
-  $items['visitors/monthly_history/graph'] = array(
+  $items['visitors/monthly_history/chart'] = array(
     'title' => 'Monthly history',
     'description' => 'View pages count per month.',
-    'page callback' => 'graph_visitors_monthly_history',
+    'page callback' => 'chart_visitors_monthly_history',
     'access arguments' => array('access visitors'),
     'file' => 'visitors.admin.inc',
     'type' => MENU_CALLBACK,
@@ -99,10 +99,10 @@ function visitors_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
-  $items['visitors/days_of_month/graph'] = array(
+  $items['visitors/days_of_month/chart'] = array(
     'title' => 'Days of month',
     'description' => 'View pages count per day of month.',
-    'page callback' => 'graph_visitors_days_of_month',
+    'page callback' => 'chart_visitors_days_of_month',
     'access arguments' => array('access visitors'),
     'file' => 'visitors.admin.inc',
     'type' => MENU_CALLBACK,
@@ -116,10 +116,10 @@ function visitors_menu() {
     'file' => 'visitors.admin.inc',
   );
 
-  $items['visitors/days_of_week/graph'] = array(
+  $items['visitors/days_of_week/chart'] = array(
     'title' => 'Days of week',
     'description' => 'View pages count per day of week.',
-    'page callback' => 'graph_visitors_days_of_week',
+    'page callback' => 'chart_visitors_days_of_week',
     'access arguments' => array('access visitors'),
     'file' => 'visitors.admin.inc',
     'type' => MENU_CALLBACK,
@@ -134,10 +134,10 @@ function visitors_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
-  $items['visitors/hours/graph'] = array(
+  $items['visitors/hours/chart'] = array(
     'title' => 'Hours',
     'description' => 'View pages count per hour.',
-    'page callback' => 'graph_visitors_hours',
+    'page callback' => 'chart_visitors_hours',
     'access arguments' => array('access visitors'),
     'file' => 'visitors.admin.inc',
     'type' => MENU_CALLBACK,

@@ -38,14 +38,14 @@ function visitors_days_of_month() {
 
   if ($count > 0) {
     /* TODO: Add to img width and height. */
-    $output .= '<img src="'. url('visitors/days_of_month/graph') .'" alt="'.t('Days of month').'">';
+    $output .= '<img src="'. url('visitors/days_of_month/chart') .'" alt="'.t('Days of month').'">';
   }
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
 
   return $output;
 }
 
-function graph_visitors_days_of_month() {
+function chart_visitors_days_of_month() {
   $results = visitors_days_of_month_data(NULL);
   $rows = array();
 
@@ -59,6 +59,6 @@ function graph_visitors_days_of_month() {
 
   // build dates series
   $dates = range(1, 31);
-  visitors_graph($rows, $dates);
+  visitors_chart($rows, $dates);
 }
 

@@ -1,20 +1,23 @@
 <?php
 
-/* vim: set filetype=php: */ 
+/* vim: set filetype=php: */
+
+require_once dirname(__FILE__) .'/pchart/pData.class';
+require_once dirname(__FILE__) .'/pchart/pChart.class';
 
 /**
- * Draw graph.
+ * Draw chart.
  *
  * @values
  *   int array y-axis values
  * @x_array
  *   array x-axis params
  */
-function visitors_graph($values, $x_array = NULL) {
-  $width = (int) variable_get('visitors_graph_width', 700);
+function visitors_chart($values, $x_array = NULL) {
+  $width = (int) variable_get('visitors_chart_width', 700);
   $width = ($width <= 0) ? 700 : $width;
 
-  $height = (int) variable_get('visitors_graph_height', 430);
+  $height = (int) variable_get('visitors_chart_height', 430);
   $height = ($height <=0) ? 430 : $height;
 
   // Dataset definition
@@ -32,7 +35,7 @@ function visitors_graph($values, $x_array = NULL) {
   $data = $data_set->GetData();
   $data_description = $data_set->GetDataDescription();
 
-  // Initialise the graph
+  // Initialise the chart
   $pchart = new pChart($width, $height);
   $pchart->setFontProperties(dirname(__FILE__) .'/fonts/tahoma.ttf', 8);
   $pchart->setGraphArea(50, 30, $width - 20, $height - 30);
@@ -48,10 +51,10 @@ function visitors_graph($values, $x_array = NULL) {
   // Draw the 0 line
   $pchart->drawTreshold(0, 143, 55, 72, TRUE, TRUE);
 
-  // Draw the bar graph
+  // Draw the bar chart
   $pchart->drawBarGraph($data, $data_description, TRUE);
 
-  // Finish the graph
+  // Finish the chart
   $pchart->Stroke();
   exit();
 }
