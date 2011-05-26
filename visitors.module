@@ -320,14 +320,14 @@ function visitors_timezone_diff() {
   if (variable_get('configurable_timezones', 0) == '1') {
     global $user;
     if ($user->timezone !== NULL) {
-      $diff = $user->timezone;
+      $timezone = $user->timezone;
     }
   }
   else {
-    $diff = variable_get('date_default_timezone', 0);
+    $timezone = variable_get('date_default_timezone', 0);
   }
-
-  return $diff;
+  
+  return timezone_offset_get(timezone_open($timezone), date_create());
 }
 
 /**
