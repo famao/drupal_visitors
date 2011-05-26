@@ -317,14 +317,14 @@ function visitors_get_mysql_current_timezone() {
  * @return int
  */
 function visitors_timezone_diff() {
-  $diff = variable_get('date_default_timezone', 0);
-  /* TODO: Remove $configurable_timezones variable. */
-  $configurable_timezones = variable_get('configurable_timezones', 0);
-  if ($configurable_timezones == '1') {
+  if (variable_get('configurable_timezones', 0) == '1') {
     global $user;
     if ($user->timezone !== NULL) {
       $diff = $user->timezone;
     }
+  }
+  else {
+    $diff = variable_get('date_default_timezone', 0);
   }
 
   return $diff;
