@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Top pages report for the visitors module.
+ */
+
+/**
+ * Display top pages report.
+ *
+ * @return
+ *   string top pages report html source
+ */
 function visitors_top_pages() {
   $date_format = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
   $items_per_page = variable_get('visitors_lines_per_page', 10);
@@ -10,9 +21,18 @@ function visitors_top_pages() {
     array('data' => t('Count'), 'field' => 'count', 'sort' => 'desc'),
   );
 
-  $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
+  $query = db_select('visitors', 'v')
+    ->extend('PagerDefault')
+    ->extend('TableSort');
   $query->addExpression('COUNT(visitors_id)', 'count');
-  $query->fields('v', array('visitors_path', 'visitors_title', 'visitors_url'));
+  $query->fields(
+    'v',
+    array(
+      'visitors_path',
+      'visitors_title',
+      'visitors_url'
+    )
+  );
   visitors_date_filter_sql_condition($query);
   $query->groupBy('visitors_path');
   $query->orderByHeader($header);
@@ -32,7 +52,7 @@ function visitors_top_pages() {
   foreach ($results as $data) {
     $rows[] = array(
       ++$i,
-      check_plain($data->visitors_title) .'<br/>'.
+      check_plain($data->visitors_title) . '<br/>' .
       l($data->visitors_path, $data->visitors_url),
       $data->count,
     );
@@ -44,3 +64,4 @@ function visitors_top_pages() {
 
   return $output;
 }
+

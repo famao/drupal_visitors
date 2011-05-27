@@ -1,20 +1,30 @@
 <?php
 
 /**
- * Menu callback; Displays recent page accesses.
+ * @file
+ * Hit details report for the visitors module.
  */
- # TODO: Add page title.
+
+/**
+ * Menu callback; Displays recent page accesses.
+ *
+ * @param visitors_id
+ *   int visitors id from visitors table
+ *
+ * @return
+ *   string hit details report or 404 error if visitors_id not found
+ */
 function visitors_hit_details($visitors_id) {
   $query = db_select('visitors', 'v');
   $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
   $query->fields(
-    'v', 
+    'v',
     array(
-      'visitors_url', 
-      'visitors_title', 
-      'visitors_referer', 
-      'visitors_date_time', 
-      'visitors_ip', 
+      'visitors_url',
+      'visitors_title',
+      'visitors_referer',
+      'visitors_date_time',
+      'visitors_ip',
       'visitors_user_agent'
     )
   );
@@ -25,7 +35,10 @@ function visitors_hit_details($visitors_id) {
   if ($hit_details) {
     $rows[] = array(
       array('data' => t('URL'), 'header' => TRUE),
-      l(urldecode($hit_details->visitors_url), urldecode($hit_details->visitors_url))
+      l(
+        urldecode($hit_details->visitors_url),
+        urldecode($hit_details->visitors_url)
+      )
     );
 
     $rows[] = array(
@@ -35,7 +48,9 @@ function visitors_hit_details($visitors_id) {
 
     $rows[] = array(
       array('data' => t('Referer'), 'header' => TRUE),
-      ($hit_details->visitors_referer ? l($hit_details->visitors_referer, $hit_details->visitors_referer) : '')
+      ($hit_details->visitors_referer ?
+        l($hit_details->visitors_referer, $hit_details->visitors_referer) : ''
+      )
     );
 
     $rows[] = array(
@@ -49,12 +64,14 @@ function visitors_hit_details($visitors_id) {
     );
 
     $whois_enable = module_exists('whois');
-    $attr = array('attributes' => array('target' => '_blank', 'title' => t('Whois lookup')));
+    $attr = array(
+      'attributes' => array('target' => '_blank', 'title' => t('Whois lookup'))
+    );
     $ip = long2ip($hit_details->visitors_ip);
 
     $rows[] = array(
       array('data' => t('Hostname'), 'header' => TRUE),
-      $whois_enable ? l($ip, 'whois/'. $ip, $attr) : check_plain($ip)
+      $whois_enable ? l($ip, 'whois/' . $ip, $attr) : check_plain($ip)
     );
 
     $rows[] = array(
@@ -64,6 +81,7 @@ function visitors_hit_details($visitors_id) {
 
     return theme('table', array('rows' => $rows));
   }
-    
+
   drupal_not_found();
 }
+

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Days of week report for the visitors module.
+ */
+
+/**
  * Create days of week array, using date_first_day parameter,
  * using keys as day of week.
  *
@@ -23,11 +28,26 @@ function visitors_get_days_of_week() {
   return $sort_days;
 }
 
+/**
+ * Get data for days of week report order the query based on a header array.
+ *
+ * @param header
+ *   Table header array. If header is NULL - data is not sorted.
+ *
+ * @return
+ *   hours data array
+ */
 function visitors_days_of_week_data() {
   $query = db_select('visitors', 'v');
   $query->addExpression('COUNT(*)', 'count');
-  $query->addExpression(visitors_date_format_sql('visitors_date_time', '%a'), 'd');
-  $query->addExpression(visitors_date_format_sql('MIN(visitors_date_time)', '%w'), 'n');
+  $query->addExpression(
+    visitors_date_format_sql('visitors_date_time', '%a'),
+    'd'
+  );
+  $query->addExpression(
+    visitors_date_format_sql('MIN(visitors_date_time)', '%w'),
+    'n'
+  );
   visitors_date_filter_sql_condition($query);
   $query->groupBy('d');
   $query->orderBy('n');
@@ -35,6 +55,12 @@ function visitors_days_of_week_data() {
   return $query->execute();
 }
 
+/**
+ * Display days of week report.
+ *
+ * @return
+ *   string days of week report html source
+ */
 function visitors_days_of_week() {
   $header = array(t('#'), t('Day'), t('Pages'));
 
@@ -65,13 +91,23 @@ function visitors_days_of_week() {
   $output  = visitors_date_filter();
 
   if ($count > 0) {
-    $output .= '<img src="'. url('visitors/days_of_week/chart') .'" alt="'.t('Days of week').'">';
+    $output .= sprintf(
+      '<img src="%s" alt="%s" width="%d" height="%d">',
+      url('visitors/days_of_week/chart'),
+      t('Days of week'),
+      visitors_get_chart_width(),
+      visitors_get_chart_height()
+    );
+
   }
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
 
   return $output;
 }
 
+/**
+ * Display days of week chart report.
+ */
 function chart_visitors_days_of_week() {
   $results = visitors_days_of_week_data();
   $tmp_rows = array();

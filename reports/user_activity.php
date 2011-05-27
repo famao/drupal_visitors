@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * @file
+ * User activity report for the visitors module.
+ */
+
+/**
+ * Display user activity report.
+ *
+ * @return
+ *   string user activity report html source
+ */
 function visitors_user_activity() {
   $date_format    = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
   $items_per_page = variable_get('visitors_lines_per_page', 10);
@@ -15,10 +26,12 @@ function visitors_user_activity() {
   $from = visitors_get_from_timestamp();
   $to   = visitors_get_to_timestamp();
 
-  $query = db_select('users', 'u')->extend('PagerDefault')->extend('TableSort');
+  $query = db_select('users', 'u')
+    ->extend('PagerDefault')
+    ->extend('TableSort');
   $query->leftJoin('visitors', 'v', 'u.uid=v.visitors_uid');
   $query->leftJoin('node', 'n', 'u.uid=n.uid');
-  $query->leftJoin('comment', 'c','u.uid=c.uid');
+  $query->leftJoin('comment', 'c', 'u.uid=c.uid');
   $query->fields('u', array('name', 'uid'));
   $query->addExpression('COUNT(DISTINCT v.visitors_id)', 'hits');
   $query->addExpression('COUNT(DISTINCT n.nid)', 'nodes');
@@ -62,3 +75,4 @@ function visitors_user_activity() {
 
   return $output;
 }
+

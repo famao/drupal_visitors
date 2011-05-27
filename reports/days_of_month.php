@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * @file
+ * Days of month report for the visitors module.
+ */
+
+/**
+ * Get data for days of month report order the query based on a header array.
+ *
+ * @param header
+ *   Table header array. If header is NULL - data is not sorted.
+ *
+ * @return
+ *   hours data array
+ */
 function visitors_days_of_month_data($header) {
   $query = db_select('visitors', 'v');
   $query->addExpression('COUNT(*)', 'count');
@@ -13,6 +27,12 @@ function visitors_days_of_month_data($header) {
   return $query->execute();
 }
 
+/**
+ * Display days of month report.
+ *
+ * @return
+ *   string days of month report html source
+ */
 function visitors_days_of_month() {
   $header = array(
     array('data' => t('#')),
@@ -37,14 +57,22 @@ function visitors_days_of_month() {
   $output  = visitors_date_filter();
 
   if ($count > 0) {
-    /* TODO: Add to img width and height. */
-    $output .= '<img src="'. url('visitors/days_of_month/chart') .'" alt="'.t('Days of month').'">';
+    $output .= sprintf(
+      '<img src="%s" alt="%s" width="%d" height="%d">',
+      url('visitors/days_of_month/chart'),
+      t('Days of month'),
+      visitors_get_chart_width(),
+      visitors_get_chart_height()
+    );
   }
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
 
   return $output;
 }
 
+/**
+ * Display days of month chart report.
+ */
 function chart_visitors_days_of_month() {
   $results = visitors_days_of_month_data(NULL);
   $rows = array();

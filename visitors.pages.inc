@@ -1,15 +1,14 @@
 <?php
 
-
 /**
  * @file
  * Node page callbacks for the visitors module.
  */
 
-require_once dirname(__FILE__) .'/forms/date_filter.php';
+require_once dirname(__FILE__) . '/forms/date_filter.php';
 
 /**
- * Implementation of hook_node().
+ * Implements of hook_node().
  */
 function visitors_node() {
   if ($node = node_load(arg(1))) {
@@ -25,11 +24,21 @@ function visitors_node() {
       array('data' => t('Operations'))
     );
 
-    $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
+    $query = db_select('visitors', 'v')
+      ->extend('PagerDefault')
+      ->extend('TableSort');
     $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
-    $query->fields('v', array('visitors_uid', 'visitors_id', 'visitors_date_time', 'visitors_referer'));
+    $query->fields(
+      'v',
+      array(
+        'visitors_uid',
+        'visitors_id',
+        'visitors_date_time',
+        'visitors_referer'
+      )
+    );
     $query->fields('u', array('name', 'uid'));
-    $query->condition('v.visitors_path', 'node/'.(int)$node->nid.'%', 'LIKE');
+    $query->condition('v.visitors_path', 'node/' . (int)$node->nid . '%', 'LIKE');
     visitors_date_filter_sql_condition($query);
     $query->orderByHeader($header);
     $query->limit($items_per_page);
@@ -38,7 +47,7 @@ function visitors_node() {
     $rows = array();
     $page = isset($_GET['page']) ? $_GET['page'] : '';
     $i = 0 + ($page  * $items_per_page);
-    foreach($results as $data) {
+    foreach ($results as $data) {
       $user = user_load($data->visitors_uid);
       $user_page = theme('username', array('account' => $user));
       $rows[] = array(
@@ -47,7 +56,7 @@ function visitors_node() {
         format_date($data->visitors_date_time, 'custom', $date_format),
         l($data->visitors_referer, $data->visitors_referer),
         $user_page,
-        l(t('details'), 'visitors/hits/'. $data->visitors_id)
+        l(t('details'), 'visitors/hits/' . $data->visitors_id)
       );
     }
 

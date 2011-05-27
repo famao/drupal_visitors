@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Monthly history report for the visitors module.
+ */
+
 function visitors_monthly_history() {
   $items_per_page = variable_get('visitors_lines_per_page', 10);
 
@@ -40,7 +45,13 @@ function visitors_monthly_history() {
   $output  = visitors_date_filter();
 
   if (count($rows) > 1) {
-    $output .= '<img src="'. url('visitors/monthly_history/chart') .'" alt="'.t('Monthly history').'">';
+    $output .= sprintf(
+      '<img src="%s" alt="%s" width="%d" height="%d">',
+      url('visitors/monthly_history/chart'),
+      t('Monthly history'),
+      visitors_get_chart_width(),
+      visitors_get_chart_height()
+    );
   }
 
   $output .= theme('table', array('header' => $header, 'rows' => $rows));

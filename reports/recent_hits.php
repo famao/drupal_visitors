@@ -1,7 +1,15 @@
 <?php
 
 /**
- * Menu callback; presents the "recent hits" page.
+ * @file
+ * Recent hits report for the visitors module.
+ */
+
+/**
+ * Display recent hits report.
+ *
+ * @return
+ *   string recent hits report html source
  */
 function visitors_recent_hits() {
   $date_format    = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
@@ -53,9 +61,9 @@ function visitors_recent_hits() {
       ++$i,
       $data->visitors_id,
       format_date($data->visitors_date_time, 'custom', $date_format),
-      check_plain($data->visitors_title) .'<br/>'. l($data->visitors_path, $data->visitors_url),
+      check_plain($data->visitors_title) . '<br/>' . l($data->visitors_path, $data->visitors_url),
       $user_page,
-      l(t('details'), 'visitors/hits/'. $data->visitors_id)
+      l(t('details'), 'visitors/hits/' . $data->visitors_id)
     );
   }
 
@@ -65,3 +73,4 @@ function visitors_recent_hits() {
 
   return $output;
 }
+

@@ -1,6 +1,19 @@
 <?php
 
-# TODO: Does not support now user timezone.
+/**
+ * @file
+ * Hours report for the visitors module.
+ */
+
+/**
+ * Get data for hours report order the query based on a header array.
+ *
+ * @param header
+ *   Table header array. If header is NULL - data is not sorted.
+ *
+ * @return
+ *   hours data array
+ */
 function visitors_hours_data($header) {
   $query = db_select('visitors', 'v');
   $query->addExpression('COUNT(*)', 'count');
@@ -8,12 +21,19 @@ function visitors_hours_data($header) {
   visitors_date_filter_sql_condition($query);
   $query->groupBy('hour');
 
-  if (!is_null($header))
+  if (!is_null($header)) {
     $query->extend('TableSort')->orderByHeader($header);
+  }
 
   return $query->execute();
 }
 
+/**
+ * Display hours report.
+ *
+ * @return
+ *   string hours report html source
+ */
 function visitors_hours() {
   $header = array(
     array('data' => t('#')),
@@ -38,7 +58,7 @@ function visitors_hours() {
   $output  = visitors_date_filter();
 
   if ($count > 0) {
-    $output .= '<img src="'. url('visitors/hours/chart') .'" alt="'.t('Hours').'">';
+    $output .= '<img src="' . url('visitors/hours/chart') . '" alt="' . t('Hours') . '">';
   }
 
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
@@ -46,6 +66,9 @@ function visitors_hours() {
   return $output;
 }
 
+/**
+ * Display hours chart report.
+ */
 function chart_visitors_hours() {
   $results = visitors_hours_data(NULL);
   $tmp_rows = array();

@@ -76,7 +76,7 @@ function visitors_update_6031() {
 }
 
 /**
- * Implementation of hook_schema().
+ * Implementats of hook_schema().
  */
 function visitors_schema() {
   $schema['visitors'] = array(

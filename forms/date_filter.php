@@ -52,7 +52,7 @@ function visitors_get_years_range() {
                 );
   $result = db_query($sql);
   $min_time = time();
-  foreach($result as $data) {
+  foreach ($result as $data) {
     $min_time = $data->min_time;
   }
 
@@ -148,7 +148,7 @@ function visitors_date_filter_form($form_state) {
 
   $form['visitors_date_filter']['submit'] = array(
     '#type'          => 'submit',
-    '#value'         => t('Submit'),
+    '#value'         => t('Save'),
   );
 
   return $form;

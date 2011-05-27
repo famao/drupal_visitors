@@ -5,10 +5,10 @@
  * Logs visitors for your site.
  */
 
-require_once dirname(__FILE__).'/visitors.block';
+require_once dirname(__FILE__) . '/visitors.block';
 
 /**
- * Implementation of hook_help().
+ * Implements of hook_help().
  */
 function visitors_help($section) {
   switch ($section) {
@@ -21,7 +21,7 @@ function visitors_help($section) {
 }
 
 /**
- * Implementation of hook_perm().
+ * Implements of hook_perm().
  */
 function visitors_perm() {
   return array('access visitors', 'administer visitors');
@@ -30,7 +30,6 @@ function visitors_perm() {
 /**
  * Menu callback. Prints a listing of active nodes on the site.
  */
-# TODO: Change file param to report file.
 function visitors_menu() {
   $items = array();
 
@@ -204,7 +203,7 @@ function visitors_menu() {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements of hook_theme().
  */
 function visitors_theme() {
   return array(
@@ -256,7 +255,7 @@ function visitors_get_ip() {
 }
 
 /**
- * Implementation of hook_exit().
+ * Implements of hook_exit().
  */
 function visitors_exit() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
@@ -271,7 +270,7 @@ function visitors_exit() {
     $visitors_referer     = isset($_SERVER['HTTP_REFERER']) ? urldecode($_SERVER['HTTP_REFERER']) : '';
     $visitors_title       = htmlspecialchars_decode(drupal_get_title(), ENT_QUOTES);
     $visitors_user_agent  = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-    
+
     db_insert('visitors')
       ->fields(array(
       'visitors_uid'        => $user->uid,
@@ -288,7 +287,7 @@ function visitors_exit() {
 }
 
 /**
- * Implementation of hook_cron().
+ * Implements of hook_cron().
  */
 function visitors_cron() {
   $visitors_flush_log_timer = variable_get('visitors_flush_log_timer', 0);
@@ -304,7 +303,6 @@ function visitors_cron() {
  *
  * @return string
  */
-# TODO: Move sql functions to separate file.
 function visitors_get_mysql_current_timezone() {
     $query = 'SHOW variables LIKE \'time_zone\'';
     $data = db_query($query)->fetchAssoc();
@@ -326,7 +324,7 @@ function visitors_timezone_diff() {
   else {
     $timezone = variable_get('date_default_timezone', 0);
   }
-  
+
   return timezone_offset_get(timezone_open($timezone), date_create());
 }
 
@@ -364,7 +362,7 @@ function visitors_mysql_date_format_sql($field_name, $format) {
   $timezone = (int) ($diff/60/60);
   $timezone .= sprintf(':%02d', (abs($diff)/60) % 60);
   if ($timezone >= 0) {
-      $timezone = '+'. $timezone;
+      $timezone = '+' . $timezone;
   }
 
   return sprintf("date_format(convert_tz(from_unixtime(%s), '%s', '%s'), '%s')", $field_name, $mysql_current_timezone, $timezone, $format);

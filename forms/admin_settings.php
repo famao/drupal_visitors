@@ -1,13 +1,15 @@
 <?php
 
-
 /**
  * @file
  * Settings page callback file for the visitors module.
  */
 
 /**
- * Menu callback;
+ * Create visitors settings form.
+ *
+ * @return
+ *   array form structure
  */
 function visitors_admin_settings() {
   $form = array();
@@ -133,3 +135,4 @@ function visitors_admin_settings() {
 
   return system_settings_form($form);
 }
+

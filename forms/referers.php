@@ -56,7 +56,7 @@ function visitors_referers_form($form_state) {
 
   $form['submit'] = array(
     '#type'          => 'submit',
-    '#value'         => t('Submit'),
+    '#value'         => t('Save'),
   );
 
   return $form;
@@ -86,11 +86,13 @@ function visitors_referers_condition(&$query) {
   visitors_set_session_referer_type();
   switch ($_SESSION['referer_type']) {
     case REFERER_TYPE_INTERNAL_PAGES:
-      $query->condition('visitors_referer', sprintf('%%%s%%', $_SERVER['HTTP_HOST']), 'LIKE');
+      $query->condition('visitors_referer',
+        sprintf('%%%s%%', $_SERVER['HTTP_HOST']), 'LIKE');
       $query->condition('visitors_referer', '', '<>');
       break;
     case REFERER_TYPE_EXTERNAL_PAGES:
-      $query->condition('visitors_referer', sprintf('%%%s%%', $_SERVER['HTTP_HOST']), 'NOT LIKE');
+      $query->condition('visitors_referer',
+        sprintf('%%%s%%', $_SERVER['HTTP_HOST']), 'NOT LIKE');
       break;
     default:
       break;

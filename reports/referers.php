@@ -1,7 +1,15 @@
 <?php
 
 /**
- * Menu callback; presents the "referral" page.
+ * @file
+ * Referers report for the visitors module.
+ */
+
+/**
+ * Display referers report.
+ *
+ * @return
+ *   string referers report html source
  */
 function visitors_referer_list() {
   $items_per_page = variable_get('visitors_lines_per_page', 10);
@@ -12,7 +20,9 @@ function visitors_referer_list() {
     array('data' => t('Count'), 'field' => 'count', 'sort' => 'desc'),
   );
 
-  $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
+  $query = db_select('visitors', 'v')
+    ->extend('PagerDefault')
+    ->extend('TableSort');
   $query->addExpression('COUNT(*)', 'count');
   $query->fields('v', array('visitors_referer'));
   visitors_date_filter_sql_condition($query);
@@ -46,3 +56,4 @@ function visitors_referer_list() {
 
   return $output;
 }
+

@@ -2,8 +2,35 @@
 
 /* vim: set filetype=php: */
 
-require_once dirname(__FILE__) .'/pchart/pData.class';
-require_once dirname(__FILE__) .'/pchart/pChart.class';
+/**
+ * @file
+ * Draw chart for the visitors module.
+ */
+
+require_once VISITORS_MODULE_CHART_DIR .'/pData.class';
+require_once VISITORS_MODULE_CHART_DIR .'/pChart.class';
+
+/**
+ * Get chart width.
+ *
+ * @return
+ *   int chart width
+ */
+function visitors_get_chart_width() {
+  $width = (int) variable_get('visitors_chart_width', 700);
+  return (($width <= 0) ? 700 : $width);
+}
+
+/**
+ * Get chart height.
+ *
+ * @return
+ *   int chart height
+ */
+function visitors_get_chart_height() {
+  $height = (int) variable_get('visitors_chart_height', 430);
+  return (($height <= 0) ? 430 : $height);
+}
 
 /**
  * Draw chart.
@@ -14,12 +41,6 @@ require_once dirname(__FILE__) .'/pchart/pChart.class';
  *   array x-axis params
  */
 function visitors_chart($values, $x_array = NULL) {
-  $width = (int) variable_get('visitors_chart_width', 700);
-  $width = ($width <= 0) ? 700 : $width;
-
-  $height = (int) variable_get('visitors_chart_height', 430);
-  $height = ($height <=0) ? 430 : $height;
-
   // Dataset definition
   $data_set = new pData;
   $data_set->AddPoint($values, 'Serie1');
@@ -36,11 +57,16 @@ function visitors_chart($values, $x_array = NULL) {
   $data_description = $data_set->GetDataDescription();
 
   // Initialise the chart
+  $width  = visitors_get_chart_width();
+  $height = visitors_get_chart_height();
+
   $pchart = new pChart($width, $height);
   $pchart->setFontProperties(dirname(__FILE__) .'/fonts/tahoma.ttf', 8);
   $pchart->setGraphArea(50, 30, $width - 20, $height - 30);
-  $pchart->drawFilledRoundedRectangle(7, 7, $width - 7, $height - 7, 5, 240, 240, 240);
-  $pchart->drawRoundedRectangle(5, 5, $width - 5, $height - 5, 5, 230, 230, 230);
+  $pchart->drawFilledRoundedRectangle(7, 7, $width - 7, $height - 7,
+    5, 240, 240, 240);
+  $pchart->drawRoundedRectangle(5, 5, $width - 5, $height - 5,
+    5, 230, 230, 230);
   $pchart->drawGraphArea(255, 255, 255, TRUE);
   $pchart->setFixedScale(0, 0, 0, 0, 0, 0, 0);
   $pchart->drawScale($data, $data_description,
@@ -58,3 +84,4 @@ function visitors_chart($values, $x_array = NULL) {
   $pchart->Stroke();
   exit();
 }
+
