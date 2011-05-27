@@ -6,7 +6,7 @@
  */
 
 define('VISITORS_MODULE_DIR'        , dirname(__FILE__));
-define('VISITORS_MODULE_CHART_DIR'  , VISITORS_MODULE_DIR . '/chart');
+define('VISITORS_MODULE_CHART_DIR'  , VISITORS_MODULE_DIR . '/pchart');
 define('VISITORS_MODULE_FORMS_DIR'  , VISITORS_MODULE_DIR . '/forms');
 define('VISITORS_MODULE_REPORTS_DIR', VISITORS_MODULE_DIR . '/reports');
 
