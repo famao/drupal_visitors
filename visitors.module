@@ -310,21 +310,30 @@ function visitors_get_mysql_current_timezone() {
 }
 
 /**
- * Get difference in seconds user timezone and GMT.
+ * Get user timezone.
  *
- * @return int
+ * @return
+ *   string timezone
  */
-function visitors_timezone_diff() {
+function visitors_get_timezone() {
+  $timezone = variable_get('date_default_timezone', 0);
   if (variable_get('configurable_timezones', 0) == '1') {
     global $user;
     if ($user->timezone !== NULL) {
       $timezone = $user->timezone;
     }
   }
-  else {
-    $timezone = variable_get('date_default_timezone', 0);
-  }
 
+  return $timezone;
+}
+
+/**
+ * Get difference in seconds user timezone and GMT.
+ *
+ * @return int
+ */
+function visitors_timezone_diff() {
+  $timezone = visitors_get_timezone();
   return timezone_offset_get(timezone_open($timezone), date_create());
 }
 
@@ -337,9 +346,7 @@ function visitors_timezone_diff() {
  * @return string date format
  */
 function visitors_date_format_sql($field_name, $format) {
-  global $db_type;
-
-  switch ($db_type) {
+  switch (Database::getConnection()->driver()) {
     case 'pgsql':
       return visitors_pgsql_date_format_sql($field_name, $format);
       break;
@@ -378,6 +385,7 @@ function visitors_mysql_date_format_sql($field_name, $format) {
  */
 function visitors_pgsql_date_format_sql($field_name, $format) {
   $diff = visitors_timezone_diff();
+
   if ($format == '%H') {
     return sprintf("to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'HH24')", $field_name, $diff);
   }

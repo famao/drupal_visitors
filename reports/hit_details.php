@@ -55,7 +55,7 @@ function visitors_hit_details($visitors_id) {
 
     $rows[] = array(
       array('data' => t('Date'), 'header' => TRUE),
-      format_date($hit_details->visitors_date_time, 'large')
+      format_date($hit_details->visitors_date_time, 'large', visitors_get_timezone())
     );
 
     $rows[] = array(

@@ -60,7 +60,7 @@ function visitors_recent_hits() {
     $rows[] = array(
       ++$i,
       $data->visitors_id,
-      format_date($data->visitors_date_time, 'custom', $date_format),
+      format_date($data->visitors_date_time, 'custom', $date_format, visitors_get_timezone()),
       check_plain($data->visitors_title) . '<br/>' . l($data->visitors_path, $data->visitors_url),
       $user_page,
       l(t('details'), 'visitors/hits/' . $data->visitors_id)

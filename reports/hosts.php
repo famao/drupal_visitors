@@ -37,6 +37,7 @@ function visitors_host_hits($ip) {
     'v',
     array(
       'visitors_id',
+      'visitors_ip',
       'visitors_uid',
       'visitors_date_time',
       'visitors_title',
@@ -45,14 +46,14 @@ function visitors_host_hits($ip) {
     )
   );
   $query->fields('u', array('name', 'uid'));
-  $query->condition('v.visitors_ip', ip2long($ip), '=');
+  $query->condition('v.visitors_ip', sprintf('%u', ip2long($ip)), '=');
   visitors_date_filter_sql_condition($query);
   $query->orderByHeader($header);
   $query->limit($items_per_page);
 
   $count_query = db_select('visitors', 'v');
   $count_query->addExpression('COUNT(*)');
-  $count_query->condition('visitors_ip', ip2long($ip));
+  $count_query->condition('visitors_ip', sprintf('%u', ip2long($ip)));
   visitors_date_filter_sql_condition($count_query);
   $query->setCountQuery($count_query);
   $results = $query->execute();
@@ -73,7 +74,7 @@ function visitors_host_hits($ip) {
     $rows[] = array(
       ++$i,
       $data->visitors_id,
-      format_date($data->visitors_date_time, 'custom', $date_format),
+      format_date($data->visitors_date_time, 'custom', $date_format, visitors_get_timezone()),
       check_plain($data->visitors_title) . '<br/>' .
         l($data->visitors_path, $data->visitors_url),
       $user_page,
@@ -107,9 +108,10 @@ function visitors_hosts() {
   );
 
   $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
-  $query->fields('v', array('visitors_ip'));
   $query->addExpression('COUNT(*)', 'count');
+  $query->fields('v', array('visitors_ip'));
   visitors_date_filter_sql_condition($query);
+  $query->groupBy('visitors_ip');
   $query->orderByHeader($header);
   $query->limit($items_per_page);
 
