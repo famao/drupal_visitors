@@ -1,3 +1,8 @@
+Visitors 7.x-0.34, 2011-05-28
+-----------------------
+- Added:
+    * feature requests #1010994: D7 Version?
+
 Visitors 6.x-0.33, 2011-04-22
 -----------------------
 - Fixed:
