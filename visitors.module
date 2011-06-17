@@ -197,7 +197,7 @@ function visitors_menu() {
     'access arguments' => array('access visitors'),
     'type' => MENU_LOCAL_TASK,
     'weight' => 2,
-    'file' => 'visitors.pages.inc',
+    'file' => 'visitors.admin.inc',
   );
 
   return $items;
@@ -328,11 +328,11 @@ function visitors_pgsql_date_format_sql($field_name, $format) {
   );
 
   if (isset($format_array[$format])) {
-      $diff = visitors_timezone_diff();
-      $result = sprintf($format_array[$format], $field_name, $diff);
+    $diff = visitors_timezone_diff();
+    $result = sprintf($format_array[$format], $field_name, $diff);
   }
   else {
-      $result = '';
+    $result = '';
   }
 
   return $result;

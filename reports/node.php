@@ -5,10 +5,11 @@
  * Node page callbacks for the visitors module.
  */
 
-require_once dirname(__FILE__) . '/forms/date_filter.php';
-
 /**
- * Implements of hook_node().
+ * Display node visitors report.
+ *
+ * @return
+ *   string node visitors report html source
  */
 function visitors_node() {
   if ($node = node_load(arg(1))) {

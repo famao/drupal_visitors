@@ -25,4 +25,5 @@ require_once VISITORS_MODULE_REPORTS_DIR . '/recent_hits.php';
 require_once VISITORS_MODULE_REPORTS_DIR . '/referers.php';
 require_once VISITORS_MODULE_REPORTS_DIR . '/top_pages.php';
 require_once VISITORS_MODULE_REPORTS_DIR . '/user_activity.php';
+require_once VISITORS_MODULE_REPORTS_DIR . '/node.php';
 
