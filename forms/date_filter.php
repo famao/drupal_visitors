@@ -161,13 +161,21 @@ function visitors_date_filter_form_validate($form, &$form_state) {
   $from          = $form_state['values']['from'];
   $to            = $form_state['values']['to'];
 
+  $from['month'] = (int) $from['month'];
+  $from['day']   = (int) $from['day'];
+  $from['year']  = (int) $from['year'];
+
+  $to['month']   = (int) $to['month'];
+  $to['day']     = (int) $to['day'];
+  $to['year']    = (int) $to['year'];
+
   $error_message = t('The specified date is invalid.');
 
-  if (!checkdate((int) $from['month'], (int) $from['day'], (int) $from['year'])) {
+  if (!checkdate($from['month'], $from['day'], $from['year'])) {
     return form_set_error('from', $error_message);
   }
 
-  if (!checkdate((int) $to['month'], (int) $to['day'], (int) $to['year'])) {
+  if (!checkdate($to['month'], $to['day'], $to['year'])) {
     return form_set_error('to', $error_message);
   }
 
