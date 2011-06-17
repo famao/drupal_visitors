@@ -300,7 +300,13 @@ function visitors_mysql_date_format_sql($field_name, $format) {
       $timezone = '+' . $timezone;
   }
 
-  return sprintf("date_format(convert_tz(from_unixtime(%s), '%s', '%s'), '%s')", $field_name, $mysql_current_timezone, $timezone, $format);
+  return sprintf(
+    "date_format(convert_tz(from_unixtime(%s), '%s', '%s'), '%s')",
+    $field_name,
+    $mysql_current_timezone,
+    $timezone,
+    $format
+  );
 }
 
 /**
