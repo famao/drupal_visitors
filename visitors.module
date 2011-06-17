@@ -312,24 +312,22 @@ function visitors_mysql_date_format_sql($field_name, $format) {
  * @return string date format
  */
 function visitors_pgsql_date_format_sql($field_name, $format) {
-  $diff = visitors_timezone_diff();
+  static $format_array = array(
+    '%H'    => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'HH24')",
+    '%a'    => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'dy')",
+    '%w'    => "cast(to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'D') as integer) - 1",
+    '%e'    => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'DD')",
+    '%Y %M' => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'YYYY Month')",
+    '%Y%m'  => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'YYYYMM')"
+  );
 
-  if ($format == '%H') {
-    return sprintf("to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'HH24')", $field_name, $diff);
+  if (isset($format_array[$format])) {
+      $diff = visitors_timezone_diff();
+      $result = sprintf($format_array[$format], $field_name, $diff);
   }
-  if ($format == '%a') {
-    return sprintf("to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'dy')", $field_name, $diff);
+  else {
+      $result = '';
   }
-  if ($format == '%w') {
-    return sprintf("cast(to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'D') as integer) - 1", $field_name, $diff);
-  }
-  if ($format == '%e') {
-    return sprintf("to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'DD')", $field_name, $diff);
-  }
-  if ($format == '%Y %M') {
-    return sprintf("to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'YYYY Month')", $field_name, $diff);
-  }
-  if ($format == '%Y%m') {
-    return sprintf("to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'YYYYMM')", $field_name, $diff);
-  }
+
+  return $result;
 }
