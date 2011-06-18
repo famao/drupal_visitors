@@ -1,5 +1,14 @@
+Visitors 7.x-0.35, 2011-06-18
+-----------------------
+- Fixed issue #1192520: Days of month report, incorrect days sorting.
+- Moved node visitors report from visitors.pages.inc to reports/node.php file.
+- Enhance the validation parameters of date filter form.
+- visitors_mysql_date_format_sql refactoring.
+- visitors_pgsql_date_format_sql refactoring.
+- visitors_exit code refactoring.
+- visitors_exit function moved to visitors.exit file.
+
 Visitors 7.x-0.34, 2011-05-28
 -----------------------
-- Added:
-    * feature requests #1010994: D7 Version?
+- Feature requests #1010994: D7 Version?
 
