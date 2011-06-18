@@ -322,7 +322,7 @@ function visitors_pgsql_date_format_sql($field_name, $format) {
     '%H'    => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'HH24')",
     '%a'    => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'dy')",
     '%w'    => "cast(to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'D') as integer) - 1",
-    '%e'    => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'DD')",
+    '%d'    => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'DD')",
     '%Y %M' => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'YYYY Month')",
     '%Y%m'  => "to_char(TIMESTAMP 'epoch' + (%s + (%d)) * INTERVAL '1 second', 'YYYYMM')"
   );

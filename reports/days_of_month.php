@@ -17,7 +17,7 @@
 function visitors_days_of_month_data($header) {
   $query = db_select('visitors', 'v');
   $query->addExpression('COUNT(*)', 'count');
-  $query->addExpression(visitors_date_format_sql('visitors_date_time', '%e'), 'day');
+  $query->addExpression(visitors_date_format_sql('visitors_date_time', '%d'), 'day');
   $query->groupBy('day');
   visitors_date_filter_sql_condition($query);
 
