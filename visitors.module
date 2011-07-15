@@ -34,7 +34,7 @@ function visitors_perm() {
 function visitors_menu() {
   $items = array();
 
-  $items['admin/settings/visitors'] = array(
+  $items['admin/config/system/visitors'] = array(
     'title' => 'Visitors settings',
     'description' => 'Configure visitors settings.',
     'access arguments' => array('administer visitors'),
