@@ -45,6 +45,7 @@ function visitors_get_ip() {
   else {
     $ip = $_SERVER['REMOTE_ADDR'];
   }
+
   return (visitors_is_ip_valid($ip) ? $ip : '0.0.0.0');
 }
 
@@ -111,6 +112,31 @@ function visitors_get_user_agent() {
   return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 }
 
+function visitors_get_geoip_data($ip) {
+  $result = array(
+    'continent_code' => '',
+    'country_code'   => '',
+    'country_code3'  => '',
+    'country_name'   => '',
+    'region'         => '',
+    'city'           => '',
+    'postal_code'    => '',
+    'latitude'       => '0',
+    'longitude'      => '0',
+    'dma_code'       => '0',
+    'area_code'      => '0'
+  );
+
+  if (function_exists('geoip_record_by_name')) {
+    $data = @geoip_record_by_name($ip);
+    if ($data !== FALSE) {
+      $result = $data;
+    }
+  }
+
+  return $result;
+}
+
 /**
  * Implements of hook_exit().
  */
@@ -120,17 +146,30 @@ function visitors_exit() {
   if (!(variable_get('visitors_exclude_administer_users', 0) &&
       user_access('administer'))) {
     global $user;
+    $ip_str = visitors_get_ip_str();
+    $geoip_data = visitors_get_geoip_data($ip_str);
 
     db_insert('visitors')
       ->fields(array(
-      'visitors_uid'        => $user->uid,
-      'visitors_ip'         => visitors_get_ip_str(),
-      'visitors_date_time'  => time(),
-      'visitors_url'        => visitors_get_url(),
-      'visitors_referer'    => visitors_get_referer(),
-      'visitors_path'       => visitors_get_path(),
-      'visitors_title'      => visitors_get_title(),
-      'visitors_user_agent' => visitors_get_user_agent(),
+      'visitors_uid'            => $user->uid,
+      'visitors_ip'             => $ip_str,
+      'visitors_date_time'      => time(),
+      'visitors_url'            => visitors_get_url(),
+      'visitors_referer'        => visitors_get_referer(),
+      'visitors_path'           => visitors_get_path(),
+      'visitors_title'          => visitors_get_title(),
+      'visitors_user_agent'     => visitors_get_user_agent(),
+      'visitors_continent_code' => $geoip_data['continent_code'],
+      'visitors_country_code'   => $geoip_data['country_code'],
+      'visitors_country_code3'  => $geoip_data['country_code3'],
+      'visitors_country_name'   => $geoip_data['country_name'],
+      'visitors_region'         => $geoip_data['region'],
+      'visitors_city'           => $geoip_data['city'],
+      'visitors_postal_code'    => $geoip_data['postal_code'],
+      'visitors_latitude'       => $geoip_data['latitude'],
+      'visitors_longitude'      => $geoip_data['longitude'],
+      'visitors_dma_code'       => $geoip_data['dma_code'],
+      'visitors_area_code'      => $geoip_data['area_code']
     ))
     ->execute();
   }
