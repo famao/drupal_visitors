@@ -1,3 +1,7 @@
+Visitors 7.x-0.36, 2011-07-16
+-----------------------
+- Fixed issue #1218500: Visitors settings path 6 / 7.
+
 Visitors 7.x-0.35, 2011-06-18
 -----------------------
 - Fixed issue #1192520: Days of month report, incorrect days sorting.
