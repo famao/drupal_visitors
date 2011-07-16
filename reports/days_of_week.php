@@ -85,7 +85,8 @@ function visitors_days_of_week() {
   }
 
   foreach ($tmp_rows as $tmp_item) {
-    $rows[$sort_days[drupal_ucfirst(drupal_strtolower($tmp_item[0]))]][2] = $tmp_item[1];
+    $day_of_week = drupal_ucfirst(drupal_strtolower($tmp_item[0]));
+    $rows[$sort_days[$day_of_week]][2] = $tmp_item[1];
   }
 
   $output  = visitors_date_filter();
@@ -127,7 +128,8 @@ function chart_visitors_days_of_week() {
 
   $sort_days = visitors_get_days_of_week();
   foreach ($tmp_rows as $key => $tmp_item) {
-    $rows[$sort_days[drupal_ucfirst(drupal_strtolower($tmp_item[0]))] - 1] = (int) $tmp_item[1];
+    $day_of_week = drupal_ucfirst(drupal_strtolower($tmp_item[0]));
+    $rows[$sort_days[$day_of_week] - 1] = (int) $tmp_item[1];
   }
 
  // build dates series

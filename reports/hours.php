@@ -17,7 +17,9 @@
 function visitors_hours_data($header) {
   $query = db_select('visitors', 'v');
   $query->addExpression('COUNT(*)', 'count');
-  $query->addExpression(visitors_date_format_sql('visitors_date_time', '%H'), 'hour');
+  $query->addExpression(
+    visitors_date_format_sql('visitors_date_time', '%H'), 'hour'
+  );
   visitors_date_filter_sql_condition($query);
   $query->groupBy('hour');
 
@@ -58,7 +60,11 @@ function visitors_hours() {
   $output  = visitors_date_filter();
 
   if ($count > 0) {
-    $output .= '<img src="' . url('visitors/hours/chart') . '" alt="' . t('Hours') . '">';
+    $output .= sprintf(
+      '<img src="%s" alt="%s">',
+      url('visitors/hours/chart'),
+      t('Hours')
+    );
   }
 
   $output .= theme('table', array('header' => $header, 'rows' => $rows));

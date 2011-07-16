@@ -214,7 +214,8 @@ function visitors_get_from_timestamp() {
   $diff = visitors_timezone_diff();
   $from = $_SESSION['visitors_from'];
 
-  return gmmktime(0, 0, 0, $from['month'], $from['day'], $from['year']) - $diff;
+  return
+    gmmktime(0, 0, 0, $from['month'], $from['day'], $from['year']) - $diff;
 }
 
 /**

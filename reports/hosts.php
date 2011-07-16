@@ -31,7 +31,9 @@ function visitors_host_hits($ip) {
     array('data' => t('Operations'))
   );
 
-  $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
+  $query = db_select('visitors', 'v')
+    ->extend('PagerDefault')
+    ->extend('TableSort');
   $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
   $query->fields(
     'v',
@@ -74,7 +76,12 @@ function visitors_host_hits($ip) {
     $rows[] = array(
       ++$i,
       $data->visitors_id,
-      format_date($data->visitors_date_time, 'custom', $date_format, visitors_get_timezone()),
+      format_date(
+        $data->visitors_date_time,
+        'custom',
+        $date_format,
+        visitors_get_timezone()
+      ),
       check_plain($data->visitors_title) . '<br/>' .
         l($data->visitors_path, $data->visitors_url),
       $user_page,
@@ -107,7 +114,9 @@ function visitors_hosts() {
     array('data' => t('Operations'))
   );
 
-  $query = db_select('visitors', 'v')->extend('PagerDefault')->extend('TableSort');
+  $query = db_select('visitors', 'v')
+    ->extend('PagerDefault')
+    ->extend('TableSort');
   $query->addExpression('COUNT(*)', 'count');
   $query->fields('v', array('visitors_ip'));
   visitors_date_filter_sql_condition($query);
@@ -126,7 +135,9 @@ function visitors_hosts() {
   $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
   $i = 0 + ($page * $items_per_page);
   $whois_enable = module_exists('whois');
-  $attr = array('attributes' => array('target' => '_blank', 'title' => t('Whois lookup')));
+  $attr = array('attributes' =>
+    array('target' => '_blank', 'title' => t('Whois lookup'))
+  );
 
   foreach ($results as $data) {
     $ip = long2ip($data->visitors_ip);

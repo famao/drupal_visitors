@@ -39,7 +39,10 @@ function visitors_node() {
       )
     );
     $query->fields('u', array('name', 'uid'));
-    $query->condition('v.visitors_path', 'node/' . (int)$node->nid . '%', 'LIKE');
+    $query->condition(
+      'v.visitors_path', 'node/' . (int)$node->nid . '%',
+      'LIKE'
+    );
     visitors_date_filter_sql_condition($query);
     $query->orderByHeader($header);
     $query->limit($items_per_page);
