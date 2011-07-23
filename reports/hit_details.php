@@ -25,7 +25,15 @@ function visitors_hit_details($visitors_id) {
       'visitors_referer',
       'visitors_date_time',
       'visitors_ip',
-      'visitors_user_agent'
+      'visitors_user_agent',
+      'visitors_country_name',
+      'visitors_region',
+      'visitors_city',
+      'visitors_postal_code',
+      'visitors_latitude',
+      'visitors_longitude',
+      'visitors_dma_code',
+      'visitors_area_code'
     )
   );
   $query->fields('u', array('name', 'uid'));
@@ -33,55 +41,44 @@ function visitors_hit_details($visitors_id) {
   $hit_details = $query->execute()->fetch();
 
   if ($hit_details) {
-    $rows[] = array(
-      array('data' => t('URL'), 'header' => TRUE),
-      l(
-        urldecode($hit_details->visitors_url),
-        urldecode($hit_details->visitors_url)
-      )
+    $url = urldecode($hit_details->visitors_url);
+    $referer = $hit_details->visitors_referer;
+    $date = format_date(
+      $hit_details->visitors_date_time,
+      'large',
+      visitors_get_timezone()
     );
-
-    $rows[] = array(
-      array('data' => t('Title'), 'header' => TRUE),
-      check_plain($hit_details->visitors_title)
-    );
-
-    $rows[] = array(
-      array('data' => t('Referer'), 'header' => TRUE),
-      ($hit_details->visitors_referer ?
-        l($hit_details->visitors_referer, $hit_details->visitors_referer) : ''
-      )
-    );
-
-    $rows[] = array(
-      array('data' => t('Date'), 'header' => TRUE),
-      format_date(
-        $hit_details->visitors_date_time,
-        'large',
-        visitors_get_timezone()
-      )
-    );
-
-    $rows[] = array(
-      array('data' => t('User'), 'header' => TRUE),
-      theme('username', array('account' => $hit_details))
-    );
-
     $whois_enable = module_exists('whois');
     $attr = array(
-      'attributes' => array('target' => '_blank', 'title' => t('Whois lookup'))
+      'attributes' => array(
+        'target' => '_blank',
+        'title' => t('Whois lookup')
+      )
     );
     $ip = long2ip($hit_details->visitors_ip);
 
-    $rows[] = array(
-      array('data' => t('Hostname'), 'header' => TRUE),
-      $whois_enable ? l($ip, 'whois/' . $ip, $attr) : check_plain($ip)
+    $array = array(
+      'URL'            => l($url, $url),
+      'Title'          => check_plain($hit_details->visitors_title),
+      'Referer'        => $referer ? l($referer, $referer) : '',
+      'Date'           => $date,
+      'User'           => theme('username', array('account' => $hit_details)),
+      'IP'             => $whois_enable ? l($ip, 'whois/' . $ip, $attr) : $ip,
+      'User Agent'     => check_plain($hit_details->visitors_user_agent),
+      'Country'        => check_plain($hit_details->visitors_country_name),
+      'Region'         => check_plain($hit_details->visitors_region),
+      'City'           => check_plain($hit_details->visitors_city),
+      'Postal Code'    => check_plain($hit_details->visitors_postal_code),
+      'Latitude'       => check_plain($hit_details->visitors_latitude),
+      'Longitude'      => check_plain($hit_details->visitors_longitude),
+      'DMA Code'       => check_plain($hit_details->visitors_dma_code),
+      'PSTN Area Code' => check_plain($hit_details->visitors_area_code),
     );
 
-    $rows[] = array(
-      array('data' => t('User Agent'), 'header' => TRUE),
-      check_plain($hit_details->visitors_user_agent)
-    );
+    $rows = array();
+    foreach ($array as $key => $value) {
+      $rows[] = array(array('data' => t($key), 'header' => TRUE), $value);
+    }
 
     return theme('table', array('rows' => $rows));
   }

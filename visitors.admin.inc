@@ -15,6 +15,9 @@ require_once VISITORS_MODULE_DIR . '/visitors.chart';
 require_once VISITORS_MODULE_FORMS_DIR . '/date_filter.php';
 require_once VISITORS_MODULE_FORMS_DIR . '/referers.php';
 
+require_once VISITORS_MODULE_REPORTS_DIR . '/cities.php';
+require_once VISITORS_MODULE_REPORTS_DIR . '/city_hits.php';
+require_once VISITORS_MODULE_REPORTS_DIR . '/countries.php';
 require_once VISITORS_MODULE_REPORTS_DIR . '/days_of_month.php';
 require_once VISITORS_MODULE_REPORTS_DIR . '/days_of_week.php';
 require_once VISITORS_MODULE_REPORTS_DIR . '/hit_details.php';
