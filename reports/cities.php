@@ -34,7 +34,9 @@ function visitors_cities($country) {
   $page = isset($_GET['page']) ? $_GET['page'] : '';
   $i = 0 + ($page  * $items_per_page);
 
+  $error_404 = TRUE;
   foreach ($results as $data) {
+    $error_404 = FALSE;
     if ($data->visitors_city == '') {
       $data->visitors_city = '(none)';
     }
@@ -48,9 +50,16 @@ function visitors_cities($country) {
     );
   }
 
+  if ($error_404) {
+    return drupal_not_found();
+  }
+
+  drupal_set_title(t('Visitors from ') . t($country));
+
   $output  = visitors_date_filter();
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
   $output .= theme('pager');
 
   return $output;
 }
+

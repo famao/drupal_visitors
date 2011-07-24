@@ -80,6 +80,7 @@ function visitors_hit_details($visitors_id) {
       $rows[] = array(array('data' => t($key), 'header' => TRUE), $value);
     }
 
+    drupal_set_title(t('Details'));
     return theme('table', array('rows' => $rows));
   }
 

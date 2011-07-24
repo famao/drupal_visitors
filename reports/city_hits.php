@@ -62,7 +62,9 @@ function visitors_city_hits($country, $city) {
   $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
   $i = 0 + ($page  * $items_per_page);
 
+  $error_404 = TRUE;
   foreach ($results as $data) {
+    $error_404 = FALSE;
     $user = user_load($data->visitors_uid);
     $user_page = theme('username', array('account' => $user));
 
@@ -83,6 +85,12 @@ function visitors_city_hits($country, $city) {
       l(t('details'), 'visitors/hits/' . $data->visitors_id)
     );
   }
+
+  if ($error_404) {
+    return drupal_not_found();
+  }
+
+  drupal_set_title(t('Hits from ') . t($city) . ', ' . t($country));
 
   $output  = visitors_date_filter();
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
