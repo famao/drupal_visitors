@@ -2,14 +2,14 @@
 
 /**
  * @file
- * Recent hits report for the visitors module.
+ * Recent city hits report for the visitors module.
  */
 
 /**
- * Display recent hits report.
+ * Display city hits report.
  *
  * @return
- *   string recent hits report html source
+ *   string city hits report html source
  */
 function visitors_city_hits($country, $city) {
   $date_format    = variable_get('date_format_short_custom', 'Y-m-d H:i:s');
@@ -90,7 +90,7 @@ function visitors_city_hits($country, $city) {
     return drupal_not_found();
   }
 
-  drupal_set_title(t('Hits from ') . t($city) . ', ' . t($country));
+  drupal_set_title(t('Hits from') . ' ' . t($city) . ', ' . t($country));
 
   $output  = visitors_date_filter();
   $output .= theme('table', array('header' => $header, 'rows' => $rows));

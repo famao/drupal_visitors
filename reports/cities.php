@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Cities report for the visitors module.
+ */
+
+/**
+ * Display cities report.
+ *
+ * @return
+ *   string cities report html source
+ */
 function visitors_cities($country) {
   $items_per_page = variable_get('visitors_lines_per_page', 10);
 
@@ -54,7 +65,7 @@ function visitors_cities($country) {
     return drupal_not_found();
   }
 
-  drupal_set_title(t('Visitors from ') . t($country));
+  drupal_set_title(t('Visitors from') . ' ' . t($country));
 
   $output  = visitors_date_filter();
   $output .= theme('table', array('header' => $header, 'rows' => $rows));

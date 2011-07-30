@@ -74,14 +74,15 @@ function visitors_menu() {
   );
 
   $items['visitors/countries/%/%'] = array(
-    'title' => 'City',
-    'description' => 'View pages count per city.',
+    'title' => 'Hits',
+    'description' => 'View city hits.',
     'page callback' => 'visitors_city_hits',
     'page arguments' => array(2, 3),
     'access arguments' => array('access visitors'),
     'file' => 'visitors.admin.inc',
     'type' => MENU_CALLBACK,
   );
+
   $items['visitors/hits'] = array(
     'title' => 'Recent hits',
     'description' => 'View pages that have recently been visited.',
