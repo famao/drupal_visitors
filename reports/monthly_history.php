@@ -5,6 +5,12 @@
  * Monthly history report for the visitors module.
  */
 
+/**
+ * Display monthly history report.
+ *
+ * @return
+ *   string monthly history report html source.
+ */
 function visitors_monthly_history() {
   $items_per_page = variable_get('visitors_lines_per_page', 10);
 
@@ -69,6 +75,9 @@ function visitors_monthly_history() {
   return $output;
 }
 
+/**
+ * Display monthly history chart report.
+ */
 function chart_visitors_monthly_history() {
   $query = db_select('visitors', 'v')->extend('TableSort');
   $query->addExpression('COUNT(*)', 'count');
@@ -95,3 +104,4 @@ function chart_visitors_monthly_history() {
     visitors_chart($rows, $dates);
   }
 }
+

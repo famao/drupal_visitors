@@ -21,6 +21,12 @@ function visitors_set_session_referer_type() {
   }
 }
 
+/**
+ * Renders HTML code for referers form.
+ *
+ * @return
+ *   string the rendered html.
+ */
 function visitors_referers() {
   $form = drupal_get_form('visitors_referers_form');
   return drupal_render($form);
