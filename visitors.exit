@@ -112,6 +112,14 @@ function visitors_get_user_agent() {
   return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 }
 
+/**
+ * Retrieve geoip data for ip.
+ *
+ * @param ip
+ *   A string containing an ip address.
+ * @return
+ *   array geoip data array.
+ */
 function visitors_get_geoip_data($ip) {
   $result = array(
     'continent_code' => '',
