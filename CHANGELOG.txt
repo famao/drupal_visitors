@@ -1,3 +1,7 @@
+Visitors 7.x-1.0-alpha1, 2011-08-12
+-----------------------
+- Fixed feature request #556512: Countries. 
+
 Visitors 7.x-0.37, 2011-07-22
 -----------------------
 - Fixed bug report #1221328: Ajax error message when checking for updates.
