@@ -155,7 +155,7 @@ function visitors_schema() {
 /**
  * Update {visitors} table, add geoip support.
  */
-function visitors_update_7010() {
+function visitors_update_7100() {
   db_add_field(
     'visitors',
     'visitors_continent_code',
