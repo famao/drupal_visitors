@@ -2,6 +2,14 @@
 
 /* vim: set filetype=php: */
 
+/**
+ * @file
+ * Display current visitor block.
+ */
+
+/**
+ * Implements of hook_block_info().
+ */
 function visitors_block_info() {
   $blocks = array();
   $blocks[0]['info'] = t('Current visitor');
@@ -10,6 +18,9 @@ function visitors_block_info() {
   return $blocks;
 }
 
+/**
+ * Implements of hook_block_view().
+ */
 function visitors_block_view($delta = '') {
   $data = array();
   $data['subject'] = t('Visitors');
