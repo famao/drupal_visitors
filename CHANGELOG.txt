@@ -1,10 +1,14 @@
+Visitors 7.x-0.37, 2011-07-22
+-----------------------
+- Fixed bug report #1221328: Ajax error message when checking for updates.
+
 Visitors 7.x-0.36, 2011-07-16
 -----------------------
-- Fixed issue #1218500: Visitors settings path 6 / 7.
+- Fixed task #1218500: Visitors settings path 6 / 7.
 
 Visitors 7.x-0.35, 2011-06-18
 -----------------------
-- Fixed issue #1192520: Days of month report, incorrect days sorting.
+- Fixed bug report #1192520: Days of month report, incorrect days sorting.
 - Moved node visitors report from visitors.pages.inc to reports/node.php file.
 - Enhance the validation parameters of date filter form.
 - visitors_mysql_date_format_sql refactoring.

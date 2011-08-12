@@ -251,7 +251,9 @@ function visitors_cron() {
 
   if ($visitors_flush_log_timer > 0) {
     // Clean up expired access logs.
-    db_query('DELETE FROM {visitors} WHERE visitors_date_time < %d', time() - $visitors_flush_log_timer);
+    db_delete('visitors')
+      ->condition('visitors_date_time', time() - $visitors_flush_log_timer, '<')
+      ->execute();
   }
 }
 
