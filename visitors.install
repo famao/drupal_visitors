@@ -78,19 +78,19 @@ function visitors_schema() {
         'not null' => TRUE,
       ),
       'visitors_continent_code' => array(
-        'type' => 'char',
+        'type' => 'varchar',
         'length' => 2,
         'not null' => TRUE,
         'default' => '',
       ),
       'visitors_country_code' => array(
-        'type' => 'char',
+        'type' => 'varchar',
         'length' => 2,
         'not null' => TRUE,
         'default' => '',
       ),
       'visitors_country_code3' => array(
-        'type' => 'char',
+        'type' => 'varchar',
         'length' => 3,
         'not null' => TRUE,
         'default' => '',
@@ -160,7 +160,7 @@ function visitors_update_7100() {
     'visitors',
     'visitors_continent_code',
     array(
-      'type' => 'char',
+      'type' => 'varchar',
       'length' => 2,
       'not null' => TRUE,
       'default' => '',
@@ -171,7 +171,7 @@ function visitors_update_7100() {
     'visitors',
     'visitors_country_code',
     array(
-      'type' => 'char',
+      'type' => 'varchar',
       'length' => 2,
       'not null' => TRUE,
       'default' => '',
@@ -182,7 +182,7 @@ function visitors_update_7100() {
     'visitors',
     'visitors_country_code3',
     array(
-      'type' => 'char',
+      'type' => 'varchar',
       'length' => 3,
       'not null' => TRUE,
       'default' => '',
