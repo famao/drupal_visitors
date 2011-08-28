@@ -5,6 +5,7 @@
  * Logs visitors for your site.
  */
 
+require_once dirname(__FILE__) . '/visitors.requirements.inc';
 require_once dirname(__FILE__) . '/visitors.block.inc';
 require_once dirname(__FILE__) . '/visitors.exit.inc';
 
