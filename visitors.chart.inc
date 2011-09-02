@@ -7,8 +7,8 @@
  * Draw chart for the visitors module.
  */
 
-require_once VISITORS_MODULE_CHART_DIR .'/pData.inc';
-require_once VISITORS_MODULE_CHART_DIR .'/pChart.inc';
+require_once VISITORS_MODULE_CHART_DIR . '/pData.inc';
+require_once VISITORS_MODULE_CHART_DIR . '/pChart.inc';
 
 /**
  * Get chart width.
@@ -61,7 +61,7 @@ function visitors_chart($values, $x_array = NULL) {
   $height = visitors_get_chart_height();
 
   $pchart = new pChart($width, $height);
-  $pchart->setFontProperties(dirname(__FILE__) .'/fonts/tahoma.ttf', 8);
+  $pchart->setFontProperties(dirname(__FILE__) . '/fonts/tahoma.ttf', 8);
   $pchart->setGraphArea(50, 30, $width - 20, $height - 30);
   $pchart->drawFilledRoundedRectangle(7, 7, $width - 7, $height - 7,
     5, 240, 240, 240);
