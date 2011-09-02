@@ -5,8 +5,8 @@
  * Logs visitors for your site.
  */
 
-require_once dirname(__FILE__) . '/visitors.block';
-require_once dirname(__FILE__) . '/visitors.exit';
+require_once dirname(__FILE__) . '/visitors.block.inc';
+require_once dirname(__FILE__) . '/visitors.exit.inc';
 
 /**
  * Implements of hook_help().
@@ -41,7 +41,7 @@ function visitors_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('visitors_admin_settings'),
     'type' => MENU_NORMAL_ITEM,
-    'file' => 'forms/admin_settings.php',
+    'file' => 'forms/admin_settings.inc',
   );
 
   $items['visitors'] = array(

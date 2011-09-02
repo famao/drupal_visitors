@@ -7,8 +7,8 @@
  * Draw chart for the visitors module.
  */
 
-require_once VISITORS_MODULE_CHART_DIR .'/pData.class';
-require_once VISITORS_MODULE_CHART_DIR .'/pChart.class';
+require_once VISITORS_MODULE_CHART_DIR .'/pData.inc';
+require_once VISITORS_MODULE_CHART_DIR .'/pChart.inc';
 
 /**
  * Get chart width.

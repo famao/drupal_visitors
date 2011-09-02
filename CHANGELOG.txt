@@ -1,3 +1,7 @@
+Visitors 7.x-1.0-alpha2, 2011-09-01
+-----------------------
+- Fixed bug report #1262542: Rename all include files to *.inc.
+
 Visitors 7.x-1.0-alpha1, 2011-08-12
 -----------------------
 - Fixed feature request #556512: Countries. 
