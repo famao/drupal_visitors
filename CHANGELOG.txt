@@ -1,10 +1,15 @@
 Visitors 7.x-1.0-alpha2, 2011-09-01
 -----------------------
+- Fixed bug report #1248588: SQLSTATE[23000]: Integrity constraint violation:
+  1048 Column 'visitors_continent_code' cannot be null.
+- Fixed bug report #1248418: SQLite database. Module installation errors.
+  Notice: Undefined index: char:normal in
+  DatabaseSchema_sqlite->processField().
 - Fixed bug report #1262542: Rename all include files to *.inc.
 
 Visitors 7.x-1.0-alpha1, 2011-08-12
 -----------------------
-- Fixed feature request #556512: Countries. 
+- Fixed feature request #556512: Countries.
 
 Visitors 7.x-0.37, 2011-07-22
 -----------------------
