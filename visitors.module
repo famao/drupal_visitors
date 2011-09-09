@@ -23,10 +23,13 @@ function visitors_help($section) {
 }
 
 /**
- * Implements of hook_perm().
+ * Implements hook_permission().
  */
-function visitors_perm() {
-  return array('access visitors', 'administer visitors');
+function visitors_permission() {
+  return array(
+    'administer visitors' => array('title' => t('Administer visitors module')),
+    'access visitors' => array('title' => t('View reports')),
+  );
 }
 
 /**
