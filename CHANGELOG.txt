@@ -1,3 +1,8 @@
+Visitors 7.x-1.0-alpha4, 2011-09-09
+-----------------------
+- Added feature request #1262578: Add requirements checks and print results to
+  the Status report.
+
 Visitors 7.x-1.0-alpha3, 2011-09-03
 -----------------------
 - Fixed bug reports #1267722: Prohibit opening .txt files via browser.
