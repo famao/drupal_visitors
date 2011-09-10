@@ -1,4 +1,4 @@
-Visitors 7.x-1.0-alpha4, 2011-09-09
+Visitors 7.x-1.0-alpha4, 2011-09-10
 -----------------------
 - Added feature request #1262578: Add requirements checks and print results to
   the Status report.
