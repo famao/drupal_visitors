@@ -1,3 +1,7 @@
+Visitors 7.x-1.0-alpha5, 2011-11-12
+-----------------------
+- Fixed bug reports #1319676: Exclude adminster from statistics not working.
+
 Visitors 7.x-1.0-alpha4, 2011-09-10
 -----------------------
 - Added feature request #1262578: Add requirements checks and print results to
