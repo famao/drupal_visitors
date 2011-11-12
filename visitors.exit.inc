@@ -151,14 +151,17 @@ function visitors_get_geoip_data($ip) {
 function visitors_exit() {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
   drupal_load('module', 'user');
-  if (!(variable_get('visitors_exclude_administer_users', 0) &&
-      user_access('administer'))) {
-    global $user;
+
+  global $user;
+  $not_admin = !in_array('administrator', $user->roles);
+  $log_admin = !variable_get('visitors_exclude_administer_users', 0);
+
+  if ($log_admin || $not_admin) {
     $ip_str = visitors_get_ip_str();
     $geoip_data = visitors_get_geoip_data($ip_str);
 
     db_insert('visitors')
-      ->fields(array(
+    ->fields(array(
       'visitors_uid'            => $user->uid,
       'visitors_ip'             => $ip_str,
       'visitors_date_time'      => time(),
