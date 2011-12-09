@@ -313,6 +313,9 @@ function visitors_date_format_sql($field_name, $format) {
     case 'pgsql':
       return visitors_pgsql_date_format_sql($field_name, $format);
       break;
+    case 'sqlite':
+      return visitors_sqlite_date_format_sql($field_name, $format);
+      break;
     default:
       return visitors_mysql_date_format_sql($field_name, $format);
   }
@@ -372,3 +375,53 @@ function visitors_pgsql_date_format_sql($field_name, $format) {
 
   return $result;
 }
+
+/**
+ * Set date format for sqlite sql query.
+ *
+ * @param $field_name string field name
+ * @param $format string date format
+ *
+ * @return string date format
+ */
+function visitors_sqlite_date_format_sql($field_name, $format) {
+  static $format_array = array(
+    '%H'    => "strftime('%%H', %s + (%d), 'unixepoch')",
+    '%a'    => "case strftime('%%w', %s + (%d), 'unixepoch')
+                when '0' then 'Sun'
+                when '1' then 'Mon'
+                when '2' then 'Tue'
+                when '3' then 'Wed'
+                when '4' then 'Thu'
+                when '5' then 'Fri'
+                when '6' then 'Sat'
+                else '' end",
+    '%w'    => "strftime('%%w', %s + (%d), 'unixepoch')",
+    '%d'    => "strftime('%%d', %s + (%d), 'unixepoch')",
+    '%Y %M' => "strftime('%%Y ', %1\$s + (%2\$d), 'unixepoch') ||
+                case strftime('%%m', %1\$s + (%2\$d), 'unixepoch')
+                when '01' then 'January'
+                when '02' then 'Febuary'
+                when '03' then 'March'
+                when '04' then 'April'
+                when '05' then 'May'
+                when '06' then 'June'
+                when '07' then 'July'
+                when '08' then 'August'
+                when '09' then 'September'
+                when '10' then 'October'
+                when '11' then 'November'
+                when '12' then 'December'
+                else '' end",
+    '%Y%m'  => "strftime('%%Y%%m', %s + (%d), 'unixepoch')",
+  );
+  if (isset($format_array[$format])) {
+    $diff = visitors_timezone_diff();
+    $result = sprintf($format_array[$format], $field_name, $diff);
+  }
+  else {
+    $result = '';
+  }
+  return $result;
+}
+
