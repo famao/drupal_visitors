@@ -1,3 +1,8 @@
+Visitors 7.x-1.0-alpha6, 2011-12-10
+-----------------------
+- Fixed bug reports #1248422: SQLite database. PDOException: SQLSTATE[HY000]:
+  General error: 1 near "SHOW": syntax error: SHOW variables LIKE 'time_zone';.
+
 Visitors 7.x-1.0-alpha5, 2011-11-12
 -----------------------
 - Fixed bug reports #1319676: Exclude adminster from statistics not working.
