@@ -58,35 +58,6 @@ function visitors_menu() {
     'file path' => drupal_get_path('module', 'system'),
   );
 
-  $items['visitors/countries'] = array(
-    'title' => 'Countries',
-    'description' => 'View pages count per country.',
-    'page callback' => 'visitors_countries',
-    'access arguments' => array('access visitors'),
-    'file' => 'visitors.admin.inc',
-    'type' => MENU_NORMAL_ITEM,
-  );
-
-  $items['visitors/countries/%'] = array(
-    'title' => 'City',
-    'description' => 'View pages count per city.',
-    'page callback' => 'visitors_cities',
-    'page arguments' => array(2),
-    'access arguments' => array('access visitors'),
-    'file' => 'visitors.admin.inc',
-    'type' => MENU_CALLBACK,
-  );
-
-  $items['visitors/countries/%/%'] = array(
-    'title' => 'Hits',
-    'description' => 'View city hits.',
-    'page callback' => 'visitors_city_hits',
-    'page arguments' => array(2, 3),
-    'access arguments' => array('access visitors'),
-    'file' => 'visitors.admin.inc',
-    'type' => MENU_CALLBACK,
-  );
-
   $items['visitors/hits'] = array(
     'title' => 'Recent hits',
     'description' => 'View pages that have recently been visited.',

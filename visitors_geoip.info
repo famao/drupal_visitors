@@ -1,0 +1,6 @@
+name = Visitors Country Reports
+description = Add country reports to stats
+package = "Visitors"
+core = "7.x"
+dependencies[] = visitors
+files[] = visitors_geoip.module
