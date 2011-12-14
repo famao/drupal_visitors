@@ -158,10 +158,8 @@ function visitors_exit() {
 
   if ($log_admin || $not_admin) {
     $ip_str = visitors_get_ip_str();
-    $geoip_data = visitors_get_geoip_data($ip_str);
 
-    db_insert('visitors')
-    ->fields(array(
+    $fields = array(
       'visitors_uid'            => $user->uid,
       'visitors_ip'             => $ip_str,
       'visitors_date_time'      => time(),
@@ -169,19 +167,27 @@ function visitors_exit() {
       'visitors_referer'        => visitors_get_referer(),
       'visitors_path'           => visitors_get_path(),
       'visitors_title'          => visitors_get_title(),
-      'visitors_user_agent'     => visitors_get_user_agent(),
-      'visitors_continent_code' => $geoip_data['continent_code'],
-      'visitors_country_code'   => $geoip_data['country_code'],
-      'visitors_country_code3'  => $geoip_data['country_code3'],
-      'visitors_country_name'   => $geoip_data['country_name'],
-      'visitors_region'         => $geoip_data['region'],
-      'visitors_city'           => $geoip_data['city'],
-      'visitors_postal_code'    => $geoip_data['postal_code'],
-      'visitors_latitude'       => $geoip_data['latitude'],
-      'visitors_longitude'      => $geoip_data['longitude'],
-      'visitors_dma_code'       => $geoip_data['dma_code'],
-      'visitors_area_code'      => $geoip_data['area_code']
-    ))
+      'visitors_user_agent'     => visitors_get_user_agent()
+    );
+
+    if (module_exists('visitors_geoip')) {
+      $geoip_data = visitors_get_geoip_data($ip_str);
+
+      $fields['visitors_continent_code'] = $geoip_data['continent_code'];
+      $fields['visitors_country_code']   = $geoip_data['country_code'];
+      $fields['visitors_country_code3']  = $geoip_data['country_code3'];
+      $fields['visitors_country_name']   = $geoip_data['country_name'];
+      $fields['visitors_region']         = $geoip_data['region'];
+      $fields['visitors_city']           = $geoip_data['city'];
+      $fields['visitors_postal_code']    = $geoip_data['postal_code'];
+      $fields['visitors_latitude']       = $geoip_data['latitude'];
+      $fields['visitors_longitude']      = $geoip_data['longitude'];
+      $fields['visitors_dma_code']       = $geoip_data['dma_code'];
+      $fields['visitors_area_code']      = $geoip_data['area_code'];
+    }
+
+    db_insert('visitors')
+    ->fields($fields)
     ->execute();
   }
 }
