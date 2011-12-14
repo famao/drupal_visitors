@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/visitors_geoip.requirements.inc';
+
 /**
  * Menu callback. Prints a listing of active nodes on the site.
  */
