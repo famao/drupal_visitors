@@ -21,14 +21,15 @@ function visitors_is_ip_valid($ip) {
                         $matches
                       );
 
-  return ($result &&
-          isset($matches[0]) &&
-          ($matches[0] === $ip) &&
-          ($matches[1] >= 1) && ($matches[1] <= 255) &&
-          ($matches[2] >= 0) && ($matches[2] <= 255) &&
-          ($matches[3] >= 0) && ($matches[3] <= 255) &&
-          ($matches[4] >= 0) && ($matches[4] <= 255)
-          );
+  return (
+    $result &&
+    isset($matches[0]) &&
+    ($matches[0] === $ip) &&
+    ($matches[1] >= 1) && ($matches[1] <= 255) &&
+    ($matches[2] >= 0) && ($matches[2] <= 255) &&
+    ($matches[3] >= 0) && ($matches[3] <= 255) &&
+    ($matches[4] >= 0) && ($matches[4] <= 255)
+  );
 }
 
 /**
@@ -138,6 +139,11 @@ function visitors_get_geoip_data($ip) {
   if (function_exists('geoip_record_by_name')) {
     $data = @geoip_record_by_name($ip);
     if ((!is_null($data)) && ($data !== FALSE)) {
+      /* Transform values from iso-8859-1 into the utf8. */
+      foreach ($data as $key => &$value) {
+        $value = utf8_encode($value);
+      }
+
       $result = $data;
     }
   }
@@ -185,10 +191,14 @@ function visitors_exit() {
       $fields['visitors_dma_code']       = $geoip_data['dma_code'];
       $fields['visitors_area_code']      = $geoip_data['area_code'];
     }
-
+    try {
     db_insert('visitors')
-    ->fields($fields)
-    ->execute();
+      ->fields($fields)
+      ->execute();
+    }
+    catch (PDOException $ex) {
+        echo $ex->getMessage();
+    }
   }
 }
 
