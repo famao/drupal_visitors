@@ -191,14 +191,10 @@ function visitors_exit() {
       $fields['visitors_dma_code']       = $geoip_data['dma_code'];
       $fields['visitors_area_code']      = $geoip_data['area_code'];
     }
-    try {
+
     db_insert('visitors')
       ->fields($fields)
       ->execute();
-    }
-    catch (PDOException $ex) {
-        echo $ex->getMessage();
-    }
   }
 }
 
