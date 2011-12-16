@@ -17,25 +17,7 @@
 function visitors_hit_details($visitors_id) {
   $query = db_select('visitors', 'v');
   $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
-  $query->fields(
-    'v',
-    array(
-      'visitors_url',
-      'visitors_title',
-      'visitors_referer',
-      'visitors_date_time',
-      'visitors_ip',
-      'visitors_user_agent',
-      'visitors_country_name',
-      'visitors_region',
-      'visitors_city',
-      'visitors_postal_code',
-      'visitors_latitude',
-      'visitors_longitude',
-      'visitors_dma_code',
-      'visitors_area_code'
-    )
-  );
+  $query->fields('v');
   $query->fields('u', array('name', 'uid'));
   $query->condition('v.visitors_id', (int)$visitors_id);
   $hit_details = $query->execute()->fetch();
@@ -56,7 +38,6 @@ function visitors_hit_details($visitors_id) {
       )
     );
     $ip = long2ip($hit_details->visitors_ip);
-
     $array = array(
       'URL'            => l($url, $url),
       'Title'          => check_plain($hit_details->visitors_title),
@@ -64,17 +45,22 @@ function visitors_hit_details($visitors_id) {
       'Date'           => $date,
       'User'           => theme('username', array('account' => $hit_details)),
       'IP'             => $whois_enable ? l($ip, 'whois/' . $ip, $attr) : $ip,
-      'User Agent'     => check_plain($hit_details->visitors_user_agent),
-      'Country'        => check_plain($hit_details->visitors_country_name),
-      'Region'         => check_plain($hit_details->visitors_region),
-      'City'           => check_plain($hit_details->visitors_city),
-      'Postal Code'    => check_plain($hit_details->visitors_postal_code),
-      'Latitude'       => check_plain($hit_details->visitors_latitude),
-      'Longitude'      => check_plain($hit_details->visitors_longitude),
-      'DMA Code'       => check_plain($hit_details->visitors_dma_code),
-      'PSTN Area Code' => check_plain($hit_details->visitors_area_code),
+      'User Agent'     => check_plain($hit_details->visitors_user_agent)
     );
 
+    if (module_exists('visitors_geoip')) {
+      $geoip_data_array = array(
+        'Country'        => check_plain($hit_details->visitors_country_name),
+        'Region'         => check_plain($hit_details->visitors_region),
+        'City'           => check_plain($hit_details->visitors_city),
+        'Postal Code'    => check_plain($hit_details->visitors_postal_code),
+        'Latitude'       => check_plain($hit_details->visitors_latitude),
+        'Longitude'      => check_plain($hit_details->visitors_longitude),
+        'DMA Code'       => check_plain($hit_details->visitors_dma_code),
+        'PSTN Area Code' => check_plain($hit_details->visitors_area_code),
+      );
+      $array = array_merge($array, $geoip_data_array);
+    }
     $rows = array();
     foreach ($array as $key => $value) {
       $rows[] = array(array('data' => t($key), 'header' => TRUE), $value);
