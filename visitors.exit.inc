@@ -68,7 +68,8 @@ function visitors_get_ip_str() {
  *   string full path
  */
 function visitors_get_url() {
-  return urldecode(sprintf('http://%s%s', $_SERVER['HTTP_HOST'], request_uri()));
+  return
+    urldecode(sprintf('http://%s%s', $_SERVER['HTTP_HOST'], request_uri()));
 }
 
 /**
@@ -89,8 +90,8 @@ function visitors_get_path() {
  *   string referer, or empty string if referer does not exist
  */
 function visitors_get_referer() {
-  return isset($_SERVER['HTTP_REFERER']) ? urldecode($_SERVER['HTTP_REFERER']) : '';
-
+  return
+    isset($_SERVER['HTTP_REFERER']) ? urldecode($_SERVER['HTTP_REFERER']) : '';
 }
 
 /**
