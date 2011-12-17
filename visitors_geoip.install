@@ -91,128 +91,152 @@ function visitors_geoip_schema_alter(&$schema) {
  * Implements hook_install().
  */
 function visitors_geoip_install() {
-  db_add_field(
-    'visitors',
-    'visitors_continent_code',
-    array(
-      'type' => 'varchar',
-      'length' => 2,
-      'not null' => TRUE,
-      'default' => '',
-    )
-  );
+  $schema = Database::getConnection()->schema();
 
-  db_add_field(
-    'visitors',
-    'visitors_country_code',
-    array(
-      'type' => 'varchar',
-      'length' => 2,
-      'not null' => TRUE,
-      'default' => '',
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_continent_code')) {
+    db_add_field(
+      'visitors',
+      'visitors_continent_code',
+      array(
+        'type' => 'varchar',
+        'length' => 2,
+        'not null' => TRUE,
+        'default' => '',
+      )
+    );
+  }
 
-  db_add_field(
-    'visitors',
-    'visitors_country_code3',
-    array(
-      'type' => 'varchar',
-      'length' => 3,
-      'not null' => TRUE,
-      'default' => '',
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_country_code')) {
+    db_add_field(
+      'visitors',
+      'visitors_country_code',
+      array(
+        'type' => 'varchar',
+        'length' => 2,
+        'not null' => TRUE,
+        'default' => '',
+      )
+    );
+  }
 
-  db_add_field(
-    'visitors',
-    'visitors_country_name',
-    array(
-      'type' => 'varchar',
-      'length' => 128,
-      'not null' => TRUE,
-      'default' => '',
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_country_code3')) {
+    db_add_field(
+      'visitors',
+      'visitors_country_code3',
+      array(
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+        'default' => '',
+      )
+    );
+  }
 
-  db_add_field(
-    'visitors',
-    'visitors_region',
-    array(
-      'type' => 'varchar',
-      'length' => 128,
-      'not null' => TRUE,
-      'default' => '',
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_country_name')) {
+    db_add_field(
+      'visitors',
+      'visitors_country_name',
+      array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      )
+    );
+  }
 
-  db_add_field(
-    'visitors',
-    'visitors_city',
-    array(
-      'type' => 'varchar',
-      'length' => 128,
-      'not null' => TRUE,
-      'default' => '',
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_region')) {
+    db_add_field(
+      'visitors',
+      'visitors_region',
+      array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      )
+    );
+  }
 
-  db_add_field(
-    'visitors',
-    'visitors_postal_code',
-    array(
-      'type' => 'varchar',
-      'length' => 128,
-      'not null' => TRUE,
-      'default' => '',
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_city')) {
+    db_add_field(
+      'visitors',
+      'visitors_city',
+      array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      )
+    );
+  }
 
-  db_add_field(
-    'visitors',
-    'visitors_latitude',
-    array(
-      'type' => 'numeric',
-      'precision' => 13,
-      'scale' => 10,
-      'not null' => TRUE,
-      'default' => 0,
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_postal_code')) {
+    db_add_field(
+      'visitors',
+      'visitors_postal_code',
+      array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      )
+    );
+  }
 
-  db_add_field(
-    'visitors',
-    'visitors_longitude',
-    array(
-      'type' => 'numeric',
-      'precision' => 13,
-      'scale' => 10,
-      'not null' => TRUE,
-      'default' => 0,
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_latitude')) {
+    db_add_field(
+      'visitors',
+      'visitors_latitude',
+      array(
+        'type' => 'numeric',
+        'precision' => 13,
+        'scale' => 10,
+        'not null' => TRUE,
+        'default' => 0,
+      )
+    );
+  }
 
-  db_add_field(
-    'visitors',
-    'visitors_dma_code',
-    array(
-      'type' => 'int',
-      'not null' => TRUE,
-      'unsigned' => TRUE,
-      'default' => 0,
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_longitude')) {
+    db_add_field(
+      'visitors',
+      'visitors_longitude',
+      array(
+        'type' => 'numeric',
+        'precision' => 13,
+        'scale' => 10,
+        'not null' => TRUE,
+        'default' => 0,
+      )
+    );
+  }
 
-  db_add_field(
-    'visitors',
-    'visitors_area_code',
-    array(
-      'type' => 'int',
-      'not null' => TRUE,
-      'unsigned' => TRUE,
-      'default' => 0,
-    )
-  );
+  if (!$schema->fieldExists('visitors', 'visitors_dma_code')) {
+    db_add_field(
+      'visitors',
+      'visitors_dma_code',
+      array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+      )
+    );
+  }
+
+  if (!$schema->fieldExists('visitors', 'visitors_area_code')) {
+    db_add_field(
+      'visitors',
+      'visitors_area_code',
+      array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+      )
+    );
+  }
 }
 
 /**
