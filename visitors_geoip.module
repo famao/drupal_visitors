@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Visitors geoip module menu configuration.
+ */
+
 require_once dirname(__FILE__) . '/visitors_geoip.requirements.inc';
 
 /**
