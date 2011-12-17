@@ -88,7 +88,7 @@ function visitors_geoip_schema_alter(&$schema) {
 }
 
 /**
- * Implementation of hook_install().
+ * Implements hook_install().
  */
 function visitors_geoip_install() {
   db_add_field(
@@ -216,7 +216,7 @@ function visitors_geoip_install() {
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function visitors_geoip_uninstall() {
   db_drop_field('visitors', 'visitors_continent_code');
