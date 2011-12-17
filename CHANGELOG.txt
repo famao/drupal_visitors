@@ -1,11 +1,19 @@
+Visitors 7.x-1.0-alpha7, 2011-12-17
+-----------------------
+- Fixed bug report #1373028: SQLSTATE[HY000]: General error: 1366 Incorrect
+  string value: '\xF6ln' for column 'visitors_city' at row 1.
+- Fixed bug report #1366992: SQLSTATE[42S02]: Base table or view not found:
+  1146 Table 'xb1278_db4.comment' doesn't exist.
+- Move geoip reports to a separate module.
+
 Visitors 7.x-1.0-alpha6, 2011-12-10
 -----------------------
-- Fixed bug reports #1248422: SQLite database. PDOException: SQLSTATE[HY000]:
+- Fixed bug report #1248422: SQLite database. PDOException: SQLSTATE[HY000]:
   General error: 1 near "SHOW": syntax error: SHOW variables LIKE 'time_zone';.
 
 Visitors 7.x-1.0-alpha5, 2011-11-12
 -----------------------
-- Fixed bug reports #1319676: Exclude adminster from statistics not working.
+- Fixed bug report #1319676: Exclude adminster from statistics not working.
 
 Visitors 7.x-1.0-alpha4, 2011-09-10
 -----------------------
@@ -15,11 +23,11 @@ Visitors 7.x-1.0-alpha4, 2011-09-10
 
 Visitors 7.x-1.0-alpha3, 2011-09-03
 -----------------------
-- Fixed bug reports #1267722: Prohibit opening .txt files via browser.
+- Fixed bug report #1267722: Prohibit opening .txt files via browser.
 
 Visitors 7.x-0.39, 2011-09-03
 -----------------------
-- Fixed bug reports #1267722: Prohibit opening .txt files via browser.
+- Fixed bug report #1267722: Prohibit opening .txt files via browser.
 
 Visitors 7.x-0.38, 2011-09-02
 -----------------------
