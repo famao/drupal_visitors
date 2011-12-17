@@ -140,10 +140,8 @@ function visitors_get_geoip_data($ip) {
   if (function_exists('geoip_record_by_name')) {
     $data = @geoip_record_by_name($ip);
     if ((!is_null($data)) && ($data !== FALSE)) {
-      /* Transform values from iso-8859-1 into the utf8. */
-      foreach ($data as $key => &$value) {
-        $value = utf8_encode($value);
-      }
+      /* Transform city value from iso-8859-1 into the utf8. */
+      $data['city'] = utf8_encode($data['city']);
 
       $result = $data;
     }
