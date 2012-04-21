@@ -1,6 +1,7 @@
 Visitors 7.x-1.1, 2012-04-21
 -----------------------
 - Fixed bug report #1463714: Remove LICENSE.txt from Git repository.
+- Added feature request #1535744: Include past visitors in visitor count.
 
 Visitors 7.x-1.0, 2012-01-01
 Visitors 7.x-1.0-alpha7, 2011-12-17
