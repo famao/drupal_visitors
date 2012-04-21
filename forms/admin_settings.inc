@@ -31,6 +31,12 @@ function visitors_admin_settings() {
     '#default_value' => variable_get('visitors_show_total_visitors', 1),
     '#description' => t('Show Total Visitors.')
   );
+  $form['visitors_settings']['visitors_start_count_total_visitors'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Total visitors start count'),
+    '#default_value' => variable_get('visitors_start_count_total_visitors', 0),
+    '#description' => t('Start the count of the total visitors at this number. Useful for including the known number of visitors in the past.')
+  );
 
   $form['visitors_settings']['visitors_show_unique_visitor'] = array(
     '#type' => 'checkbox',

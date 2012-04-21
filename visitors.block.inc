@@ -55,7 +55,7 @@ function theme_visitors_block_view() {
 function visitors_block_show_total_visitors(&$list_items) {
   if (variable_get('visitors_show_total_visitors', 1)) {
     $query = 'SELECT COUNT(*) FROM {visitors}';
-    $count = db_query($query)->fetchField();
+    $count = db_query($query)->fetchField() + variable_get('visitors_start_count_total_visitors', 0);
     $list_items[] = t('Total Visitors: %visitors',
       array('%visitors' => $count)
     );

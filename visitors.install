@@ -8,6 +8,13 @@
  */
 
 /**
+ * Implements hook_install().
+ */
+function visitors_install() {
+  variable_set('visitors_start_count_total_visitors', 0);
+}
+
+/**
  * Uninstall the module with database table and module settings.
  */
 function visitors_uninstall() {
@@ -24,6 +31,7 @@ function visitors_uninstall() {
   variable_del('visitors_show_total_visitors');
   variable_del('visitors_show_unique_visitor');
   variable_del('visitors_since_date');
+  variable_del('visitors_start_count_total_visitors');
   variable_del('visitors_user_ip');
 }
 
