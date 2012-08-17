@@ -1,3 +1,9 @@
+Visitors 7.x-1.2, 2012-08-17
+-----------------------
+- Fixed bug report #1632902: Notice: Undefined index: value in
+  visitors_get_mysql_current_timezone() (line 242
+  sites/all/modules/visitors/visitors.module).
+
 Visitors 7.x-1.1, 2012-04-21
 -----------------------
 - Fixed bug report #1463714: Remove LICENSE.txt from Git repository.

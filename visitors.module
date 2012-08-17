@@ -237,9 +237,8 @@ function visitors_cron() {
  * @return string
  */
 function visitors_get_mysql_current_timezone() {
-    $query = 'SHOW variables LIKE \'time_zone\'';
-    $data = db_query($query)->fetchAssoc();
-    return $data['value'];
+  $query = 'SHOW variables LIKE \'time_zone\'';
+  return db_query($query)->fetchField(1);
 }
 
 /**
