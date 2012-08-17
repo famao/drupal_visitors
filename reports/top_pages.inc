@@ -22,8 +22,9 @@ function visitors_top_pages() {
   );
 
   $query = db_select('visitors', 'v')
-    ->extend('PagerDefault')
-    ->extend('TableSort');
+    ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+    ->extend('Drupal\Core\Database\Query\TableSortExtender');
+
   $query->addExpression('COUNT(visitors_id)', 'count');
   $query->addExpression('MIN(visitors_title)', 'visitors_title');
   $query->addExpression('MIN(visitors_url)', 'visitors_url');

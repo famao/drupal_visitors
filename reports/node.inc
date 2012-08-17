@@ -26,8 +26,9 @@ function visitors_node() {
     );
 
     $query = db_select('visitors', 'v')
-      ->extend('PagerDefault')
-      ->extend('TableSort');
+      ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+      ->extend('Drupal\Core\Database\Query\TableSortExtender');
+
     $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
     $query->fields(
       'v',

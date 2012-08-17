@@ -32,8 +32,9 @@ function visitors_host_hits($ip) {
   );
 
   $query = db_select('visitors', 'v')
-    ->extend('PagerDefault')
-    ->extend('TableSort');
+    ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+    ->extend('Drupal\Core\Database\Query\TableSortExtender');
+
   $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
   $query->fields(
     'v',
@@ -115,8 +116,9 @@ function visitors_hosts() {
   );
 
   $query = db_select('visitors', 'v')
-    ->extend('PagerDefault')
-    ->extend('TableSort');
+    ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+    ->extend('Drupal\Core\Database\Query\TableSortExtender');
+
   $query->addExpression('COUNT(*)', 'count');
   $query->fields('v', array('visitors_ip'));
   visitors_date_filter_sql_condition($query);

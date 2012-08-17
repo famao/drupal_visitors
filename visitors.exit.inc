@@ -79,7 +79,7 @@ function visitors_get_url() {
  *   string internal path
  */
 function visitors_get_path() {
-  return $_GET['q'];
+  return _current_path();
 }
 
 /**

@@ -21,8 +21,9 @@ function visitors_monthly_history() {
   );
 
   $query = db_select('visitors', 'v')
-    ->extend('PagerDefault')
-    ->extend('TableSort');
+    ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+    ->extend('Drupal\Core\Database\Query\TableSortExtender');
+
   $query->addExpression('COUNT(*)', 'count');
   $query->addExpression(
     visitors_date_format_sql('visitors_date_time', '%Y%m'), 'm'

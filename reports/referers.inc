@@ -21,8 +21,9 @@ function visitors_referer_list() {
   );
 
   $query = db_select('visitors', 'v')
-    ->extend('PagerDefault')
-    ->extend('TableSort');
+    ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+    ->extend('Drupal\Core\Database\Query\TableSortExtender');
+
   $query->addExpression('COUNT(*)', 'count');
   $query->fields('v', array('visitors_referer'));
   visitors_date_filter_sql_condition($query);

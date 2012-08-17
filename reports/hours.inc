@@ -24,7 +24,9 @@ function visitors_hours_data($header) {
   $query->groupBy('hour');
 
   if (!is_null($header)) {
-    $query->extend('TableSort')->orderByHeader($header);
+    $query
+      ->extend('Drupal\Core\Database\Query\TableSortExtender')
+      ->orderByHeader($header);
   }
 
   return $query->execute();

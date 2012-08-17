@@ -24,7 +24,9 @@ function visitors_days_of_month_data($header) {
   visitors_date_filter_sql_condition($query);
 
   if (!is_null($header))
-    $query->extend('TableSort')->orderByHeader($header);
+    $query
+      ->extend('Drupal\Core\Database\Query\TableSortExtender')
+      ->orderByHeader($header);
 
   return $query->execute();
 }

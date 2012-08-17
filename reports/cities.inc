@@ -23,8 +23,9 @@ function visitors_cities($country) {
   $original_country =  ($country == '(none)') ? '' : $country;
 
   $query = db_select('visitors', 'v')
-    ->extend('PagerDefault')
-    ->extend('TableSort');
+    ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+    ->extend('Drupal\Core\Database\Query\TableSortExtender');
+
   $query->addExpression('COUNT(visitors_city)', 'count');
   $query->fields('v', array('visitors_city'));
   $query->condition('v.visitors_country_name', $original_country);

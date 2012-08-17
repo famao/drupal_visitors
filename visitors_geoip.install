@@ -91,7 +91,7 @@ function visitors_geoip_schema_alter(&$schema) {
  * Implements hook_install().
  */
 function visitors_geoip_install() {
-  $schema = Database::getConnection()->schema();
+  $schema = Drupal\Core\Database\Database::getConnection()->schema();
 
   if (!$schema->fieldExists('visitors', 'visitors_continent_code')) {
     db_add_field(

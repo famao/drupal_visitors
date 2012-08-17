@@ -278,7 +278,7 @@ function visitors_timezone_diff() {
  * @return string date format
  */
 function visitors_date_format_sql($field_name, $format) {
-  switch (Database::getConnection()->driver()) {
+  switch (Drupal\Core\Database\Database::getConnection()->driver()) {
     case 'pgsql':
       return visitors_pgsql_date_format_sql($field_name, $format);
       break;

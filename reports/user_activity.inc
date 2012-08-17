@@ -27,8 +27,9 @@ function visitors_user_activity() {
   }
 
   $query = db_select('users', 'u')
-    ->extend('PagerDefault')
-    ->extend('TableSort');
+    ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+    ->extend('Drupal\Core\Database\Query\TableSortExtender');
+
   $query->leftJoin('visitors', 'v', 'u.uid=v.visitors_uid');
   $query->leftJoin('node', 'n', 'u.uid=n.uid');
   if ($is_comment_module_exist) {
