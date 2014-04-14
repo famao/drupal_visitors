@@ -11,7 +11,9 @@
  * Implements hook_install().
  */
 function visitors_install() {
-  variable_set('visitors_start_count_total_visitors', 0);
+  \Drupal::config('visitors.config')
+    ->set('start_count_total_visitors', 0)
+    ->save();
 }
 
 /**
@@ -20,19 +22,7 @@ function visitors_install() {
 function visitors_uninstall() {
   drupal_uninstall_schema('visitors');
 
-  variable_del('visitors_exclude_administer_users');
-  variable_del('visitors_chart_height');
-  variable_del('visitors_chart_width');
-  variable_del('visitors_flush_log_timer');
-  variable_del('visitors_last_registered_user');
-  variable_del('visitors_lines_per_page');
-  variable_del('visitors_published_nodes');
-  variable_del('visitors_registered_user');
-  variable_del('visitors_show_total_visitors');
-  variable_del('visitors_show_unique_visitor');
-  variable_del('visitors_since_date');
-  variable_del('visitors_start_count_total_visitors');
-  variable_del('visitors_user_ip');
+  \Drupal::config('visitors.config')->delete();
 }
 
 /**
