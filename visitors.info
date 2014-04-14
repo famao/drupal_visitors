@@ -1,5 +1,0 @@
-name = Visitors
-description = "This module used for displaying a visitors info."
-package = "Visitors"
-core = "8.x"
-configure = admin/config/system/visitors
