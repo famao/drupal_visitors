@@ -417,24 +417,3 @@ function visitors_get_years_range() {
   return range(date('Y', $min_time), date('Y'));
 }
 
-/**
- * Set to session info default values for visitors date filter.
- */
-function visitors_set_session_date_range() {
-  if (!isset($_SESSION['visitors_from'])) {
-    $_SESSION['visitors_from'] = array(
-      'day'   => 1,
-      'month' => date('n'),
-      'year'  => date('Y'),
-    );
-  }
-
-  if (!isset($_SESSION['visitors_to'])) {
-    $_SESSION['visitors_to'] = array(
-      'day'   => date('j'),
-      'month' => date('n'),
-      'year'  => date('Y'),
-    );
-  }
-}
-
