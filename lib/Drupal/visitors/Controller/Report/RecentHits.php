@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Component\Utility\String;
@@ -47,17 +48,16 @@ class RecentHits extends ControllerBase  {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-        return new static(
+    return new static(
       $container->get('database'),
       $container->get('module_handler'),
       $container->get('date'),
       $container->get('form_builder')
     );
-
   }
 
   /**
-   * Constructs a DbLogController object.
+   * Constructs a RecentHits object.
    *
    * @param \Drupal\Core\Database\Connection $database
    *   A database connection.
@@ -68,11 +68,16 @@ class RecentHits extends ControllerBase  {
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(Connection $database, ModuleHandlerInterface $module_handler, Date $date, FormBuilderInterface $form_builder) {
-    $this->database = $database;
+  public function __construct(
+    Connection $database,
+    ModuleHandlerInterface $module_handler,
+    Date $date,
+    FormBuilderInterface $form_builder
+  ) {
+    $this->database      = $database;
     $this->moduleHandler = $module_handler;
-    $this->date = $date;
-    $this->formBuilder = $form_builder;
+    $this->date          = $date;
+    $this->formBuilder   = $form_builder;
   }
 
   /**
@@ -88,21 +93,11 @@ class RecentHits extends ControllerBase  {
      $list['visitors_table'] = array(
       '#theme' => 'table',
       '#header' => array(
-        '#' => array(
-          'data' => t('#'),
-        ),
-        'visitors_id' => array(
-          'data' => t('ID'),
-        ),
-        'visitors_date_time' => array(
-          'data' => t('Date'),
-        ), 
-        'visitors_url' => array(
-          'data' => t('URL'),
-        ),
-        'u.name' => array(
-          'data' => t('User')
-        )
+        '#'                  => array('data' => t('#')),
+        'visitors_id'        => array('data' => t('ID')),
+        'visitors_date_time' => array('data' => t('Date')),
+        'visitors_url'       => array('data' => t('URL')),
+        'u.name'             => array('data' => t('User'))
       ),
       '#rows' => array(),
     );
@@ -112,3 +107,4 @@ class RecentHits extends ControllerBase  {
     return $list;
   }
 }
+
