@@ -1,0 +1,7 @@
+visitors.hits:
+  path: '/visitors/hits'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\RecentHits::display'
+    _title: 'Recent hits'
+  requirements:
+    _permission: 'access visitors'

@@ -60,10 +60,7 @@ function visitors_menu() {
   $items['visitors/hits'] = array(
     'title' => 'Recent hits',
     'description' => 'View pages that have recently been visited.',
-    'page callback' => 'visitors_recent_hits',
-    'access arguments' => array('access visitors'),
-    'file' => 'visitors.admin.inc',
-    'type' => MENU_NORMAL_ITEM,
+    'route_name' => 'visitors.hits'
   );
 
   $items['visitors/pages'] = array(
@@ -207,26 +204,16 @@ function visitors_menu() {
 }
 
 /**
- * Implements of hook_theme().
- */
-function visitors_theme() {
-  return array(
-    'visitors_block_view' => array(
-      'arguments' => array(),
-    ),
-  );
-}
-
-/**
  * Implements of hook_cron().
  */
 function visitors_cron() {
-  $visitors_flush_log_timer = variable_get('visitors_flush_log_timer', 0);
+  $flush_log_timer = \Drupal::config('visitors.config')
+    ->get('flush_log_timer', 0);
 
-  if ($visitors_flush_log_timer > 0) {
+  if ($flush_log_timer > 0) {
     // Clean up expired access logs.
     db_delete('visitors')
-      ->condition('visitors_date_time', time() - $visitors_flush_log_timer, '<')
+      ->condition('visitors_date_time', time() - $flush_log_timer, '<')
       ->execute();
   }
 }
@@ -392,5 +379,62 @@ function visitors_sqlite_date_format_sql($field_name, $format) {
     $result = '';
   }
   return $result;
+}
+
+
+/**
+ * Implements hook_theme().
+ */
+function visitors_theme() {
+  return array(
+    'report' => array(
+      'variables' => array('height' => NULL,'width' => NULL, 'src' => NULL, 'href' => NULL),
+      'template' => 'report',
+    ),
+  );
+}
+
+/**
+ * Get year range for date fields visitors date filter.
+ * Min year - min value from {visitors} table.
+ *            If min value does not exist -  use current year.
+ * Max year - current year.
+ *
+ * @return int array years array from min year to max year
+ */
+function visitors_get_years_range() {
+  /* TODO: use db_select() function. */
+  $sql = sprintf('SELECT MIN(visitors_date_time) AS min_time
+                  FROM {visitors}
+                  LIMIT 1'
+                );
+  $result = db_query($sql);
+  $min_time = time();
+  foreach ($result as $data) {
+    $min_time = $data->min_time;
+  }
+
+  return range(date('Y', $min_time), date('Y'));
+}
+
+/**
+ * Set to session info default values for visitors date filter.
+ */
+function visitors_set_session_date_range() {
+  if (!isset($_SESSION['visitors_from'])) {
+    $_SESSION['visitors_from'] = array(
+      'day'   => 1,
+      'month' => date('n'),
+      'year'  => date('Y'),
+    );
+  }
+
+  if (!isset($_SESSION['visitors_to'])) {
+    $_SESSION['visitors_to'] = array(
+      'day'   => date('j'),
+      'month' => date('n'),
+      'year'  => date('Y'),
+    );
+  }
 }
 
