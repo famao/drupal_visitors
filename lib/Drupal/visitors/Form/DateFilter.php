@@ -2,17 +2,21 @@
 
 namespace Drupal\visitors\Form;
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormBase;
-use Drupal\Component\Utility\NestedArray;
 use Drupal\datetime\DateHelper;
 
 class DateFilter extends FormBase {
   protected $_order = array('month', 'day', 'year');
 
+  /**
+   * @return array
+   */
   protected function _getOrder() {
     return $this->_order;
   }
+
 
   public function getFormID() {
     return 'date_filter_form';
@@ -48,32 +52,32 @@ class DateFilter extends FormBase {
     $form = array();
 
     $form['visitors_date_filter'] = array(
-      '#type'             => 'fieldset',
+      '#collapsed'        => FALSE,
+      '#collapsible'      => FALSE,
+      '#description'      => t('Choose date range'),
       '#title'            => t('Date filter'),
-      '#collapsible'      => TRUE,
-      '#collapsed'        => TRUE,
-      '#description'      => t('Choose date range')
+      '#type'             => 'fieldset',
     );
 
     $form['visitors_date_filter']['from'] = array(
-      '#type'             => 'datelist',
-      '#title'            => t('From'),
       '#date_part_order'  => $this->_getOrder(),
-      '#default_value'    => $from,
       '#date_timezone'    => drupal_get_user_timezone(),
+      '#default_value'    => $from,
       '#element_validate' => array(array($this, 'datelistValidate')),
       '#process'          => array(array($this, 'formProcessDatelist')),
+      '#title'            => t('From'),
+      '#type'             => 'datelist',
       '#value_callback'   => array($this, 'datelistValueCallback'),
     );
 
     $form['visitors_date_filter']['to'] = array(
-      '#type'             => 'datelist',
-      '#title'            => t('To'),
       '#date_part_order'  => $this->_getOrder(),
-      '#default_value'    => $to,
       '#date_timezone'    => drupal_get_user_timezone(),
+      '#default_value'    => $to,
       '#element_validate' => array(array($this, 'datelistValidate')),
       '#process'          => array(array($this, 'formProcessDatelist')),
+      '#title'            => t('To'),
+      '#type'             => 'datelist',
       '#value_callback'   => array($this, 'datelistValueCallback'),
     );
 
@@ -108,7 +112,7 @@ class DateFilter extends FormBase {
     }
 
     $from = mktime(0, 0, 0, $from['month'], $from['day'], $from['year']);
-    $to = mktime(23, 59, 59, $to['month'], $to['day'], $to['year']);
+    $to   = mktime(23, 59, 59, $to['month'], $to['day'], $to['year']);
 
     if ((int) $from <= 0) {
       return $this->setFormError('from', $form_state, $error_message);
@@ -141,13 +145,13 @@ class DateFilter extends FormBase {
   }
 
   /**
-   * Validates the date type to adjust 12 hour time and prevent invalid
-   * dates (e.g., February 30, 2006).
+   * Validates the date type to prevent invalid dates (e.g., February 30,
+   * 2006).
    *
    * If the date is valid, the date is set in the form as a string
    * using the format designated in __toString().
    */
-  function datelistValidate($element, &$form_state) {
+  public function datelistValidate($element, &$form_state) {
     $input_exists = FALSE;
 
     $input = NestedArray::getValue(
@@ -179,12 +183,16 @@ class DateFilter extends FormBase {
 
     if ($date instanceOf DrupalDateTime && !$date->hasErrors()) {
       form_set_value($element, $date, $form_state);
-    } else {
-      form_error($element, $form_state, t('The %field date is invalid.'));
+      return;
     }
+
+    form_error($element, $form_state, t('The %field date is invalid.'));
   }
 
-  function datelistValueCallback($element, $input = FALSE, &$form_state = array()) {
+  /**
+   * Element value callback for datelist element.
+   */
+  public function datelistValueCallback($element, $input = FALSE, &$form_state = array()) {
     $parts  = $this->_getOrder();
     $return = array_fill_keys($parts, '');
 
@@ -195,7 +203,7 @@ class DateFilter extends FormBase {
     return $return;
   }
 
-  function formProcessDatelist($element, &$form_state) {
+  public function formProcessDatelist($element, &$form_state) {
     if (
       empty($element['#value']['month']) ||
       empty($element['#value']['day']) ||
