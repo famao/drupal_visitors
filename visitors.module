@@ -6,7 +6,6 @@
  */
 
 require_once dirname(__FILE__) . '/visitors.block.inc';
-require_once dirname(__FILE__) . '/visitors.exit.inc';
 
 /**
  * Implements of hook_help().

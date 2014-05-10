@@ -53,17 +53,17 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
   $log_admin = !\Drupal::config('visitors.config')->get('exclude_administer_users');
 
   if ($log_admin || $not_admin) {
-    $ip_str = visitors_get_ip_str();
+    $ip_str = $this->_getIpStr();
 
     $fields = array(
       'visitors_uid'            => $user->id(),
       'visitors_ip'             => $ip_str,
       'visitors_date_time'      => time(),
-      'visitors_url'            => visitors_get_url(),
-      'visitors_referer'        => visitors_get_referer(),
-      'visitors_path'           => visitors_get_path(),
+      'visitors_url'            => $this->_getUrl(),
+      'visitors_referer'        => $this->_getReferer(),
+      'visitors_path'           => _current_path(),
       'visitors_title'          => $this->_getTitle(),
-      'visitors_user_agent'     => visitors_get_user_agent()
+      'visitors_user_agent'     => $this->_getUserAgent()
     );
 
     if (module_exists('visitors_geoip')) {
@@ -104,7 +104,7 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
    * Get the title of the current page.
    *
    * @return string
-   *   title of the current page
+   *   Title of the current page.
    */
   protected function _getTitle() {
     if ($route = $this->request->attributes->get(RouteObjectInterface::ROUTE_OBJECT)) {
@@ -113,6 +113,131 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
     }
 
     return '';
+  }
+
+  /**
+   * Get full path request uri.
+   *
+   * @return string
+   *   Full path.
+   */
+  protected function _getUrl() {
+    return
+      urldecode(sprintf('http://%s%s', $_SERVER['HTTP_HOST'], request_uri()));
+  }
+
+  /**
+   * Get the address of the page (if any) which referred the user agent to the
+   * current page.
+   *
+   * @return string
+   *   Referer, or empty string if referer does not exist.
+   */
+  protected function _getReferer() {
+    return
+      isset($_SERVER['HTTP_REFERER']) ? urldecode($_SERVER['HTTP_REFERER']) : '';
+  }
+
+  /**
+   * Verify the syntax of the given ip address.
+   *
+   * @param ip
+   *   A string containing an ip address.
+   *
+   * @return boolean
+   *   TRUE if the ip is in a valid format, FALSE on failure.
+   */
+  protected function _isIpValid($ip) {
+    $result = preg_match(
+      '/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/',
+      $ip,
+      $matches
+    );
+
+    return (
+      $result &&
+      isset($matches[0]) &&
+      ($matches[0] === $ip) &&
+      ($matches[1] >= 1) && ($matches[1] <= 255) &&
+      ($matches[2] >= 0) && ($matches[2] <= 255) &&
+      ($matches[3] >= 0) && ($matches[3] <= 255) &&
+      ($matches[4] >= 0) && ($matches[4] <= 255)
+    );
+  }
+
+  /**
+   * Get visitors ip address.
+   *
+   * @return string
+   *   A string containing an ip address ('0.0.0.0' on failure).
+   */
+  protected function _getIp() {
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+      $ip_array = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+      $ip       = trim(reset($ip_array));
+    }
+    else {
+      $ip = $_SERVER['REMOTE_ADDR'];
+    }
+
+    return ($this->_isIpValid($ip) ? $ip : '0.0.0.0');
+  }
+
+  /**
+   * Converts a string containing an visitors (IPv4) Internet Protocol dotted
+   * address into a proper address.
+   *
+   * @return string
+   */
+  protected function _getIpStr() {
+    return sprintf("%u", ip2long($this->_getIp()));
+  }
+
+  /**
+   * Get visitor user agent.
+   *
+   * @return string
+   *   string user agent, or empty string if user agent does not exist
+   */
+  protected function _getUserAgent() {
+    return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+  }
+
+  /**
+   * Retrieve geoip data for ip.
+   *
+   * @param ip
+   *   A string containing an ip address.
+   *
+   * @return array
+   *   Geoip data array.
+   */
+  protected function _getGeoipData($ip) {
+    $result = array(
+      'continent_code' => '',
+      'country_code'   => '',
+      'country_code3'  => '',
+      'country_name'   => '',
+      'region'         => '',
+      'city'           => '',
+      'postal_code'    => '',
+      'latitude'       => '0',
+      'longitude'      => '0',
+      'dma_code'       => '0',
+      'area_code'      => '0'
+    );
+
+    if (function_exists('geoip_record_by_name')) {
+      $data = @geoip_record_by_name($ip);
+      if ((!is_null($data)) && ($data !== FALSE)) {
+        /* Transform city value from iso-8859-1 into the utf8. */
+        $data['city'] = utf8_encode($data['city']);
+
+        $result = $data;
+      }
+    }
+
+    return $result;
   }
 }
 
