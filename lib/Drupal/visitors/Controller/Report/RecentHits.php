@@ -90,21 +90,85 @@ class RecentHits extends ControllerBase  {
     );
     $list['visitors_date_filter_form'] = $this->formBuilder->getForm('Drupal\visitors\Form\DateFilter');
 
+    $header = $this->_getHeader();
      $list['visitors_table'] = array(
       '#theme' => 'table',
-      '#header' => array(
-        '#'                  => array('data' => t('#')),
-        'visitors_id'        => array('data' => t('ID')),
-        'visitors_date_time' => array('data' => t('Date')),
-        'visitors_url'       => array('data' => t('URL')),
-        'u.name'             => array('data' => t('User'))
-      ),
-      '#rows' => array(),
+      '#header' => $header,
+      '#rows' => $this->_getData($header),
     );
 
     $list['visitors']['#empty'] = '';
 
     return $list;
+  }
+
+  protected function _getHeader() {
+    return array(
+        '#'                  => array('data' => t('#')),
+        'visitors_id'        => array('data' => t('ID')),
+        'visitors_date_time' => array('data' => t('Date')),
+        'visitors_url'       => array('data' => t('URL')),
+        'u.name'             => array('data' => t('User')),
+        ''                   => array('data' => t('Details')),
+      );
+  }
+
+  protected function _getData($header) {
+    $items_per_page = 10;
+    $query = db_select('visitors', 'v')
+    ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
+    ->extend('Drupal\Core\Database\Query\TableSortExtender');
+  $query->leftJoin('users', 'u', 'u.uid=v.visitors_id');
+  $query->fields(
+    'v',
+    array(
+      'visitors_id',
+      'visitors_uid',
+      'visitors_date_time',
+      'visitors_title',
+      'visitors_path',
+      'visitors_url'
+    )
+  );
+  $query->fields('u', array('name', 'uid'));
+  visitors_date_filter_sql_condition($query);
+  $query->orderByHeader($header);
+  $query->limit($items_per_page);
+
+  $count_query = db_select('visitors', 'v');
+  $count_query->addExpression('COUNT(*)');
+  visitors_date_filter_sql_condition($count_query);
+  $query->setCountQuery($count_query);
+  $results = $query->execute();
+
+  $rows = array();
+
+  $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
+  $i = 0 + ($page  * $items_per_page);
+  $timezone =  drupal_get_user_timezone();
+
+  foreach ($results as $data) {
+    $user = user_load($data->visitors_uid);
+    $user_page = '';//theme('username', array('account' => $user));
+
+    $rows[] = array(
+      ++$i,
+      $data->visitors_id,
+      format_date(
+        $data->visitors_date_time,
+        'custom',
+        $date_format,
+        $timezone
+      ),
+      check_plain(
+        $data->visitors_title) . '<br/>' . l($data->visitors_path,
+        $data->visitors_url
+      ),
+      $user_page,
+      l(t('details'), 'visitors/hits/' . $data->visitors_id)
+    );
+  }
+   return $rows;
   }
 }
 

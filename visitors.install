@@ -13,6 +13,7 @@
 function visitors_install() {
   \Drupal::config('visitors.config')
     ->set('start_count_total_visitors', 0)
+    ->set('exclude_administer_users', 0)
     ->save();
 }
 

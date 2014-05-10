@@ -16,27 +16,6 @@ function visitors_date_filter() {
 }
 
 /**
- * Set to session info default values for visitors date filter.
- */
-function visitors_set_session_date_range() {
-  if (!isset($_SESSION['visitors_from'])) {
-    $_SESSION['visitors_from'] = array(
-      'day'   => 1,
-      'month' => date('n'),
-      'year'  => date('Y'),
-    );
-  }
-
-  if (!isset($_SESSION['visitors_to'])) {
-    $_SESSION['visitors_to'] = array(
-      'day'   => date('j'),
-      'month' => date('n'),
-      'year'  => date('Y'),
-    );
-  }
-}
-
-/**
  * Get year range for date fields visitors date filter.
  * Min year - min value from {visitors} table.
  *            If min value does not exist -  use current year.
@@ -203,46 +182,4 @@ function visitors_date_filter_form_submit($form, &$form_state) {
   $_SESSION['visitors_to']   = $form_state['values']['to'];
 }
 
-/**
- * Convert from date value to timestamp.
- *
- * @return returns the Unix timestamp of the session arguments given.
- *         If the arguments are invalid, the function returns FALSE
- *         (before PHP 5.1 it returned -1).
- */
-function visitors_get_from_timestamp() {
-  $diff = visitors_timezone_diff();
-  $from = $_SESSION['visitors_from'];
 
-  return
-    gmmktime(0, 0, 0, $from['month'], $from['day'], $from['year']) - $diff;
-}
-
-/**
- * Convert to date value to timestamp.
- *
- * @return returns the Unix timestamp of the session arguments given.
- *         If the arguments are invalid, the function returns FALSE
- *         (before PHP 5.1 it returned -1).
- */
-function visitors_get_to_timestamp() {
-  $diff = visitors_timezone_diff();
-  $to   = $_SESSION['visitors_to'];
-
-  return gmmktime(23, 59, 59, $to['month'], $to['day'], $to['year']) - $diff;
-}
-
-/**
- * Build sql query from date filter values.
- *
- * @return string sql query.
- */
-function visitors_date_filter_sql_condition(&$query) {
-  visitors_set_session_date_range();
-
-  $from = visitors_get_from_timestamp();
-  $to   = visitors_get_to_timestamp();
-
-  $query->condition('visitors_date_time', $from, '>');
-  $query->condition('visitors_date_time', $to, '<');
-}
