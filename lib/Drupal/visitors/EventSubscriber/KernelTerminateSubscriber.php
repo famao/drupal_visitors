@@ -20,24 +20,16 @@ use Drupal\Core\Site\Settings;
 use Drupal\Core\Page\DefaultHtmlPageRenderer;
 
 /**
- * A subscriber running cron when a request terminates.
+ * Store visitors data when a request terminates.
  */
 class KernelTerminateSubscriber implements EventSubscriberInterface {
   /**
-   * The cron configuration.
+   * The currently active request object.
    *
-   * @var \Drupal\Core\Config\Config
+   * Symfony\Component\HttpFoundation\Request
    */
-  protected $config;
-
-  /**
-   * The state key value store.
-   *
-   * Drupal\Core\State\StateInterface;
-   */
-  protected $state;
-
   protected $request;
+
   /**
    * Run the automated cron if enabled.
    *
@@ -46,6 +38,7 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
    */
   public function onTerminate(PostResponseEvent $event) {
     $this->request = $event->getRequest();
+
    drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
 
   global $user;
