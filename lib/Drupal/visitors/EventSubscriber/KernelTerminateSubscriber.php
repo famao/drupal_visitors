@@ -39,45 +39,45 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
   public function onTerminate(PostResponseEvent $event) {
     $this->request = $event->getRequest();
 
-   drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
+    drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
 
-  global $user;
-  $not_admin = !in_array('administrator', $user->getRoles());
-  $log_admin = !\Drupal::config('visitors.config')->get('exclude_administer_users');
+    global $user;
+    $not_admin = !in_array('administrator', $user->getRoles());
+    $log_admin = !\Drupal::config('visitors.config')->get('exclude_administer_users');
 
-  if ($log_admin || $not_admin) {
-    $ip_str = $this->_getIpStr();
+    if ($log_admin || $not_admin) {
+      $ip_str = $this->_getIpStr();
 
-    $fields = array(
-      'visitors_uid'            => $user->id(),
-      'visitors_ip'             => $ip_str,
-      'visitors_date_time'      => time(),
-      'visitors_url'            => $this->_getUrl(),
-      'visitors_referer'        => $this->_getReferer(),
-      'visitors_path'           => _current_path(),
-      'visitors_title'          => $this->_getTitle(),
-      'visitors_user_agent'     => $this->_getUserAgent()
-    );
+      $fields = array(
+        'visitors_uid'        => $user->id(),
+        'visitors_ip'         => $ip_str,
+        'visitors_date_time'  => time(),
+        'visitors_url'        => $this->_getUrl(),
+        'visitors_referer'    => $this->_getReferer(),
+        'visitors_path'       => _current_path(),
+        'visitors_title'      => $this->_getTitle(),
+        'visitors_user_agent' => $this->_getUserAgent()
+      );
 
-    if (module_exists('visitors_geoip')) {
-      $geoip_data = visitors_get_geoip_data($ip_str);
+      if (module_exists('visitors_geoip')) {
+        $geoip_data = visitors_get_geoip_data($ip_str);
 
-      $fields['visitors_continent_code'] = $geoip_data['continent_code'];
-      $fields['visitors_country_code']   = $geoip_data['country_code'];
-      $fields['visitors_country_code3']  = $geoip_data['country_code3'];
-      $fields['visitors_country_name']   = $geoip_data['country_name'];
-      $fields['visitors_region']         = $geoip_data['region'];
-      $fields['visitors_city']           = $geoip_data['city'];
-      $fields['visitors_postal_code']    = $geoip_data['postal_code'];
-      $fields['visitors_latitude']       = $geoip_data['latitude'];
-      $fields['visitors_longitude']      = $geoip_data['longitude'];
-      $fields['visitors_dma_code']       = $geoip_data['dma_code'];
-      $fields['visitors_area_code']      = $geoip_data['area_code'];
-    }
+        $fields['visitors_continent_code'] = $geoip_data['continent_code'];
+        $fields['visitors_country_code']   = $geoip_data['country_code'];
+        $fields['visitors_country_code3']  = $geoip_data['country_code3'];
+        $fields['visitors_country_name']   = $geoip_data['country_name'];
+        $fields['visitors_region']         = $geoip_data['region'];
+        $fields['visitors_city']           = $geoip_data['city'];
+        $fields['visitors_postal_code']    = $geoip_data['postal_code'];
+        $fields['visitors_latitude']       = $geoip_data['latitude'];
+        $fields['visitors_longitude']      = $geoip_data['longitude'];
+        $fields['visitors_dma_code']       = $geoip_data['dma_code'];
+        $fields['visitors_area_code']      = $geoip_data['area_code'];
+      }
 
-    db_insert('visitors')
-      ->fields($fields)
-      ->execute();
+      db_insert('visitors')
+        ->fields($fields)
+        ->execute();
     }
   }
 
