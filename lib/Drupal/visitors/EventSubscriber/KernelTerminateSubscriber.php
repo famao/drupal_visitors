@@ -31,7 +31,7 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
   protected $request;
 
   /**
-   * Run the automated cron if enabled.
+   * Store visitors data when a request terminates.
    *
    * @param Symfony\Component\HttpKernel\Event\PostResponseEvent $event
    *   The Event to process.
