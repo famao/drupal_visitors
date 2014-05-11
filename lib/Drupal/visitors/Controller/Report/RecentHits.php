@@ -149,7 +149,10 @@ class RecentHits extends ControllerBase  {
 
   foreach ($results as $data) {
     $user = user_load($data->visitors_uid);
-    $user_page = '';//theme('username', array('account' => $user));
+    $username = array(
+      '#theme' => 'username',
+      '#account' => $user
+    );
 
     $rows[] = array(
       ++$i,
@@ -164,7 +167,7 @@ class RecentHits extends ControllerBase  {
         $data->visitors_title) . '<br/>' . l($data->visitors_path,
         $data->visitors_url
       ),
-      $user_page,
+      drupal_render($username),
       l(t('details'), 'visitors/hits/' . $data->visitors_id)
     );
   }
