@@ -104,13 +104,38 @@ class RecentHits extends ControllerBase  {
 
   protected function _getHeader() {
     return array(
-        '#'                  => array('data' => t('#')),
-        'visitors_id'        => array('data' => t('ID')),
-        'visitors_date_time' => array('data' => t('Date')),
-        'visitors_url'       => array('data' => t('URL')),
-        'u.name'             => array('data' => t('User')),
-        ''                   => array('data' => t('Details')),
-      );
+      '#' => array(
+        'data'      => t('#'),
+      ),
+      'visitors_id' => array(
+        'data'      => t('ID'),
+        'field'     => 'visitors_id',
+        'specifier' => 'visitors_id',
+        'class'     => array(RESPONSIVE_PRIORITY_LOW),
+        'sort'      => 'desc',
+      ),
+      'visitors_date_time' => array(
+        'data'      => t('Date'),
+        'field'     => 'visitors_date_time',
+        'specifier' => 'visitors_date_time',
+        'class'     => array(RESPONSIVE_PRIORITY_LOW),
+      ),
+      'visitors_url' => array(
+        'data'      => t('URL'),
+        'field'     => 'visitors_url',
+        'specifier' => 'visitors_url',
+        'class'     => array(RESPONSIVE_PRIORITY_LOW),
+      ),
+      'u.name' => array(
+        'data'      => t('User'),
+        'field'     => 'u.name',
+        'specifier' => 'u.name',
+        'class'     => array(RESPONSIVE_PRIORITY_LOW),
+      ),
+      '' => array(
+        'data'      => t('Details'),
+      ),
+    );
   }
 
   protected function _getData($header) {
