@@ -122,7 +122,7 @@ class RecentHits extends ControllerBase  {
     $rows = array();
 
     $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
-    $i = 0 + ($page  * $items_per_page);
+    $i = 0 + $page * $items_per_page;
     $timezone =  drupal_get_user_timezone();
 
     foreach ($results as $data) {
