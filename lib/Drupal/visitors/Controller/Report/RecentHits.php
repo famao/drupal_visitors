@@ -11,27 +11,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class RecentHits extends ControllerBase  {
   /**
-   * The database service.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  protected $database;
-
-  /**
-   * The module handler service.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected $moduleHandler;
-
-  /**
-   * The date service.
-   *
-   * @var \Drupal\Core\Datetime\Date
-   */
-  protected $date;
-
-  /**
    * The form builder service.
    *
    * @var \Drupal\Core\Form\FormBuilderInterface
@@ -42,36 +21,17 @@ class RecentHits extends ControllerBase  {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('database'),
-      $container->get('module_handler'),
-      $container->get('date'),
-      $container->get('form_builder')
-    );
+    return new static($container->get('form_builder'));
   }
 
   /**
    * Constructs a RecentHits object.
    *
-   * @param \Drupal\Core\Database\Connection $database
-   *   A database connection.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   A module handler.
-   * @param \Drupal\Core\Datetime\Date $date
-   *   The date service.
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(
-    Connection $database,
-    ModuleHandlerInterface $module_handler,
-    Date $date,
-    FormBuilderInterface $form_builder
-  ) {
-    $this->database      = $database;
-    $this->moduleHandler = $module_handler;
-    $this->date          = $date;
-    $this->formBuilder   = $form_builder;
+  public function __construct(FormBuilderInterface $form_builder) {
+    $this->formBuilder = $form_builder;
   }
 
   /**
