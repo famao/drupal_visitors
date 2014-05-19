@@ -12,8 +12,9 @@
  */
 function visitors_install() {
   \Drupal::config('visitors.config')
-    ->set('start_count_total_visitors', 0)
     ->set('exclude_administer_users', 0)
+    ->set('items_per_page', 10)
+    ->set('start_count_total_visitors', 0)
     ->save();
 }
 
