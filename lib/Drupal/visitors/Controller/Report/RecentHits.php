@@ -2,17 +2,11 @@
 
 namespace Drupal\visitors\Controller\Report;
 
-use Drupal\Component\Utility\String;
-use Drupal\Component\Utility\Unicode;
-use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\Date;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
-use Drupal\visitors\Form;
-use Drupal\visitors\Form\DateFilter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class RecentHits extends ControllerBase  {
