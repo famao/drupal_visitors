@@ -86,7 +86,7 @@ class RecentHits extends ControllerBase  {
     $form = $this->formBuilder->getForm('Drupal\visitors\Form\DateFilter');
     $header = $this->_getHeader();
 
-    $list = array(
+    return array(
       'visitors' => array(
         '#theme' => 'report',
         '#empty' => '',
@@ -99,8 +99,6 @@ class RecentHits extends ControllerBase  {
       ),
       'visitors_pager' => array('#theme' => 'pager')
     );
-
-    return $list;
   }
 
   protected function _getHeader() {
