@@ -50,10 +50,6 @@ class RecentHits extends ControllerBase  {
     $header = $this->_getHeader();
 
     return array(
-      'visitors' => array(
-        '#theme' => 'report',
-        '#empty' => '',
-      ),
       'visitors_date_filter_form' => $form,
       'visitors_table' => array(
         '#theme'  => 'table',
