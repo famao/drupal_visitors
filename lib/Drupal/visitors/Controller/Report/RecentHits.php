@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains Drupal\visitors\Controller\Report\RecentHits.
+ */
+
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -35,6 +40,10 @@ class RecentHits extends ControllerBase  {
   }
 
   /**
+   * Returns a recent hits page.
+   *
+   * @return array
+   *   A render array representing the recent hits page content.
    */
   public function display() {
     $form = $this->formBuilder->getForm('Drupal\visitors\Form\DateFilter');
@@ -55,6 +64,12 @@ class RecentHits extends ControllerBase  {
     );
   }
 
+  /**
+   * Returns a table header configuration.
+   *
+   * @return array
+   *   A render array representing the table header info.
+   */
   protected function _getHeader() {
     return array(
       '#' => array(
@@ -91,6 +106,15 @@ class RecentHits extends ControllerBase  {
     );
   }
 
+  /**
+   * Returns a table content.
+   *
+   * @param array $header
+   *   Table header configuration.
+   *
+   * @return array
+   *   Array representing the table content.
+   */
   protected function _getData($header) {
     $items_per_page = \Drupal::config('visitors.config')->get('items_per_page');
     $query = db_select('visitors', 'v')
