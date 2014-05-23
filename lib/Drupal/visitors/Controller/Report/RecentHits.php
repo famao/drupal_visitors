@@ -14,7 +14,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class RecentHits extends ControllerBase  {
+class RecentHits extends ControllerBase {
   /**
    * The date service.
    *

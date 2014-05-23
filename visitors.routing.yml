@@ -5,3 +5,11 @@ visitors.hits:
     _title: 'Recent hits'
   requirements:
     _permission: 'access visitors'
+
+visitors.hit_details:
+  path: '/visitors/hits/{hit_id}'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\HitDetails::display'
+    _title: 'View access log'
+  requirements:
+    _permission: 'access visitors'
