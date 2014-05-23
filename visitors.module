@@ -5,8 +5,6 @@
  * Logs visitors for your site.
  */
 
-require_once dirname(__FILE__) . '/visitors.block.inc';
-
 /**
  * Implements of hook_help().
  */
