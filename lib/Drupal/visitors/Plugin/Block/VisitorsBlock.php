@@ -29,13 +29,13 @@ class VisitorsBlock extends BlockBase {
     $this->config = \Drupal::config('visitors.config');
     $this->items = array();
 
-    $this->showTotalVisitors();
-    $this->showUniqueVisitors();
-    $this->showRegisteredUser();
-    $this->showLastRegisteredUser();
-    $this->showPublishedNodes();
-    $this->showUserIp();
-    $this->showSinceDate();
+    $this->_showTotalVisitors();
+    $this->_showUniqueVisitors();
+    $this->_showRegisteredUser();
+    $this->_showLastRegisteredUser();
+    $this->_showPublishedNodes();
+    $this->_showUserIp();
+    $this->_showSinceDate();
 
     return array(
       'visitors_info' => array(
@@ -48,7 +48,7 @@ class VisitorsBlock extends BlockBase {
   /**
    * Display total visitors count to visitors block.
    */
-  protected function showTotalVisitors() {
+  protected function _showTotalVisitors() {
     if ($this->config->get('show_total_visitors')) {
       $query = 'SELECT COUNT(*) FROM {visitors}';
       $count = db_query($query)->fetchField() + $this->config->get('start_count_total_visitors');
@@ -61,7 +61,7 @@ class VisitorsBlock extends BlockBase {
   /**
    * Display unique visitors count to visitors block.
    */
-  protected function showUniqueVisitors() {
+  protected function _showUniqueVisitors() {
     if ($this->config->get('show_unique_visitor')) {
       $query = 'SELECT COUNT(DISTINCT visitors_ip) FROM {visitors}';
       $unique_visitors = db_query($query)->fetchField();
@@ -74,7 +74,7 @@ class VisitorsBlock extends BlockBase {
   /**
    * Display registered users count to visitors block.
    */
-  protected function showRegisteredUser() {
+  protected function _showRegisteredUser() {
     if ($this->config->get('show_registered_user')) {
       $query = 'SELECT COUNT(*) FROM {users} WHERE uid <> 0';
       $registered_user = db_query($query)->fetchField();
@@ -87,7 +87,7 @@ class VisitorsBlock extends BlockBase {
   /**
    * Display last registered user to visitors block.
    */
-  protected function showLastRegisteredUser() {
+  protected function _showLastRegisteredUser() {
     if ($this->config->get('show_last_registered_user')) {
       $last_user_uid = db_select('users', 'u')
         ->fields('u', array('uid'))
@@ -111,7 +111,7 @@ class VisitorsBlock extends BlockBase {
    * @todo: rewrite sql.
    * Display published nodes count to visitors block.
    */
-  protected function showPublishedNodes() {
+  protected function _showPublishedNodes() {
     if ($this->config->get('show_published_nodes')) {
       $query = '
         SELECT COUNT(*)
@@ -130,7 +130,7 @@ class VisitorsBlock extends BlockBase {
    * @todo: fix ip.
    * Display user ip to visitors block.
    */
-  protected function showUserIp() {
+  protected function _showUserIp() {
     if ($this->config->get('show_user_ip')) {
       $this->items[] = t('Your IP: %user_ip',
         array('%user_ip' => '2.3.4.5')
@@ -142,7 +142,7 @@ class VisitorsBlock extends BlockBase {
    * @todo: rewrite sql.
    * Display the start date statistics to visitors block.
    */
-  protected function showSinceDate() {
+  protected function _showSinceDate() {
     if ($this->config->get('show_since_date')) {
       $query = 'SELECT visitors_date_time
         FROM {visitors}
