@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\visitors\Plugin\Block\UserLoginBlock.
+ * Contains \Drupal\visitors\Plugin\Block\VisitorsBlock.
  */
 
 namespace Drupal\visitors\Plugin\Block;
@@ -58,7 +58,7 @@ class VisitorsBlock extends BlockBase {
       );
     }
   }
-  
+
   /**
    * Display unique visitors count to visitors block.
    */
@@ -71,7 +71,7 @@ class VisitorsBlock extends BlockBase {
       );
     }
   }
-  
+
   /**
    * Display registered users count to visitors block.
    */
@@ -84,7 +84,7 @@ class VisitorsBlock extends BlockBase {
       );
     }
   }
-  
+
   /**
    * Display last registered user to visitors block.
    */
@@ -107,7 +107,7 @@ class VisitorsBlock extends BlockBase {
       );
     }
   }
-  
+
   /**
    * @todo: rewrite sql.
    * Display published nodes count to visitors block.
@@ -115,7 +115,7 @@ class VisitorsBlock extends BlockBase {
   protected function showPublishedNodes() {
     if ($this->config->get('show_published_nodes')) {
       $query = '
-        SELECT COUNT(*) 
+        SELECT COUNT(*)
         FROM {node} n
         INNER JOIN {node_field_data} nfd
         ON n.nid = nfd.nid
@@ -126,7 +126,7 @@ class VisitorsBlock extends BlockBase {
       );
     }
   }
-  
+
   /**
    * @todo: fix ip.
    * Display user ip to visitors block.
@@ -138,7 +138,7 @@ class VisitorsBlock extends BlockBase {
       );
     }
   }
-  
+
   /**
    * @todo: rewrite sql.
    * Display the start date statistics to visitors block.
