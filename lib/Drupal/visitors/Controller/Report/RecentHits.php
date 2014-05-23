@@ -16,6 +16,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class RecentHits extends ControllerBase  {
   /**
+   * The date service.
+   *
+   * @var \Drupal\Core\Datetime\Date
+   */
+  protected $date;
+
+  /**
    * The form builder service.
    *
    * @var \Drupal\Core\Form\FormBuilderInterface
@@ -26,16 +33,23 @@ class RecentHits extends ControllerBase  {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('form_builder'));
+    return new static(
+      $container->get('date'),
+      $container->get('form_builder')
+    );
   }
 
   /**
    * Constructs a RecentHits object.
    *
+   * @param \Drupal\Core\Datetime\Date $date
+   *   The date service.
+   *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(FormBuilderInterface $form_builder) {
+  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+    $this->date        = $date;
     $this->formBuilder = $form_builder;
   }
 
@@ -155,12 +169,7 @@ class RecentHits extends ControllerBase  {
       $rows[] = array(
         ++$i,
         $data->visitors_id,
-        format_date(
-          $data->visitors_date_time,
-          'custom',
-          $date_format,
-          $timezone
-        ),
+        $this->date->format($data->visitors_date_time, 'short'),
         check_plain(
           $data->visitors_title) . '<br/>' . l($data->visitors_path,
           $data->visitors_url
