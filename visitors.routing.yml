@@ -13,3 +13,11 @@ visitors.hit_details:
     _title: 'View access log'
   requirements:
     _permission: 'access visitors'
+
+visitors.top_pages:
+  path: '/visitors/pages'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\TopPages::display'
+    _title: 'Top Pages'
+  requirements:
+    _permission: 'access visitors'
