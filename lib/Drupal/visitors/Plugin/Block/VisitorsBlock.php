@@ -7,7 +7,6 @@
 
 namespace Drupal\visitors\Plugin\Block;
 
-use Drupal\Core\Session\AccountInterface;
 use Drupal\block\BlockBase;
 
 /**
