@@ -39,8 +39,6 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
   public function onTerminate(PostResponseEvent $event) {
     $this->request = $event->getRequest();
 
-    drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
-
     global $user;
     $not_admin = !in_array('administrator', $user->getRoles());
     $log_admin = !\Drupal::config('visitors.config')->get('exclude_administer_users');
