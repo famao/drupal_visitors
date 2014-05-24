@@ -1,3 +1,11 @@
+visitors.index:
+  path: '/visitors'
+  defaults:
+    _content: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Visitors'
+  requirements:
+    _permission: 'access visitors'
+
 visitors.hits:
   path: '/visitors/hits'
   defaults:
