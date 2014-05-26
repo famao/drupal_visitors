@@ -31,7 +31,7 @@ class VisitorsBlock extends BlockBase {
 
     $this->_showTotalVisitors();
     $this->_showUniqueVisitors();
-    $this->_showRegisteredUser();
+    $this->_showRegisteredUsersCount();
     $this->_showLastRegisteredUser();
     $this->_showPublishedNodes();
     $this->_showUserIp();
@@ -74,8 +74,8 @@ class VisitorsBlock extends BlockBase {
   /**
    * Display registered users count to visitors block.
    */
-  protected function _showRegisteredUser() {
-    if ($this->config->get('show_registered_user')) {
+  protected function _showRegisteredUsersCount() {
+    if ($this->config->get('show_registered_users_count')) {
       $query = 'SELECT COUNT(*) FROM {users} WHERE uid <> 0';
       $registered_user = db_query($query)->fetchField();
       $this->items[] = t('Registered Users: %registered_user',
