@@ -29,3 +29,13 @@ visitors.top_pages:
     _title: 'Top Pages'
   requirements:
     _permission: 'access visitors'
+
+visitors.node:
+  path: '/node/{node}/visitors'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\Node::display'
+    _title: 'Visitors'
+  requirements:
+    _permission: 'access visitors'
+  options:
+    _node_operation_route: TRUE
