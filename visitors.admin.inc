@@ -25,5 +25,4 @@ require_once VISITORS_MODULE_REPORTS_DIR . '/hours.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/monthly_history.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/referers.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/user_activity.inc';
-require_once VISITORS_MODULE_REPORTS_DIR . '/node.inc';
 
