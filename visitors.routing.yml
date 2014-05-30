@@ -57,3 +57,11 @@ visitors.host_hits:
     _permission: 'access visitors'
 
 
+visitors.user_activity:
+  path: '/visitors/user_activity'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\UserActivity::display'
+    _title: 'User activity'
+  requirements:
+    _permission: 'access visitors'
+

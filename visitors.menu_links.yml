@@ -21,4 +21,9 @@ visitors.hosts:
   parent: visitors.index
   description: 'View pages count per host.'
 
+visitors.user_activity:
+  title: 'User activity'
+  route_name: visitors.user_activity
+  parent: visitors.index
+  description: 'View user activity report (hits, nodes, comments).'
 
