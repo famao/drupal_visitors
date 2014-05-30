@@ -48,4 +48,12 @@ visitors.hosts:
   requirements:
     _permission: 'access visitors'
 
+visitors.host_hits:
+  path: '/visitors/hosts/{host}'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\Hits::display'
+    _title: 'Hits'
+  requirements:
+    _permission: 'access visitors'
+
 
