@@ -154,14 +154,14 @@ class Hits extends ControllerBase {
     visitors_date_filter_sql_condition($query);
     $query->orderByHeader($header);
     $query->limit($items_per_page);
-  
+
     $count_query = db_select('visitors', 'v');
     $count_query->addExpression('COUNT(*)');
     $count_query->condition('visitors_ip', sprintf('%u', ip2long($host)));
     visitors_date_filter_sql_condition($count_query);
     $query->setCountQuery($count_query);
     $results = $query->execute();
-   
+
     $count = $count_query->execute()->fetchField();
     if ($count == 0) {
       return;
