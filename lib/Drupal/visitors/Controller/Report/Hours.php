@@ -1,0 +1,140 @@
+<?php
+
+/**
+ * @file
+ * Contains Drupal\visitors\Controller\Report\Hours.
+ */
+
+namespace Drupal\visitors\Controller\Report;
+
+use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Datetime\Date;
+use Drupal\Core\Form\FormBuilderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+class Hours extends ControllerBase {
+  /**
+   * The date service.
+   *
+   * @var \Drupal\Core\Datetime\Date
+   */
+  protected $date;
+
+  /**
+   * The form builder service.
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
+  protected $formBuilder;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('date'),
+      $container->get('form_builder')
+    );
+  }
+
+  /**
+   * Constructs a Hours object.
+   *
+   * @param \Drupal\Core\Datetime\Date $date
+   *   The date service.
+   *
+   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
+   *   The form builder service.
+   */
+  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+    $this->date        = $date;
+    $this->formBuilder = $form_builder;
+  }
+
+  /**
+   * Returns a hours page.
+   *
+   * @return array
+   *   A render array representing the hours page content.
+   */
+  public function display() {
+    $form = $this->formBuilder->getForm('Drupal\visitors\Form\DateFilter');
+    $header = $this->_getHeader();
+
+    return array(
+      'visitors_date_filter_form' => $form,
+      'visitors_table' => array(
+        '#theme'  => 'table',
+        '#header' => $header,
+        '#rows'   => $this->_getData($header),
+      ),
+    );
+  }
+
+  /**
+   * Returns a table header configuration.
+   *
+   * @return array
+   *   A render array representing the table header info.
+   */
+  protected function _getHeader() {
+    return array(
+      '#' => array(
+        'data'      => t('#'),
+      ),
+      'hour' => array(
+        'data'      => t('Hour'),
+        'field'     => 'hour',
+        'specifier' => 'hour',
+        'class'     => array(RESPONSIVE_PRIORITY_LOW),
+        'sort'      => 'asc',
+      ),
+      'count' => array(
+        'data'      => t('Pages'),
+        'field'     => 'count',
+        'specifier' => 'count',
+        'class'     => array(RESPONSIVE_PRIORITY_LOW),
+      ),
+    );
+  }
+
+  /**
+   * Returns a table content.
+   *
+   * @param array $header
+   *   Table header configuration.
+   *
+   * @return array
+   *   Array representing the table content.
+   */
+  protected function _getData($header) {
+    $items_per_page = \Drupal::config('visitors.config')->get('items_per_page');
+    $query = db_select('visitors', 'v');
+    $query->addExpression('COUNT(*)', 'count');
+    $query->addExpression(
+      visitors_date_format_sql('visitors_date_time', '%H'), 'hour'
+    );
+    visitors_date_filter_sql_condition($query);
+    $query->groupBy('hour');
+  
+    if (!is_null($header)) {
+      $query
+        ->extend('Drupal\Core\Database\Query\TableSortExtender')
+        ->orderByHeader($header);
+    }
+      $results = $query->execute();
+      $rows = array();
+      $i = 0;
+  
+    foreach ($results as $data) {
+      $rows[] = array(
+        ++$i,
+        $data->hour,
+        $data->count
+      );
+    }
+
+    return $rows;
+  }
+}
+

@@ -6,11 +6,8 @@
  */
 
 define('VISITORS_MODULE_DIR'        , dirname(__FILE__));
-define('VISITORS_MODULE_CHART_DIR'  , VISITORS_MODULE_DIR . '/pchart');
 define('VISITORS_MODULE_FORMS_DIR'  , VISITORS_MODULE_DIR . '/forms');
 define('VISITORS_MODULE_REPORTS_DIR', VISITORS_MODULE_DIR . '/reports');
-
-require_once VISITORS_MODULE_DIR . '/visitors.chart.inc';
 
 require_once VISITORS_MODULE_FORMS_DIR . '/date_filter.inc';
 require_once VISITORS_MODULE_FORMS_DIR . '/referers.inc';

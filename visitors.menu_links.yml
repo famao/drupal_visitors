@@ -1,16 +1,16 @@
 visitors.index:
-  title: Visitors
+  title: 'Visitors'
   route_name: visitors.index
   menu_name: tools
 
 visitors.hits:
-  title: Recent hits
+  title: 'Recent hits'
   route_name: visitors.hits
   parent: visitors.index
   description: 'View pages that have recently been visited.'
 
 visitors.top_pages:
-  title: 'Top Pages'
+  title: 'Top pages'
   route_name: visitors.top_pages
   parent: visitors.index
   description: 'View pages that have been hit frequently.'
@@ -26,4 +26,10 @@ visitors.user_activity:
   route_name: visitors.user_activity
   parent: visitors.index
   description: 'View user activity report (hits, nodes, comments).'
+
+visitors.hours:
+  title: 'Hours'
+  route_name: visitors.hours
+  parent: visitors.index
+  description: 'View pages count per hour.'
 
