@@ -14,3 +14,11 @@ visitors.top_pages:
   route_name: visitors.top_pages
   parent: visitors.index
   description: 'View pages that have been hit frequently.'
+
+visitors.hosts:
+  title: 'Hosts'
+  route_name: visitors.hosts
+  parent: visitors.index
+  description: 'View pages count per host.'
+
+

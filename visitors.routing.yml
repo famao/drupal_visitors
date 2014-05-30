@@ -39,3 +39,13 @@ visitors.node:
     _permission: 'access visitors'
   options:
     _node_operation_route: TRUE
+
+visitors.hosts:
+  path: '/visitors/hosts'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\Hosts::display'
+    _title: 'Hosts'
+  requirements:
+    _permission: 'access visitors'
+
+
