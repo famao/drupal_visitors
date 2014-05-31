@@ -52,7 +52,6 @@ class Hits extends ControllerBase {
   }
 
   /**
-   * @todo: update title to 'Hits from $ip'.
    * Returns a hits page.
    *
    * @return array
@@ -63,6 +62,7 @@ class Hits extends ControllerBase {
     $header = $this->_getHeader();
 
     return array(
+      '#title' => check_plain(t('Hits from') . ' ' . $host),
       'visitors_date_filter_form' => $form,
       'visitors_table' => array(
         '#theme'  => 'table',
