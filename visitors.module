@@ -18,6 +18,9 @@ function visitors_help($section) {
   }
 }
 
+/**
+ * Implements hook_theme().
+ */
 function visitors_theme() {
   return array(
     'visitors_jqplot' => array(
@@ -368,19 +371,6 @@ function visitors_sqlite_date_format_sql($field_name, $format) {
   }
   return $result;
 }
-
-
-/**
- * Implements hook_theme().
- */
-/*function visitors_theme() {
-  return array(
-    'report' => array(
-      'variables' => array('height' => NULL,'width' => NULL, 'src' => NULL, 'href' => NULL),
-      'template' => 'report',
-    ),
-  );
-}*/
 
 /**
  * Get year range for date fields visitors date filter.
