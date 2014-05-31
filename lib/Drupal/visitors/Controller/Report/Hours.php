@@ -60,9 +60,26 @@ class Hours extends ControllerBase {
   public function display() {
     $form = $this->formBuilder->getForm('Drupal\visitors\Form\DateFilter');
     $header = $this->_getHeader();
+    $results = $this->_getData(NULL);
+
+    $tmp_rows = array();
+    $y = array();
+    for ($i = 0; $i < 24; $i++) {
+      $y[$i] = 0;
+    }
+
+    foreach ($results as $data) {
+      $y[$data[1]] = $data[2];
+    }
 
     return array(
       'visitors_date_filter_form' => $form,
+      'visitors_jqplot' => array(
+        '#theme' => 'visitors_jqplot',
+        '#path'  => drupal_get_path('module', 'visitors'),
+        '#x' => implode(', ', range(0, 23)),
+        '#y' => implode(', ', $y),
+      ),
       'visitors_table' => array(
         '#theme'  => 'table',
         '#header' => $header,
