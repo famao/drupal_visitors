@@ -58,7 +58,7 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
       );
 
       if (module_exists('visitors_geoip')) {
-        $geoip_data = visitors_get_geoip_data($ip_str);
+        $geoip_data = $this->_getGeoipData($ip_str);
 
         $fields['visitors_continent_code'] = $geoip_data['continent_code'];
         $fields['visitors_country_code']   = $geoip_data['country_code'];
