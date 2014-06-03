@@ -69,7 +69,7 @@ class Hours extends ControllerBase {
     }
 
     foreach ($results as $data) {
-      $y[$data[1]] = $data[2];
+      $y[(int) $data[1]] = $data[2];
     }
 
     return array(
