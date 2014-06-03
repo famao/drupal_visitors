@@ -81,3 +81,11 @@ visitors.days_of_month:
   requirements:
     _permission: 'access visitors'
 
+visitors.days_of_week:
+  path: '/visitors/days_of_week'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\DaysOfWeek::display'
+    _title: 'Days of week'
+  requirements:
+    _permission: 'access visitors'
+

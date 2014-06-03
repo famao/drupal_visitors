@@ -39,3 +39,9 @@ visitors.days_of_month:
   parent: visitors.index
   description: 'View pages count per day of month.'
 
+visitors.days_of_week:
+  title: 'Days of week'
+  route_name: visitors.days_of_week
+  parent: visitors.index
+  description: 'View pages count per day of week.'
+
