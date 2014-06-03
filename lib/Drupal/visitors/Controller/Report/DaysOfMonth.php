@@ -1,0 +1,157 @@
+<?php
+
+/**
+ * @file
+ * Contains Drupal\visitors\Controller\Report\DaysOfMonth.
+ */
+
+namespace Drupal\visitors\Controller\Report;
+
+use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Datetime\Date;
+use Drupal\Core\Form\FormBuilderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+class DaysOfMonth extends ControllerBase {
+  /**
+   * The date service.
+   *
+   * @var \Drupal\Core\Datetime\Date
+   */
+  protected $date;
+
+  /**
+   * The form builder service.
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
+  protected $formBuilder;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('date'),
+      $container->get('form_builder')
+    );
+  }
+
+  /**
+   * Constructs a DaysOfMonth object.
+   *
+   * @param \Drupal\Core\Datetime\Date $date
+   *   The date service.
+   *
+   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
+   *   The form builder service.
+   */
+  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+    $this->date        = $date;
+    $this->formBuilder = $form_builder;
+  }
+
+  /**
+   * Returns a days of month page.
+   *
+   * @return array
+   *   A render array representing the days of month page content.
+   */
+  public function display() {
+    $form = $this->formBuilder->getForm('Drupal\visitors\Form\DateFilter');
+    $header = $this->_getHeader();
+    $results = $this->_getData(NULL);
+
+    $tmp_rows = array();
+    $y = array();
+    for ($i = 1; $i <= 31; $i++) {
+      $y[$i] = 0;
+    }
+
+    foreach ($results as $data) {
+      $y[$data[1]] = $data[2];
+    }
+
+    return array(
+      'visitors_date_filter_form' => $form,
+      'visitors_jqplot' => array(
+        '#theme' => 'visitors_jqplot',
+        '#path'  => drupal_get_path('module', 'visitors'),
+        '#x' => implode(', ', range(1, 31)),
+        '#y' => implode(', ', $y),
+      ),
+      'visitors_table' => array(
+        '#theme'  => 'table',
+        '#header' => $header,
+        '#rows'   => $this->_getData($header),
+      ),
+    );
+  }
+
+  /**
+   * Returns a table header configuration.
+   *
+   * @return array
+   *   A render array representing the table header info.
+   */
+  protected function _getHeader() {
+    return array(
+      '#' => array(
+        'data'      => t('#'),
+      ),
+      'day' => array(
+        'data'      => t('Day'),
+        'field'     => 'day',
+        'specifier' => 'day',
+        'class'     => array(RESPONSIVE_PRIORITY_LOW),
+        'sort'      => 'asc',
+      ),
+      'count' => array(
+        'data'      => t('Pages'),
+        'field'     => 'count',
+        'specifier' => 'count',
+        'class'     => array(RESPONSIVE_PRIORITY_LOW),
+      ),
+    );
+  }
+
+  /**
+   * Returns a table content.
+   *
+   * @param array $header
+   *   Table header configuration.
+   *
+   * @return array
+   *   Array representing the table content.
+   */
+  protected function _getData($header) {
+    $query = db_select('visitors', 'v');
+    $query->addExpression('COUNT(*)', 'count');
+    $query->addExpression(
+      visitors_date_format_sql('visitors_date_time', '%d'), 'day'
+    );
+    $query->groupBy('day');
+    visitors_date_filter_sql_condition($query);
+
+    if (!is_null($header)) {
+      $query
+        ->extend('Drupal\Core\Database\Query\TableSortExtender')
+        ->orderByHeader($header);
+    }
+    
+    $results = $query->execute();
+    $rows = array();
+    $i = 0;
+  
+    foreach ($results as $data) {
+      $rows[] = array(
+        ++$i,
+        (int) $data->day,
+        $data->count
+      );
+    }
+
+    return $rows;
+  }
+}
+

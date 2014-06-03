@@ -73,3 +73,11 @@ visitors.hours:
   requirements:
     _permission: 'access visitors'
 
+visitors.days_of_month:
+  path: '/visitors/days_of_month'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\DaysOfMonth::display'
+    _title: 'Days of month'
+  requirements:
+    _permission: 'access visitors'
+

@@ -15,7 +15,6 @@ require_once VISITORS_MODULE_FORMS_DIR . '/referers.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/cities.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/city_hits.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/countries.inc';
-require_once VISITORS_MODULE_REPORTS_DIR . '/days_of_month.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/days_of_week.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/monthly_history.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/referers.inc';
