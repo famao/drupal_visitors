@@ -62,7 +62,7 @@ class CityHits extends ControllerBase {
     $header = $this->_getHeader();
 
     return array(
-      '#title' => t('Visitors from') . ' ' . t($country),
+      '#title' => t('Hits from') . ' ' . t($city) . ', ' . t($country),
       'visitors_date_filter_form' => $form,
       'visitors_table' => array(
         '#theme'  => 'table',
