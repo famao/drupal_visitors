@@ -89,3 +89,11 @@ visitors.days_of_week:
   requirements:
     _permission: 'access visitors'
 
+visitors.monthly_history:
+  path: '/visitors/monthly_history'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\MonthlyHistory::display'
+    _title: 'Monthly history'
+  requirements:
+    _permission: 'access visitors'
+

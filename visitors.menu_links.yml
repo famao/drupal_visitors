@@ -45,3 +45,9 @@ visitors.days_of_week:
   parent: visitors.index
   description: 'View pages count per day of week.'
 
+visitors.monthly_history:
+  title: 'Monthly history'
+  route_name: visitors.monthly_history
+  parent: visitors.index
+  description: 'View pages count per month.'
+
