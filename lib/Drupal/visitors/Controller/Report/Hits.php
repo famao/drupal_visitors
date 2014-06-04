@@ -125,10 +125,9 @@ class Hits extends ControllerBase {
    *   Array representing the table content.
    */
   protected function _getData($header, $host) {
-    /* @todo: Check is valid ip. */
-    /*if (!visitors_is_ip_valid($host) && ($host != '0.0.0.0')) {
+    if (@inet_pton($host) === FALSE) {
       return;
-    }*/
+    }
 
     $items_per_page = \Drupal::config('visitors.config')->get('items_per_page');
 
