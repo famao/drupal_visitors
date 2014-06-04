@@ -19,7 +19,7 @@ function visitors_install() {
     ->set('show_registered_users_count', 1)
     ->set('show_since_date', 1)
     ->set('show_total_visitors', 1)
-    ->set('show_unique_visitor', 0)
+    ->set('show_unique_visitor', 1)
     ->set('show_user_ip', 1)
     ->set('start_count_total_visitors', 0)
 
