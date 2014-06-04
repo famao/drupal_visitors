@@ -1,38 +1,27 @@
 <div id="visitors_chart"></div>
+
 <script type="text/javascript" src="/{{ path }}/jquery.jqplot/jquery.jqplot.min.js"></script>
 <script type="text/javascript" src="/{{ path }}/jquery.jqplot/plugins/jqplot.barRenderer.min.js"></script>
 <script type="text/javascript" src="/{{ path }}/jquery.jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
 <script type="text/javascript" src="/{{ path }}/jquery.jqplot/plugins/jqplot.pointLabels.min.js"></script>
 
 <script type="text/javascript">
-jQuery(document).ready(function($){
-        var s = [{{ y  }}];
-        var ticks = [{{ x }}];
-         
-        plot2 = $.jqplot('visitors_chart', [s], {
-            seriesDefaults: {
-                renderer:$.jqplot.BarRenderer,
-                pointLabels: { show: true }
-            },
-            axes: {
-                xaxis: {
-                    renderer: $.jqplot.CategoryAxisRenderer,
-                    ticks: ticks
-                }
-            }
-        });
-     
-        $('#visitors_chart').bind('jqplotDataHighlight',
-            function (ev, seriesIndex, pointIndex, data) {
-                $('#info2').html('series: '+seriesIndex+', point: '+pointIndex+', data: '+data);
-            }
-        );
-             
-        $('#visitors_chart').bind('jqplotDataUnhighlight',
-            function (ev) {
-                $('#info2').html('Nothing');
-            }
-        );
+  jQuery(document).ready(function($){
+    var s = [{{ y  }}];
+    var ticks = [{{ x }}];
+
+    $.jqplot('visitors_chart', [s], {
+      seriesDefaults: {
+        renderer: $.jqplot.BarRenderer,
+        pointLabels: { show: true }
+      },
+      axes: {
+        xaxis: {
+          renderer: $.jqplot.CategoryAxisRenderer,
+          ticks: ticks
+        }
+      }
     });
+  });
 </script>
 
