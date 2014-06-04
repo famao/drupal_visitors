@@ -1,0 +1,8 @@
+visitors.countries:
+  path: '/visitors/countries'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\Countries::display'
+    _title: 'Countries'
+  requirements:
+    _permission: 'access visitors'
+
