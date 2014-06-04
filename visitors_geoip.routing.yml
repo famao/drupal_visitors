@@ -6,3 +6,11 @@ visitors.countries:
   requirements:
     _permission: 'access visitors'
 
+visitors.cities:
+  path: '/visitors/countries/{country}'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\Cities::display'
+    _title: 'City'
+  requirements:
+    _permission: 'access visitors'
+
