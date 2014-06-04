@@ -232,7 +232,7 @@ class DateFilter extends FormBase {
           break;
 
         case 'year':
-          $options = DateHelper::years(2012, 2014, TRUE);
+          $options = DateHelper::years($this->_getMinYear(), date('Y'), TRUE);
           $title = t('Year');
           break;
       }
@@ -251,6 +251,24 @@ class DateFilter extends FormBase {
     }
 
     return $element;
+  }
+
+  /**
+   * Get min year for date fields visitors date filter.
+   * Min year - min value from {visitors} table.
+   *
+   * @return int min year
+   */
+  protected function _getMinYear() {
+    /* TODO: use db_select() function. */
+    /* TODO: convert MIN(visitors_date_time) to user timezone. */
+    $sql = sprintf('SELECT
+      MIN(visitors_date_time) AS min_time
+      FROM {visitors}
+      LIMIT 1'
+    );
+
+    return date('Y', db_query($sql)->fetchField());
   }
 }
 

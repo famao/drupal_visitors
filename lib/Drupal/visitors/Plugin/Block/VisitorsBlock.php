@@ -143,10 +143,10 @@ class VisitorsBlock extends BlockBase {
    */
   protected function _showSinceDate() {
     if ($this->config->get('show_since_date')) {
-      $query = 'SELECT visitors_date_time
+      $query = 'SELECT MIN(visitors_date_time)
         FROM {visitors}
-        ORDER BY visitors_date_time ASC';
-      $since_date = db_query_range($query, 0, 1)->fetchField();
+        ORDER BY visitors_date_time ASC LIMIT 1';
+      $since_date = db_query($query)->fetchField();
       $this->items[] = t('Since: %since_date',
         array('%since_date' => format_date($since_date, 'short'))
       );

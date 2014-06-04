@@ -373,29 +373,6 @@ function visitors_sqlite_date_format_sql($field_name, $format) {
 }
 
 /**
- * Get year range for date fields visitors date filter.
- * Min year - min value from {visitors} table.
- *            If min value does not exist -  use current year.
- * Max year - current year.
- *
- * @return int array years array from min year to max year
- */
-function visitors_get_years_range() {
-  /* TODO: use db_select() function. */
-  $sql = sprintf('SELECT MIN(visitors_date_time) AS min_time
-                  FROM {visitors}
-                  LIMIT 1'
-                );
-  $result = db_query($sql);
-  $min_time = time();
-  foreach ($result as $data) {
-    $min_time = $data->min_time;
-  }
-
-  return range(date('Y', $min_time), date('Y'));
-}
-
-/**
  * Build sql query from date filter values.
  *
  * @return string sql query.
