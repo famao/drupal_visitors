@@ -14,3 +14,11 @@ visitors.cities:
   requirements:
     _permission: 'access visitors'
 
+visitors.city_hits:
+  path: '/visitors/countries/{country}/{city}'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\CityHits::display'
+    _title: 'View city hits'
+  requirements:
+    _permission: 'access visitors'
+

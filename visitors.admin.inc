@@ -12,6 +12,5 @@ define('VISITORS_MODULE_REPORTS_DIR', VISITORS_MODULE_DIR . '/reports');
 require_once VISITORS_MODULE_FORMS_DIR . '/date_filter.inc';
 require_once VISITORS_MODULE_FORMS_DIR . '/referers.inc';
 
-require_once VISITORS_MODULE_REPORTS_DIR . '/city_hits.inc';
 require_once VISITORS_MODULE_REPORTS_DIR . '/referers.inc';
 
