@@ -127,13 +127,12 @@ class VisitorsBlock extends BlockBase {
   }
 
   /**
-   * @todo: fix ip.
    * Display user ip to visitors block.
    */
   protected function _showUserIp() {
     if ($this->config->get('show_user_ip')) {
       $this->items[] = t('Your IP: %user_ip',
-        array('%user_ip' => '2.3.4.5')
+        array('%user_ip' => \Drupal::request()->getClientIp())
       );
     }
   }

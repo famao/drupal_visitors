@@ -45,7 +45,6 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
 
     if ($log_admin || $not_admin) {
       $ip_str = $this->_getIpStr();
-
       $fields = array(
         'visitors_uid'        => $user->id(),
         'visitors_ip'         => $ip_str,
@@ -130,58 +129,13 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Verify the syntax of the given ip address.
-   *
-   * @param ip
-   *   A string containing an ip address.
-   *
-   * @return boolean
-   *   TRUE if the ip is in a valid format, FALSE on failure.
-   */
-  protected function _isIpValid($ip) {
-    $result = preg_match(
-      '/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/',
-      $ip,
-      $matches
-    );
-
-    return (
-      $result &&
-      isset($matches[0]) &&
-      ($matches[0] === $ip) &&
-      ($matches[1] >= 1) && ($matches[1] <= 255) &&
-      ($matches[2] >= 0) && ($matches[2] <= 255) &&
-      ($matches[3] >= 0) && ($matches[3] <= 255) &&
-      ($matches[4] >= 0) && ($matches[4] <= 255)
-    );
-  }
-
-  /**
-   * Get visitors ip address.
-   *
-   * @return string
-   *   A string containing an ip address ('0.0.0.0' on failure).
-   */
-  protected function _getIp() {
-    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-      $ip_array = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-      $ip       = trim(reset($ip_array));
-    }
-    else {
-      $ip = $_SERVER['REMOTE_ADDR'];
-    }
-
-    return ($this->_isIpValid($ip) ? $ip : '0.0.0.0');
-  }
-
-  /**
    * Converts a string containing an visitors (IPv4) Internet Protocol dotted
    * address into a proper address.
    *
    * @return string
    */
   protected function _getIpStr() {
-    return sprintf("%u", ip2long($this->_getIp()));
+    return sprintf("%u", ip2long($this->request->getClientIp()));
   }
 
   /**
