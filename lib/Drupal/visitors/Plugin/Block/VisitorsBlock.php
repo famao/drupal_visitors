@@ -46,6 +46,7 @@ class VisitorsBlock extends BlockBase {
   }
 
   /**
+   * @TODO: rewrite sql.
    * Display total visitors count to visitors block.
    */
   protected function _showTotalVisitors() {
@@ -59,6 +60,7 @@ class VisitorsBlock extends BlockBase {
   }
 
   /**
+   * @TODO: rewrite sql.
    * Display unique visitors count to visitors block.
    */
   protected function _showUniqueVisitors() {
@@ -76,10 +78,14 @@ class VisitorsBlock extends BlockBase {
    */
   protected function _showRegisteredUsersCount() {
     if ($this->config->get('show_registered_users_count')) {
-      $query = 'SELECT COUNT(*) FROM {users} WHERE uid <> 0';
-      $registered_user = db_query($query)->fetchField();
-      $this->items[] = t('Registered Users: %registered_user',
-        array('%registered_user' => $registered_user)
+      $query = db_select('users');
+      $query->addExpression('COUNT(*)', 'count');
+      $query->condition('uid', '0', '>');
+
+      $registered_users_count = $query->execute()->fetchField();
+
+      $this->items[] = t('Registered Users: %registered_users_count',
+        array('%registered_users_count' => $registered_users_count)
       );
     }
   }
@@ -108,18 +114,16 @@ class VisitorsBlock extends BlockBase {
   }
 
   /**
-   * @todo: rewrite sql.
    * Display published nodes count to visitors block.
    */
   protected function _showPublishedNodes() {
     if ($this->config->get('show_published_nodes')) {
-      $query = '
-        SELECT COUNT(*)
-        FROM {node} n
-        INNER JOIN {node_field_data} nfd
-        ON n.nid = nfd.nid
-        WHERE nfd.status = 1';
-      $nodes = db_query($query)->fetchField();
+      $query = db_select('node', 'n');
+      $query->innerJoin('node_field_data', 'nfd', 'n.nid = nfd.nid');
+      $query->addExpression('COUNT(*)', 'count');
+      $query->condition('nfd.status', '1', '=');
+
+      $nodes = $query->execute()->fetchField();
       $this->items[] = t('Published Nodes: %nodes',
         array('%nodes' => $nodes)
       );
