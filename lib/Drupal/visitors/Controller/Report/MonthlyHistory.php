@@ -58,12 +58,12 @@ class MonthlyHistory extends ControllerBase {
    *   A render array representing the monthly history page content.
    */
   public function display() {
-    $form = $this->formBuilder->getForm('Drupal\visitors\Form\DateFilter');
-    $header = $this->_getHeader();
+    $config  = \Drupal::config('visitors.config');
+    $form    = $this->formBuilder->getForm('Drupal\visitors\Form\DateFilter');
+    $header  = $this->_getHeader();
     $results = $this->_getData(NULL);
-
-    $x = array();
-    $y = array();
+    $x       = array();
+    $y       = array();
 
     foreach ($results as $data) {
       $x[] = "\"$data[1]\"";
@@ -73,10 +73,12 @@ class MonthlyHistory extends ControllerBase {
     return array(
       'visitors_date_filter_form' => $form,
       'visitors_jqplot' => array(
-        '#theme' => 'visitors_jqplot',
-        '#path'  => drupal_get_path('module', 'visitors'),
-        '#x' => implode(', ', $x),
-        '#y' => implode(', ', $y),
+        '#theme'  => 'visitors_jqplot',
+        '#path'   => drupal_get_path('module', 'visitors'),
+        '#x'      => implode(', ', $x),
+        '#y'      => implode(', ', $y),
+        '#width'  => $config->get('chart_width'),
+        '#height' => $config->get('chart_height'),
       ),
       'visitors_table' => array(
         '#theme'  => 'table',

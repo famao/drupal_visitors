@@ -58,6 +58,7 @@ class DaysOfWeek extends ControllerBase {
    *   A render array representing the days of week page content.
    */
   public function display() {
+    $config    = \Drupal::config('visitors.config');
     $form      = $this->formBuilder->getForm('Drupal\visitors\Form\DateFilter');
     $header    = $this->_getHeader();
     $results   = $this->_getData(NULL);
@@ -79,10 +80,12 @@ class DaysOfWeek extends ControllerBase {
     return array(
       'visitors_date_filter_form' => $form,
       'visitors_jqplot' => array(
-        '#theme' => 'visitors_jqplot',
-        '#path'  => drupal_get_path('module', 'visitors'),
-        '#x' => implode(', ', $x),
-        '#y' => implode(', ', $y),
+        '#theme'  => 'visitors_jqplot',
+        '#path'   => drupal_get_path('module', 'visitors'),
+        '#x'      => implode(', ', $x),
+        '#y'      => implode(', ', $y),
+        '#width'  => $config->get('chart_width'),
+        '#height' => $config->get('chart_height'),
       ),
       'visitors_table' => array(
         '#theme'  => 'table',

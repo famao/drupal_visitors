@@ -1,4 +1,4 @@
-<div id="visitors_chart"></div>
+<div id="visitors_chart" style="width: {{ width }}px; height: {{ height }}px;"></div>
 
 <script type="text/javascript" src="/{{ path }}/jquery.jqplot/jquery.jqplot.min.js"></script>
 <script type="text/javascript" src="/{{ path }}/jquery.jqplot/plugins/jqplot.barRenderer.min.js"></script>
@@ -11,6 +11,8 @@
     var ticks = [{{ x }}];
 
     $.jqplot('visitors_chart', [s], {
+      width: {{ width }},
+      height: {{ height }},
       seriesDefaults: {
         renderer: $.jqplot.BarRenderer,
         pointLabels: { show: true }

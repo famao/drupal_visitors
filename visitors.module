@@ -25,7 +25,13 @@ function visitors_theme() {
   return array(
     'visitors_jqplot' => array(
       'template' => 'visitors_jqplot',
-    'variables' => array('path' => null, 'x' => null, 'y' => null),
+      'variables' => array(
+        'path' => null,
+        'x' => null,
+        'y' => null,
+        'width' => null,
+        'height' => null,
+      ),
     )
   );
 }
