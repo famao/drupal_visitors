@@ -217,8 +217,7 @@ function visitors_date_filter_sql_condition(&$query) {
   $from = visitors_get_from_timestamp();
   $to   = visitors_get_to_timestamp();
 
-  $query->condition('visitors_date_time', $from, '>');
-  $query->condition('visitors_date_time', $to, '<');
+  $query->condition('visitors_date_time', array($from, $to), 'BETWEEN');
 }
 
 /**
