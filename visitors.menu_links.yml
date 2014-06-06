@@ -51,3 +51,9 @@ visitors.monthly_history:
   parent: visitors.index
   description: 'View pages count per month.'
 
+visitors.referers:
+  title: 'Referers'
+  route_name: visitors.referers
+  parent: visitors.index
+  description: 'View referer list.'
+

@@ -19,7 +19,7 @@ class DateFilter extends FormBase {
 
 
   public function getFormID() {
-    return 'date_filter_form';
+    return 'visitors_date_filter_form';
   }
 
   /**
@@ -81,7 +81,7 @@ class DateFilter extends FormBase {
       '#value_callback'   => array($this, 'datelistValueCallback'),
     );
 
-    $form['visitors_date_filter']['submit'] = array(
+    $form['submit'] = array(
       '#type'             => 'submit',
       '#value'            => t('Save'),
     );

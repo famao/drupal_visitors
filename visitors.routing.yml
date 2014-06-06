@@ -97,3 +97,11 @@ visitors.monthly_history:
   requirements:
     _permission: 'access visitors'
 
+visitors.referers:
+  path: '/visitors/referers'
+  defaults:
+    _content: '\Drupal\visitors\Controller\Report\Referers::display'
+    _title: 'Referers'
+  requirements:
+    _permission: 'access visitors'
+
