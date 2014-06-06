@@ -224,7 +224,7 @@ class Settings extends ConfigFormBase {
       )
       ->set(
         'chart_height',
-        (int) $form_state['values']['chart_width']
+        (int) $form_state['values']['chart_height']
       )
       ->save();
 
