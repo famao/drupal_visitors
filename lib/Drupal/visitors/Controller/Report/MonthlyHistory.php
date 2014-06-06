@@ -128,46 +128,47 @@ class MonthlyHistory extends ControllerBase {
     $items_per_page = \Drupal::config('visitors.config')->get('items_per_page');
 
     $query = db_select('visitors', 'v')
-    ->extend('Drupal\Core\Database\Query\PagerSelectExtender');
+      ->extend('Drupal\Core\Database\Query\PagerSelectExtender');
 
-  $query->addExpression('COUNT(*)', 'count');
-  $query->addExpression(
-    visitors_date_format_sql('visitors_date_time', '%Y%m'), 'm'
-  );
-  $query->addExpression(
-    visitors_date_format_sql('MIN(visitors_date_time)', '%Y %M'), 's'
-  );
-  visitors_date_filter_sql_condition($query);
-  $query->groupBy('m');
-     if (!is_null($header)) {
+    $query->addExpression('COUNT(*)', 'count');
+    $query->addExpression(
+      visitors_date_format_sql('visitors_date_time', '%Y%m'), 'm'
+    );
+    $query->addExpression(
+      visitors_date_format_sql('MIN(visitors_date_time)', '%Y %M'), 's'
+    );
+    visitors_date_filter_sql_condition($query);
+    $query->groupBy('m');
+    if (!is_null($header)) {
       $query
         ->extend('Drupal\Core\Database\Query\TableSortExtender')
         ->orderByHeader($header);
     }
- $query->limit($items_per_page);
+    $query->limit($items_per_page);
 
-  $count_query = db_select('visitors', 'v');
-  $count_query->addExpression(
-    sprintf('COUNT(DISTINCT %s)',
-    visitors_date_format_sql('visitors_date_time', '%Y %M'))
-  );
-
-  visitors_date_filter_sql_condition($count_query);
-  $query->setCountQuery($count_query);
-  $results = $query->execute();
-
-  $rows = array();
-
-  $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
-  $i = 0 + $page * $items_per_page;
-
-  foreach ($results as $data) {
-    $rows[] = array(
-      ++$i,
-      $data->s,
-      $data->count
+    $count_query = db_select('visitors', 'v');
+    $count_query->addExpression(
+      sprintf('COUNT(DISTINCT %s)',
+      visitors_date_format_sql('visitors_date_time', '%Y %M'))
     );
-  }
+
+    visitors_date_filter_sql_condition($count_query);
+    $query->setCountQuery($count_query);
+    $results = $query->execute();
+
+    $rows = array();
+
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
+    $i = 0 + $page * $items_per_page;
+
+    foreach ($results as $data) {
+      $rows[] = array(
+        ++$i,
+        $data->s,
+        $data->count
+      );
+    }
+
     return $rows;
   }
 }
