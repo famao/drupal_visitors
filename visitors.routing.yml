@@ -1,3 +1,11 @@
+visitors.settings:
+  path: '/admin/config/system/visitors'
+  defaults:
+    _form: '\Drupal\visitors\Form\Settings'
+    _title: 'Visitors settings'
+  requirements:
+    _permission: 'administer visitors'
+
 visitors.index:
   path: '/visitors'
   defaults:
