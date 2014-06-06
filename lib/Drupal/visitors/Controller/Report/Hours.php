@@ -136,16 +136,17 @@ class Hours extends ControllerBase {
     );
     visitors_date_filter_sql_condition($query);
     $query->groupBy('hour');
-  
+
     if (!is_null($header)) {
       $query
         ->extend('Drupal\Core\Database\Query\TableSortExtender')
         ->orderByHeader($header);
     }
-      $results = $query->execute();
-      $rows = array();
-      $i = 0;
-  
+
+    $results = $query->execute();
+    $rows    = array();
+    $i       = 0;
+
     foreach ($results as $data) {
       $rows[] = array(
         ++$i,
