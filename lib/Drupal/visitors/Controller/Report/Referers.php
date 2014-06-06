@@ -121,7 +121,7 @@ class Referers extends ControllerBase {
     $query = db_select('visitors', 'v')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender');
-  
+
     $query->addExpression('COUNT(*)', 'count');
     $query->fields('v', array('visitors_referer'));
     visitors_date_filter_sql_condition($query);
@@ -129,16 +129,16 @@ class Referers extends ControllerBase {
     $query->groupBy('visitors_referer');
     $query->orderByHeader($header);
     $query->limit($items_per_page);
-  
+
     $count_query = db_select('visitors', 'v');
     $count_query->addExpression('COUNT(DISTINCT visitors_referer)');
     visitors_date_filter_sql_condition($count_query);
     $this->_setReferersCondition($count_query);
     $query->setCountQuery($count_query);
     $results = $query->execute();
-  
+
     $rows = array();
-  
+
     $page = isset($_GET['page']) ? (int) $_GET['page'] : '';
     $i = 0 + $page * $items_per_page;
     foreach ($results as $data) {
@@ -150,7 +150,7 @@ class Referers extends ControllerBase {
     }
       return $rows;
     }
-  
+
   /**
    * Build sql query from referer type value.
    */
@@ -167,14 +167,14 @@ class Referers extends ControllerBase {
       case REFERER_TYPE_EXTERNAL_PAGES:
         $query->condition(
           'visitors_referer',
-          sprintf('%%%s%%', $_SERVER['HTTP_HOST']), 
+          sprintf('%%%s%%', $_SERVER['HTTP_HOST']),
           'NOT LIKE'
         );
         break;
       default:
         break;
     }
-  
+
     return $query;
   }
 }
