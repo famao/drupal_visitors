@@ -1,47 +1,58 @@
 <?php
 
+/* vim: set filetype=php: */
+
 /**
  * @file
- * Visitors geoip module menu configuration.
+ * Checks requirements.
  */
-
-require_once dirname(__FILE__) . '/visitors_geoip.requirements.inc';
 
 /**
- * Menu callback. Prints a listing of active nodes on the site.
+ * Implements of hook_requirements().
  */
-function visitors_geoip_menu() {
-  $items = array();
+function visitors_geoip_requirements($phase) {
+  $requirements = array();
 
-  $items['visitors/countries'] = array(
-    'title' => 'Countries',
-    'description' => 'View pages count per country.',
-    'page callback' => 'visitors_countries',
-    'access arguments' => array('access visitors'),
-    'file' => 'visitors.admin.inc',
-    'type' => MENU_NORMAL_ITEM,
+  $requirements['visitors_geoip'] = array(
+    'title' => t('Visitors GeoIP module'),
   );
 
-  $items['visitors/countries/%'] = array(
-    'title' => 'City',
-    'description' => 'View pages count per city.',
-    'page callback' => 'visitors_cities',
-    'page arguments' => array(2),
-    'access arguments' => array('access visitors'),
-    'file' => 'visitors.admin.inc',
-    'type' => MENU_CALLBACK,
-  );
+  if (!function_exists('geoip_record_by_name')) {
+    $requirements['visitors_geoip']['value'] = t(
+      'The %extension_geoip PHP extension is not installed!',
+      array('%extension_geoip' => 'geoip')
+    );
+    $requirements['visitors_geoip']['severity'] = REQUIREMENT_ERROR;
+    return $requirements;
+  }
 
-  $items['visitors/countries/%/%'] = array(
-    'title' => 'Hits',
-    'description' => 'View city hits.',
-    'page callback' => 'visitors_city_hits',
-    'page arguments' => array(2, 3),
-    'access arguments' => array('access visitors'),
-    'file' => 'visitors.admin.inc',
-    'type' => MENU_CALLBACK,
-  );
+  $geoip_db = GEOIP_CITY_EDITION_REV1;
+  $geoip_db_filename = geoip_db_filename($geoip_db);
+  $geoip_db_name = 'GeoIP City';
 
-  return $items;
+  if (!geoip_db_avail($geoip_db)) {
+    $requirements['visitors_geoip']['value'] = t(
+      'The %geoip_db_name database file is not available at %geoip_db_file!',
+      array(
+        '%geoip_db_name' => $geoip_db_name,
+        '%geoip_db_file' => $geoip_db_filename
+      )
+    );
+    $requirements['visitors_geoip']['severity'] = REQUIREMENT_ERROR;
+    return $requirements;
+  }
+
+  $geoip_database_info = geoip_database_info($geoip_db);
+  $requirements['visitors_geoip']['value'] = t(
+    'The %geoip_db_name database file is available at %geoip_db_file',
+    array(
+      '%geoip_db_name' => $geoip_db_name,
+      '%geoip_db_file' => $geoip_db_filename
+    )
+  );
+  $requirements['visitors_geoip']['description'] = $geoip_db_name .
+    t(' database version: ') . $geoip_database_info;
+  $requirements['visitors_geoip']['severity'] = REQUIREMENT_OK;
+  return $requirements;
 }
 
