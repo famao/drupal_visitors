@@ -260,15 +260,13 @@ class DateFilter extends FormBase {
    * @return int min year
    */
   protected function _getMinYear() {
-    /* TODO: use db_select() function. */
-    /* TODO: convert MIN(visitors_date_time) to user timezone. */
-    $sql = sprintf('SELECT
-      MIN(visitors_date_time) AS min_time
-      FROM {visitors}
-      LIMIT 1'
-    );
+    $query = db_select('visitors');
+    $query->addExpression('MIN(visitors_date_time)');
+    $min_timestamp = $query->execute()->fetchField();
 
-    return date('Y', db_query($sql)->fetchField());
+    $timezone = drupal_get_user_timezone();
+
+    return format_date($min_timestamp, 'custom', 'Y', $timezone);
   }
 }
 
