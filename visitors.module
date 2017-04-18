@@ -37,16 +37,6 @@ function visitors_theme() {
 }
 
 /**
- * Implements hook_permission().
- */
-function visitors_permission() {
-  return array(
-    'administer visitors' => array('title' => t('Administer visitors module')),
-    'access visitors' => array('title' => t('View reports')),
-  );
-}
-
-/**
  * Implements of hook_cron().
  */
 function visitors_cron() {

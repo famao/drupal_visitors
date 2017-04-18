@@ -8,15 +8,17 @@
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\Date;
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Hosts extends ControllerBase {
   /**
    * The date service.
    *
-   * @var \Drupal\Core\Datetime\Date
+   * @var \Drupal\Core\Datetime\DateFormatter
    */
   protected $date;
 
@@ -32,7 +34,7 @@ class Hosts extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('date'),
+      $container->get('date.formatter'),
       $container->get('form_builder')
     );
   }
@@ -40,13 +42,13 @@ class Hosts extends ControllerBase {
   /**
    * Constructs a Hosts object.
    *
-   * @param \Drupal\Core\Datetime\Date $date
+   * @param \Drupal\Core\Datetime\DateFormatter $date
    *   The date service.
    *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+  public function __construct(DateFormatter $date, FormBuilderInterface $form_builder) {
     $this->date        = $date;
     $this->formBuilder = $form_builder;
   }
@@ -131,7 +133,7 @@ class Hosts extends ControllerBase {
     $query->setCountQuery($count_query);
     $results = $query->execute();
 
-    $whois_enable = module_exists('whois');
+    $whois_enable = \Drupal::moduleHandler()->moduleExists('whois');
     $attr = array('attributes' =>
       array('target' => '_blank', 'title' => t('Whois lookup'))
     );
@@ -145,9 +147,9 @@ class Hosts extends ControllerBase {
       $ip = long2ip($data->visitors_ip);
       $rows[] = array(
         ++$i,
-        $whois_enable ? l($ip, 'whois/' . $ip, $attr) : check_plain($ip),
+        $whois_enable ? \Drupal::l($ip, Url::fromUri('whois/' . $ip), $attr) : Html::escape($ip),
         $data->count,
-        l(t('hits'), 'visitors/hosts/' . $ip)
+        \Drupal::l(t('hits'), Url::fromRoute('visitors.host_hits', array( 'host' =>  $ip))),
       );
     }
 

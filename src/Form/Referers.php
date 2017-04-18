@@ -9,7 +9,7 @@ class Referers extends DateFilter {
     return 'visitors_referers_form';
   }
 
-  public function buildForm(array $form, array &$form_state) {
+  public function buildForm(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
     $this->_setSessionRefererType();
     $form = parent::buildForm($form, $form_state);
 
@@ -42,10 +42,10 @@ class Referers extends DateFilter {
     return $form;
   }
 
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $_SESSION['referer_type'] = $form_state['values']['referer_type'];
+    $_SESSION['referer_type'] = $form_state->getValue('referer_type');
   }
 
   /**

@@ -8,14 +8,16 @@
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\Date;
+use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class HitDetails extends ControllerBase {
   /**
    * The date service.
    *
-   * @var \Drupal\Core\Datetime\Date
+   * @var \Drupal\Core\Datetime\DateFormatter
    */
   protected $date;
 
@@ -23,16 +25,16 @@ class HitDetails extends ControllerBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('date'));
+    return new static($container->get('date.formatter'));
   }
 
   /**
    * Constructs a HitDetails object.
    *
-   * @param \Drupal\Core\Datetime\Date $date
+   * @param \Drupal\Core\Datetime\DateFormatter $date
    *   The date service.
    */
-  public function __construct(Date $date) {
+  public function __construct(DateFormatter $date) {
     $this->date = $date;
   }
 
@@ -62,7 +64,7 @@ class HitDetails extends ControllerBase {
    */
   protected function _getData($hit_id) {
     $query = db_select('visitors', 'v');
-    $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
+    $query->leftJoin('users_field_data', 'u', 'u.uid=v.visitors_uid');
     $query->fields('v');
     $query->fields('u', array('name', 'uid'));
     $query->condition('v.visitors_id', (int) $hit_id);
@@ -74,7 +76,7 @@ class HitDetails extends ControllerBase {
       $url          = urldecode($hit_details->visitors_url);
       $referer      = $hit_details->visitors_referer;
       $date         = $this->date->format($hit_details->visitors_date_time, 'large');
-      $whois_enable = module_exists('whois');
+      $whois_enable = \Drupal::moduleHandler()->moduleExists('whois');
 
       $attr         = array(
         'attributes' => array(
@@ -90,25 +92,25 @@ class HitDetails extends ControllerBase {
       );
 
       $array = array(
-        'URL'        => l($url, $url),
-        'Title'      => check_plain($hit_details->visitors_title),
-        'Referer'    => $referer ? l($referer, $referer) : '',
-        'Date'       => $date,
+        'URL'        => \Drupal::l($url, Url::fromUri($url)),
+        'Title'      => Html::escape($hit_details->visitors_title),
+        'Referer'    => $referer ? \Drupal::l($referer, Url::fromUri($referer)) : '',
+        'DateFormatter'       => $date,
         'User'       => drupal_render($username),
-        'IP'         => $whois_enable ? l($ip, 'whois/' . $ip, $attr) : $ip,
-        'User Agent' => check_plain($hit_details->visitors_user_agent)
+        'IP'         => $whois_enable ? \Drupal::l($ip, Url::fromUri('whois/' . $ip), $attr) : $ip,
+        'User Agent' => Html::escape($hit_details->visitors_user_agent)
       );
 
-      if (module_exists('visitors_geoip')) {
+      if (\Drupal::moduleHandler()->moduleExists('visitors_geoip')) {
         $geoip_data_array = array(
-          'Country'        => check_plain($hit_details->visitors_country_name),
-          'Region'         => check_plain($hit_details->visitors_region),
-          'City'           => check_plain($hit_details->visitors_city),
-          'Postal Code'    => check_plain($hit_details->visitors_postal_code),
-          'Latitude'       => check_plain($hit_details->visitors_latitude),
-          'Longitude'      => check_plain($hit_details->visitors_longitude),
-          'DMA Code'       => check_plain($hit_details->visitors_dma_code),
-          'PSTN Area Code' => check_plain($hit_details->visitors_area_code),
+          'Country'        => Html::escape($hit_details->visitors_country_name),
+          'Region'         => Html::escape($hit_details->visitors_region),
+          'City'           => Html::escape($hit_details->visitors_city),
+          'Postal Code'    => Html::escape($hit_details->visitors_postal_code),
+          'Latitude'       => Html::escape($hit_details->visitors_latitude),
+          'Longitude'      => Html::escape($hit_details->visitors_longitude),
+          'DMA Code'       => Html::escape($hit_details->visitors_dma_code),
+          'PSTN Area Code' => Html::escape($hit_details->visitors_area_code),
         );
         $array = array_merge($array, $geoip_data_array);
       }

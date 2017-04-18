@@ -11,7 +11,7 @@
  * Implements hook_install().
  */
 function visitors_install() {
-  \Drupal::config('visitors.config')
+  \Drupal::configFactory()->getEditable('visitors.config')
     ->set('chart_height', 430)
     ->set('chart_width', 700)
     ->set('exclude_administer_users', 0)
@@ -35,7 +35,7 @@ function visitors_install() {
 function visitors_uninstall() {
   drupal_uninstall_schema('visitors');
 
-  \Drupal::config('visitors.config')->delete();
+  \Drupal::configFactory()->getEditable('visitor.config')->delete();
 }
 
 /**

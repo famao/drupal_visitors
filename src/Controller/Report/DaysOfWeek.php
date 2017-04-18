@@ -8,15 +8,16 @@
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\Date;
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Component\Utility\Unicode;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DaysOfWeek extends ControllerBase {
   /**
    * The date service.
    *
-   * @var \Drupal\Core\Datetime\Date
+   * @var \Drupal\Core\Datetime\DateFormatter
    */
   protected $date;
 
@@ -32,7 +33,7 @@ class DaysOfWeek extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('date'),
+      $container->get('date.formatter'),
       $container->get('form_builder')
     );
   }
@@ -40,13 +41,13 @@ class DaysOfWeek extends ControllerBase {
   /**
    * Constructs a DaysOfWeek object.
    *
-   * @param \Drupal\Core\Datetime\Date $date
+   * @param \Drupal\Core\Datetime\DateFormatter $date
    *   The date service.
    *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+  public function __construct(DateFormatter $date, FormBuilderInterface $form_builder) {
     $this->date        = $date;
     $this->formBuilder = $form_builder;
   }
@@ -72,6 +73,7 @@ class DaysOfWeek extends ControllerBase {
       $x[] = "\"$day\"";
       $y[$day] = 0;
     }
+
 
     foreach ($results as $data) {
       $y[$data[1]] = $data[2];
@@ -152,11 +154,11 @@ class DaysOfWeek extends ControllerBase {
     $sort_days = $this->_getDaysOfWeek();
 
     foreach ($sort_days as $day => $value) {
-      $rows[$value] = array($value, t($day), 0);
+      $rows[$value] = array($value, $day, 0);
     }
 
     foreach ($tmp_rows as $tmp_item) {
-      $day_of_week = drupal_ucfirst(drupal_strtolower($tmp_item[0]));
+      $day_of_week = Unicode::ucfirst(Unicode::strtolower($tmp_item[0]));
       $rows[$sort_days[$day_of_week]][2] = $tmp_item[1];
     }
 
@@ -171,6 +173,7 @@ class DaysOfWeek extends ControllerBase {
    */
   protected function _getDaysOfWeek() {
     $days           = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+    #$days           = array($this->t('Sun'), $this->t('Mon'), $this->t('Tue'), $this->t('Wed'), $this->t('Thu'), $this->t('Fri'), $this->t('Sat'));
     $date_first_day = \Drupal::config('system.date')->get('first_day', 0);
     $sort_days      = array();
     $n              = 1;

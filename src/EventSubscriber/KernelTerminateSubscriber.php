@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * @file
@@ -37,26 +37,33 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
    *   The Event to process.
    */
   public function onTerminate(PostResponseEvent $event) {
+
+
+    $request = $event->getRequest();
+
     $this->request = $event->getRequest();
 
-    global $user;
-    $not_admin = !in_array('administrator', $user->getRoles());
+    $user = $request->getUser();
+
+    $user_id = is_null($user) ? 0 : $user->id();
+
+    $not_admin = ($user_id > 0) ? !in_array('administrator', $user->getRoles()) : FALSE;
     $log_admin = !\Drupal::config('visitors.config')->get('exclude_administer_users');
 
     if ($log_admin || $not_admin) {
       $ip_str = $this->_getIpStr();
       $fields = array(
-        'visitors_uid'        => $user->id(),
+        'visitors_uid'        => $user_id,
         'visitors_ip'         => $ip_str,
         'visitors_date_time'  => time(),
-        'visitors_url'        => $this->_getUrl(),
+        'visitors_url'        => $request->getUri(),
         'visitors_referer'    => $this->_getReferer(),
-        'visitors_path'       => _current_path(),
+        'visitors_path'       => \Drupal::service('path.current')->getPath(),
         'visitors_title'      => $this->_getTitle(),
         'visitors_user_agent' => $this->_getUserAgent()
       );
 
-      if (module_exists('visitors_geoip')) {
+      if (Drupal::moduleHandler()->moduleExists('visitors_geoip')) {
         $geoip_data = $this->_getGeoipData($ip_str);
 
         $fields['visitors_continent_code'] = $geoip_data['continent_code'];
@@ -75,7 +82,7 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
       db_insert('visitors')
         ->fields($fields)
         ->execute();
-    }
+    // }
   }
 
   /**
@@ -113,7 +120,7 @@ class KernelTerminateSubscriber implements EventSubscriberInterface {
    */
   protected function _getUrl() {
     return
-      urldecode(sprintf('http://%s%s', $_SERVER['HTTP_HOST'], request_uri()));
+      urldecode(sprintf('http://%s%s', $_SERVER['HTTP_HOST'], $this->request->getRequestUri()));
   }
 
   /**

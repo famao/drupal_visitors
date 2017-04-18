@@ -8,15 +8,18 @@
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\Date;
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Component\Utility\Html;
+
 
 class TopPages extends ControllerBase {
   /**
    * The date service.
    *
-   * @var \Drupal\Core\Datetime\Date
+   * @var \Drupal\Core\Datetime\DateFormatter
    */
   protected $date;
 
@@ -32,7 +35,7 @@ class TopPages extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('date'),
+      $container->get('date.formatter'),
       $container->get('form_builder')
     );
   }
@@ -40,13 +43,13 @@ class TopPages extends ControllerBase {
   /**
    * Constructs a TopPages object.
    *
-   * @param \Drupal\Core\Datetime\Date $date
+   * @param \Drupal\Core\Datetime\DateFormatter $date
    *   The date service.
    *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+  public function __construct(DateFormatter $date, FormBuilderInterface $form_builder) {
     $this->date        = $date;
     $this->formBuilder = $form_builder;
   }
@@ -138,8 +141,7 @@ class TopPages extends ControllerBase {
     foreach ($results as $data) {
       $rows[] = array(
         ++$i,
-        check_plain($data->visitors_title) . '<br/>' .
-        l($data->visitors_path, $data->visitors_url),
+        HTML::escape($data->visitors_title) . '<br/>' .  \Drupal::l($data->visitors_path, Url::fromUri($data->visitors_url)),
         $data->count,
       );
     }

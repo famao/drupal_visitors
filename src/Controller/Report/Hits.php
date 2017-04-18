@@ -8,15 +8,17 @@
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\Date;
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\Url;
+use Drupal\Component\Utility\Html;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Hits extends ControllerBase {
   /**
    * The date service.
    *
-   * @var \Drupal\Core\Datetime\Date
+   * @var \Drupal\Core\Datetime\DateFormatter
    */
   protected $date;
 
@@ -32,7 +34,7 @@ class Hits extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('date'),
+      $container->get('date.formatter'),
       $container->get('form_builder')
     );
   }
@@ -40,13 +42,13 @@ class Hits extends ControllerBase {
   /**
    * Constructs a Hits object.
    *
-   * @param \Drupal\Core\Datetime\Date $date
+   * @param \Drupal\Core\Datetime\DateFormatter $date
    *   The date service.
    *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+  public function __construct(DateFormatter $date, FormBuilderInterface $form_builder) {
     $this->date        = $date;
     $this->formBuilder = $form_builder;
   }
@@ -62,7 +64,7 @@ class Hits extends ControllerBase {
     $header = $this->_getHeader();
 
     return array(
-      '#title' => check_plain(t('Hits from') . ' ' . $host),
+      '#title' => Html::escape(t('Hits from') . ' ' . $host),
       'visitors_date_filter_form' => $form,
       'visitors_table' => array(
         '#theme'  => 'table',
@@ -135,7 +137,7 @@ class Hits extends ControllerBase {
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender');
 
-    $query->leftJoin('users', 'u', 'u.uid=v.visitors_uid');
+    $query->leftJoin('users_field_data', 'u', 'u.uid=v.visitors_uid');
     $query->fields(
       'v',
       array(
@@ -177,10 +179,10 @@ class Hits extends ControllerBase {
         ++$i,
         $data->visitors_id,
           $this->date->format($data->visitors_date_time, 'short'),
-              check_plain($data->visitors_title) . '<br/>' .
-          l($data->visitors_path, $data->visitors_url),
+              Html::escape($data->visitors_title) . '<br/>' .
+          \Drupal::l($data->visitors_path, Url::fromUri($data->visitors_url)),
         drupal_render($username),
-        l(t('details'), 'visitors/hits/' . $data->visitors_id)
+        \Drupal::l(t('details'), Url::fromRoute('visitors.hit_details', array('hit_id' =>  $data->visitors_id)))
       );
     }
 

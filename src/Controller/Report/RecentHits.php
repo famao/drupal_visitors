@@ -8,15 +8,17 @@
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\Date;
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Component\Utility\Html;
 
 class RecentHits extends ControllerBase {
   /**
    * The date service.
    *
-   * @var \Drupal\Core\Datetime\Date
+   * @var \Drupal\Core\Datetime\DateFormatter
    */
   protected $date;
 
@@ -32,7 +34,7 @@ class RecentHits extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('date'),
+      $container->get('date.formatter'),
       $container->get('form_builder')
     );
   }
@@ -40,13 +42,13 @@ class RecentHits extends ControllerBase {
   /**
    * Constructs a RecentHits object.
    *
-   * @param \Drupal\Core\Datetime\Date $date
+   * @param \Drupal\Core\Datetime\DateFormatter $date
    *   The date service.
    *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+  public function __construct(DateFormatter $date, FormBuilderInterface $form_builder) {
     $this->date        = $date;
     $this->formBuilder = $form_builder;
   }
@@ -128,7 +130,7 @@ class RecentHits extends ControllerBase {
     $query = db_select('visitors', 'v')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender');
-    $query->leftJoin('users', 'u', 'u.uid=v.visitors_id');
+    $query->leftJoin('users_field_data', 'u', 'u.uid=v.visitors_id');
     $query->fields(
       'v',
       array(
@@ -168,12 +170,13 @@ class RecentHits extends ControllerBase {
         ++$i,
         $data->visitors_id,
         $this->date->format($data->visitors_date_time, 'short'),
-        check_plain(
-          $data->visitors_title) . '<br/>' . l($data->visitors_path,
-          $data->visitors_url
-        ),
+        Html::escape(
+          $data->visitors_title) . '<br/>' . 
+          \Drupal::l($data->visitors_path,
+           Url::fromUri($data->visitors_url)
+          ),
         drupal_render($username),
-        l(t('details'), 'visitors/hits/' . $data->visitors_id)
+        \Drupal::l(t('details'), Url::fromRoute('visitors.hit_details', array('hit_id' => $data->visitors_id)))
       );
     }
 

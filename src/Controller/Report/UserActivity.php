@@ -8,7 +8,7 @@
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\Date;
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Form\FormBuilderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -16,7 +16,7 @@ class UserActivity extends ControllerBase {
   /**
    * The date service.
    *
-   * @var \Drupal\Core\Datetime\Date
+   * @var \Drupal\Core\Datetime\DateFormatter
    */
   protected $date;
 
@@ -32,7 +32,7 @@ class UserActivity extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('date'),
+      $container->get('date.formatter'),
       $container->get('form_builder')
     );
   }
@@ -40,13 +40,13 @@ class UserActivity extends ControllerBase {
   /**
    * Constructs a UserActivity object.
    *
-   * @param \Drupal\Core\Datetime\Date $date
+   * @param \Drupal\Core\Datetime\DateFormatter $date
    *   The date service.
    *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+  public function __construct(DateFormatter $date, FormBuilderInterface $form_builder) {
     $this->date        = $date;
     $this->formBuilder = $form_builder;
   }
@@ -104,7 +104,7 @@ class UserActivity extends ControllerBase {
       ),
     );
 
-    if (module_exists('comment')) {
+    if (\Drupal::moduleHandler()->moduleExists('comment')) {
       $headers['comments'] = array(
         'data'      => t('Comments'),
         'field'     => 'comments',
@@ -126,10 +126,10 @@ class UserActivity extends ControllerBase {
    *   Array representing the table content.
    */
   protected function _getData($header) {
-    $is_comment_module_exist = module_exists('comment');
+    $is_comment_module_exist = \Drupal::moduleHandler()->moduleExists('comment');
     $items_per_page = \Drupal::config('visitors.config')->get('items_per_page');
 
-    $query = db_select('users', 'u')
+    $query = db_select('users_field_data', 'u')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender');
 

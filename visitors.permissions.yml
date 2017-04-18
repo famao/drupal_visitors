@@ -1,0 +1,6 @@
+administer visitors:
+ title: Administer visitors module
+ restrict access: TRUE
+
+access visitors:
+ title: View reports

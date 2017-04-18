@@ -9,7 +9,7 @@ visitors.settings:
 visitors.index:
   path: '/visitors'
   defaults:
-    _content: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
     _title: 'Visitors'
   requirements:
     _permission: 'access visitors'
@@ -17,7 +17,7 @@ visitors.index:
 visitors.hits:
   path: '/visitors/hits'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\RecentHits::display'
+    _controller: '\Drupal\visitors\Controller\Report\RecentHits::display'
     _title: 'Recent hits'
   requirements:
     _permission: 'access visitors'
@@ -25,7 +25,7 @@ visitors.hits:
 visitors.hit_details:
   path: '/visitors/hits/{hit_id}'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\HitDetails::display'
+    _controller: '\Drupal\visitors\Controller\Report\HitDetails::display'
     _title: 'View access log'
   requirements:
     _permission: 'access visitors'
@@ -33,7 +33,7 @@ visitors.hit_details:
 visitors.top_pages:
   path: '/visitors/pages'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\TopPages::display'
+    _controller: '\Drupal\visitors\Controller\Report\TopPages::display'
     _title: 'Top pages'
   requirements:
     _permission: 'access visitors'
@@ -41,7 +41,7 @@ visitors.top_pages:
 visitors.node:
   path: '/node/{node}/visitors'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\Node::display'
+    _controller: '\Drupal\visitors\Controller\Report\Node::display'
     _title: 'Visitors'
   requirements:
     _permission: 'access visitors'
@@ -51,7 +51,7 @@ visitors.node:
 visitors.hosts:
   path: '/visitors/hosts'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\Hosts::display'
+    _controller: '\Drupal\visitors\Controller\Report\Hosts::display'
     _title: 'Hosts'
   requirements:
     _permission: 'access visitors'
@@ -59,7 +59,7 @@ visitors.hosts:
 visitors.host_hits:
   path: '/visitors/hosts/{host}'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\Hits::display'
+    _controller: '\Drupal\visitors\Controller\Report\Hits::display'
     _title: 'Hits'
   requirements:
     _permission: 'access visitors'
@@ -68,7 +68,7 @@ visitors.host_hits:
 visitors.user_activity:
   path: '/visitors/user_activity'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\UserActivity::display'
+    _controller: '\Drupal\visitors\Controller\Report\UserActivity::display'
     _title: 'User activity'
   requirements:
     _permission: 'access visitors'
@@ -76,7 +76,7 @@ visitors.user_activity:
 visitors.hours:
   path: '/visitors/hours'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\Hours::display'
+    _controller: '\Drupal\visitors\Controller\Report\Hours::display'
     _title: 'Hours'
   requirements:
     _permission: 'access visitors'
@@ -84,7 +84,7 @@ visitors.hours:
 visitors.days_of_month:
   path: '/visitors/days_of_month'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\DaysOfMonth::display'
+    _controller: '\Drupal\visitors\Controller\Report\DaysOfMonth::display'
     _title: 'Days of month'
   requirements:
     _permission: 'access visitors'
@@ -92,7 +92,7 @@ visitors.days_of_month:
 visitors.days_of_week:
   path: '/visitors/days_of_week'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\DaysOfWeek::display'
+    _controller: '\Drupal\visitors\Controller\Report\DaysOfWeek::display'
     _title: 'Days of week'
   requirements:
     _permission: 'access visitors'
@@ -100,7 +100,7 @@ visitors.days_of_week:
 visitors.monthly_history:
   path: '/visitors/monthly_history'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\MonthlyHistory::display'
+    _controller: '\Drupal\visitors\Controller\Report\MonthlyHistory::display'
     _title: 'Monthly history'
   requirements:
     _permission: 'access visitors'
@@ -108,7 +108,7 @@ visitors.monthly_history:
 visitors.referers:
   path: '/visitors/referers'
   defaults:
-    _content: '\Drupal\visitors\Controller\Report\Referers::display'
+    _controller: '\Drupal\visitors\Controller\Report\Referers::display'
     _title: 'Referers'
   requirements:
     _permission: 'access visitors'

@@ -8,7 +8,7 @@
 namespace Drupal\visitors\Controller\Report;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Datetime\Date;
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -17,7 +17,7 @@ class Node extends ControllerBase {
   /**
    * The date service.
    *
-   * @var \Drupal\Core\Datetime\Date
+   * @var \Drupal\Core\Datetime\DateFormatter
    */
   protected $date;
 
@@ -33,7 +33,7 @@ class Node extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('date'),
+      $container->get('date.formatter'),
       $container->get('form_builder')
     );
   }
@@ -41,13 +41,13 @@ class Node extends ControllerBase {
   /**
    * Constructs a Node object.
    *
-   * @param \Drupal\Core\Datetime\Date $date
+   * @param \Drupal\Core\Datetime\DateFormatter $date
    *   The date service.
    *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   The form builder service.
    */
-  public function __construct(Date $date, FormBuilderInterface $form_builder) {
+  public function __construct(DateFormatter $date, FormBuilderInterface $form_builder) {
     $this->date        = $date;
     $this->formBuilder = $form_builder;
   }
@@ -131,7 +131,7 @@ class Node extends ControllerBase {
     $query = db_select('visitors', 'v')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender');
-    $query->leftJoin('users', 'u', 'u.uid=v.visitors_id');
+    $query->leftJoin('users_field_data', 'u', 'u.uid=v.visitors_id');
     $query->fields(
       'v',
       array(
@@ -141,7 +141,8 @@ class Node extends ControllerBase {
         'visitors_referer',
       )
     );
-    $value = $node->getValue();
+    #$value = $node->getValue();
+    $value = $node->values;
     $nid = (int) $value['nid'][0]['value'];
     $query->fields('u', array('name', 'uid'));
     $db_or = db_or();
