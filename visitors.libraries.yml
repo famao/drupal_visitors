@@ -1,0 +1,10 @@
+jqplot:
+  header: true
+  js:
+   jquery.jqplot/jquery.jqplot.min.js: {}
+   jquery.jqplot/plugins/jqplot.barRenderer.min.js : {}
+   jquery.jqplot/plugins/jqplot.categoryAxisRenderer.min.js : {}
+   jquery.jqplot/plugins/jqplot.pointLabels.min.js : {}
+  dependencies:
+    - core/drupal
+    - core/jquery
